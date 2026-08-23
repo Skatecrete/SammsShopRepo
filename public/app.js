@@ -220,22 +220,24 @@ function closeFullscreen() {
     document.body.style.overflow = 'auto';
 }
 
-adminLink.addEventListener('click', (e) => {
+adminLink.addEventListener('click', function(e) {
     e.preventDefault();
+    e.stopPropagation();
     adminModal.style.display = 'flex';
 });
 
-closeModal.addEventListener('click', () => {
+closeModal.addEventListener('click', function(e) {
+    e.preventDefault();
     adminModal.style.display = 'none';
 });
 
-adminModal.addEventListener('click', (e) => {
+adminModal.addEventListener('click', function(e) {
     if (e.target === adminModal) {
         adminModal.style.display = 'none';
     }
 });
 
-adminForm.addEventListener('submit', (e) => {
+adminForm.addEventListener('submit', function(e) {
     e.preventDefault();
     
     const username = document.getElementById('admin-username').value;
