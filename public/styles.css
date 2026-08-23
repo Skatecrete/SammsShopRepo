@@ -35,8 +35,22 @@ body {
     margin: 0 auto;
     padding: 0 1rem;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+}
+
+#header-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.5rem;
+    color: #fff;
+    white-space: nowrap;
 }
 
 .nav-tabs {
@@ -458,6 +472,15 @@ footer p {
         align-items: stretch;
     }
     
+    .nav-left {
+        justify-content: center;
+    }
+    
+    #header-title {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+    
     .nav-tabs {
         justify-content: center;
     }
@@ -508,6 +531,10 @@ footer p {
     .tab-btn {
         font-size: 0.7rem;
         padding: 0.3rem 0.6rem;
+    }
+    
+    #header-title {
+        font-size: 1rem;
     }
     
     .landing-title {
