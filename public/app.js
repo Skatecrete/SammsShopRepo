@@ -1,7 +1,7 @@
 const CONFIG = {
     APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwEGoZ83eDemeVFFI1YHby4eNOQ4EJFFgOXtsz00x-ubNlsgqzAupVDoFeZRYqyIrEG/exec',
-    ADMIN_USER: 'wife',
-    ADMIN_PASS: 'tattoo2026',
+    ADMIN_USER: 'Samm',
+    ADMIN_PASS: '0510',
     GITHUB: {
         owner: 'Skatecrete',
         repo: 'SamsmShopRepo'
