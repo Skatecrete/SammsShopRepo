@@ -22,10 +22,6 @@ const contentSections = {
 const flashGrid = document.getElementById('flash-grid');
 const portfolioGrid = document.getElementById('portfolio-grid');
 const calendarContainer = document.getElementById('calendar-container');
-const adminBtn = document.getElementById('admin-btn');
-const adminModal = document.getElementById('admin-modal');
-const closeModal = document.getElementById('close-modal');
-const adminForm = document.getElementById('admin-login-form');
 const fullscreenOverlay = document.getElementById('fullscreen-overlay');
 const fullscreenImage = document.getElementById('fullscreen-image');
 const fullscreenClose = document.getElementById('fullscreen-close');
@@ -217,42 +213,5 @@ function closeFullscreen() {
     fullscreenOverlay.style.display = 'none';
     document.body.style.overflow = 'auto';
 }
-
-if (adminBtn) {
-    adminBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        adminModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    });
-}
-
-closeModal.addEventListener('click', function(e) {
-    e.preventDefault();
-    adminModal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-});
-
-adminModal.addEventListener('click', function(e) {
-    if (e.target === adminModal) {
-        adminModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-});
-
-adminForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const username = document.getElementById('admin-username').value;
-    const password = document.getElementById('admin-password').value;
-    
-    if (username === CONFIG.ADMIN_USER && password === CONFIG.ADMIN_PASS) {
-        adminModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        localStorage.setItem('admin', 'true');
-        window.location.href = '/admin.html';
-    } else {
-        alert('Invalid username or password.');
-    }
-});
 
 window.openFullscreen = openFullscreen;
