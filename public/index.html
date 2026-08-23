@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- NAVIGATION (Always visible) -->
     <nav id="main-nav">
         <div class="nav-container">
             <div class="nav-left">
@@ -24,7 +23,6 @@
         </div>
     </nav>
 
-    <!-- LANDING PAGE (3 centered lines) -->
     <div id="landing" class="tab-content active">
         <div class="landing-content">
             <h1 class="landing-title">SkinPrints and Piercings</h1>
@@ -33,7 +31,6 @@
         </div>
     </div>
 
-    <!-- FLASH TAB -->
     <section id="flash" class="tab-content">
         <h2>Available Flash</h2>
         <div class="image-grid" id="flash-grid">
@@ -41,7 +38,6 @@
         </div>
     </section>
 
-    <!-- PORTFOLIO TAB -->
     <section id="portfolio" class="tab-content">
         <h2>Portfolio</h2>
         <div class="image-grid" id="portfolio-grid">
@@ -49,7 +45,6 @@
         </div>
     </section>
 
-    <!-- SCHEDULER TAB -->
     <section id="scheduler" class="tab-content">
         <h2>Availability Calendar</h2>
         <div id="calendar-container">
@@ -57,7 +52,6 @@
         </div>
     </section>
 
-    <!-- CONTACT TAB -->
     <section id="contact" class="tab-content">
         <h2>Contact Us</h2>
         <div class="contact-info">
@@ -87,26 +81,11 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <p>© 2026 SkinPrints and Piercings</p>
-        <button id="admin-btn" class="admin-link-btn">Admin</button>
+        <a href="/admin.html" class="admin-link-btn">Admin</a>
     </footer>
 
-    <!-- Admin Login Modal -->
-    <div id="admin-modal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <span class="close-btn" id="close-modal">&times;</span>
-            <h2>Admin Login</h2>
-            <form id="admin-login-form">
-                <input type="text" id="admin-username" placeholder="Username" required>
-                <input type="password" id="admin-password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Fullscreen Overlay -->
     <div id="fullscreen-overlay" style="display:none;">
         <button id="fullscreen-close">✕</button>
         <img id="fullscreen-image" src="" alt="Fullscreen view">
