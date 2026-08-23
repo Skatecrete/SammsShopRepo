@@ -8,11 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation (ALWAYS VISIBLE) -->
+    <!-- NAVIGATION (Always visible) -->
     <nav id="main-nav">
         <div class="nav-container">
             <div class="nav-tabs">
-                <button class="tab-btn active" data-tab="flash">Flash</button>
+                <button class="tab-btn active" data-tab="landing">Home</button>
+                <button class="tab-btn" data-tab="flash">Flash</button>
                 <button class="tab-btn" data-tab="portfolio">Portfolio</button>
                 <button class="tab-btn" data-tab="scheduler">Scheduler</button>
                 <button class="tab-btn" data-tab="contact">Contact</button>
@@ -20,72 +21,69 @@
         </div>
     </nav>
 
-    <!-- HERO SECTION (Landing Page) -->
-    <div id="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">SkinPrints and Piercings</h1>
-            <p class="hero-by">by</p>
-            <p class="hero-name">Samm (@GutterMuttx)</p>
+    <!-- LANDING PAGE (3 centered lines) -->
+    <div id="landing" class="tab-content active">
+        <div class="landing-content">
+            <h1 class="landing-title">SkinPrints and Piercings</h1>
+            <p class="landing-by">by</p>
+            <p class="landing-name">Samm (@GutterMuttx)</p>
         </div>
     </div>
 
-    <!-- Main Content (Tabs Content) -->
-    <main id="content">
-        <!-- FLASH TAB -->
-        <section id="flash" class="tab-content active">
-            <h2>Available Flash</h2>
-            <div class="image-grid" id="flash-grid">
-                <p class="loading">Loading designs...</p>
-            </div>
-        </section>
+    <!-- FLASH TAB -->
+    <section id="flash" class="tab-content">
+        <h2>Available Flash</h2>
+        <div class="image-grid" id="flash-grid">
+            <p class="loading">Loading designs...</p>
+        </div>
+    </section>
 
-        <!-- PORTFOLIO TAB -->
-        <section id="portfolio" class="tab-content">
-            <h2>Portfolio</h2>
-            <div class="image-grid" id="portfolio-grid">
-                <p class="loading">Loading portfolio...</p>
-            </div>
-        </section>
+    <!-- PORTFOLIO TAB -->
+    <section id="portfolio" class="tab-content">
+        <h2>Portfolio</h2>
+        <div class="image-grid" id="portfolio-grid">
+            <p class="loading">Loading portfolio...</p>
+        </div>
+    </section>
 
-        <!-- SCHEDULER TAB -->
-        <section id="scheduler" class="tab-content">
-            <h2>Availability Calendar</h2>
-            <div id="calendar-container">
-                <p class="loading">Loading calendar...</p>
-            </div>
-        </section>
+    <!-- SCHEDULER TAB -->
+    <section id="scheduler" class="tab-content">
+        <h2>Availability Calendar</h2>
+        <div id="calendar-container">
+            <p class="loading">Loading calendar...</p>
+        </div>
+    </section>
 
-        <!-- CONTACT TAB -->
-        <section id="contact" class="tab-content">
-            <h2>Contact Us</h2>
-            <div class="contact-info">
-                <p><strong>📞 Phone:</strong> (555) 123-4567</p>
-                <p><strong>✉️ Email:</strong> samm@skinprints.com</p>
-                <p><strong>📍 Location:</strong> 123 Main St, City, State</p>
-                <div class="social-links">
-                    <p><strong>Instagram:</strong> @skinprints</p>
-                    <p><strong>Facebook:</strong> /skinprints</p>
-                </div>
-                <div class="payment-section">
-                    <h3>Send Your Deposit</h3>
-                    <div class="payment-grid">
-                        <div class="payment-method">
-                            <h4>CashApp</h4>
-                            <p>$skinprints</p>
-                        </div>
-                        <div class="payment-method">
-                            <h4>PayPal</h4>
-                            <p>@skinprints</p>
-                        </div>
-                        <div class="payment-method">
-                            <h4>Venmo</h4>
-                            <p>@skinprints</p>
-                        </div>
+    <!-- CONTACT TAB -->
+    <section id="contact" class="tab-content">
+        <h2>Contact Us</h2>
+        <div class="contact-info">
+            <p><strong>📞 Phone:</strong> (555) 123-4567</p>
+            <p><strong>✉️ Email:</strong> samm@skinprints.com</p>
+            <p><strong>📍 Location:</strong> 123 Main St, City, State</p>
+            <div class="social-links">
+                <p><strong>Instagram:</strong> @skinprints</p>
+                <p><strong>Facebook:</strong> /skinprints</p>
+            </div>
+            <div class="payment-section">
+                <h3>Send Your Deposit</h3>
+                <div class="payment-grid">
+                    <div class="payment-method">
+                        <h4>CashApp</h4>
+                        <p>$skinprints</p>
+                    </div>
+                    <div class="payment-method">
+                        <h4>PayPal</h4>
+                        <p>@skinprints</p>
+                    </div>
+                    <div class="payment-method">
+                        <h4>Venmo</h4>
+                        <p>@skinprints</p>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer>
