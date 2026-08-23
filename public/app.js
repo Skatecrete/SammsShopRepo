@@ -9,9 +9,10 @@ const CONFIG = {
 };
 
 let currentTab = 'flash';
-const tabs = document.querySelectorAll('.tab-btn');
+const nav = document.getElementById('main-nav');
 const mainContent = document.getElementById('content');
 const hero = document.getElementById('hero');
+const tabs = document.querySelectorAll('.tab-btn');
 const contentSections = {
     flash: document.getElementById('flash'),
     portfolio: document.getElementById('portfolio'),
@@ -38,6 +39,11 @@ tabs.forEach(btn => {
 });
 
 function switchTab(tab) {
+    // Show nav and main content, hide hero
+    nav.classList.add('visible');
+    mainContent.classList.add('visible');
+    hero.style.display = 'none';
+    
     tabs.forEach(b => b.classList.remove('active'));
     document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
     
@@ -45,10 +51,6 @@ function switchTab(tab) {
         contentSections[key].classList.remove('active');
     });
     contentSections[tab].classList.add('active');
-    
-    // Show main content, hide hero
-    mainContent.classList.add('active');
-    hero.style.display = 'none';
     
     currentTab = tab;
     
