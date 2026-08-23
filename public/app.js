@@ -10,8 +10,9 @@ const CONFIG = {
 
 let currentTab = 'landing';
 const tabs = document.querySelectorAll('.tab-btn');
+const landing = document.getElementById('landing');
 const contentSections = {
-    landing: document.getElementById('landing'),
+    landing: landing,
     flash: document.getElementById('flash'),
     portfolio: document.getElementById('portfolio'),
     scheduler: document.getElementById('scheduler'),
@@ -41,12 +42,14 @@ function switchTab(tab) {
     tabs.forEach(b => b.classList.remove('active'));
     document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
     
+    // HIDE ALL content sections
     Object.keys(contentSections).forEach(key => {
         contentSections[key].classList.remove('active');
     });
+    
+    // SHOW the selected tab
     contentSections[tab].classList.add('active');
     
-    // Show/hide header title based on tab
     if (tab === 'landing') {
         headerTitle.style.display = 'none';
     } else {
