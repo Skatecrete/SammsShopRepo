@@ -18,7 +18,7 @@ body {
 }
 
 /* ============================================
-   NAVIGATION (Hidden on landing page)
+   NAVIGATION (ALWAYS VISIBLE)
    ============================================ */
 
 #main-nav {
@@ -28,10 +28,6 @@ body {
     top: 0;
     z-index: 100;
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    display: none; /* Hidden by default, shown when tab is clicked */
-}
-
-#main-nav.visible {
     display: block;
 }
 
@@ -74,7 +70,7 @@ body {
 }
 
 /* ============================================
-   HERO SECTION (Landing Page - Always Visible)
+   HERO SECTION (Landing Page)
    ============================================ */
 
 #hero {
@@ -82,7 +78,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    min-height: 70vh;
     padding: 2rem 1rem;
     background: #f5f3f0;
 }
@@ -121,7 +117,7 @@ body {
 }
 
 /* ============================================
-   MAIN CONTENT (Tabs - Hidden on landing page)
+   MAIN CONTENT (Tabs)
    ============================================ */
 
 #content {
@@ -130,10 +126,6 @@ body {
     margin: 0 auto;
     padding: 2rem 1rem;
     width: 100%;
-    display: none; /* Hidden by default, shown when tab is clicked */
-}
-
-#content.visible {
     display: block;
 }
 
