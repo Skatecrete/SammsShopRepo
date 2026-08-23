@@ -15,9 +15,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Generate flash.json
         run: |
+          echo "Generating flash.json..."
           if [ -d "public/images/flash" ] && [ "$(ls -A public/images/flash 2>/dev/null)" ]; then
             cd public/images/flash
             files=$(ls -1 *.jpg *.jpeg *.png *.webp *.gif 2>/dev/null | sed 's/^/"/;s/$/"/' | paste -sd, -)
@@ -25,9 +26,10 @@ jobs:
           else
             echo '{"flash": []}' > flash.json
           fi
-      
+
       - name: Generate portfolio.json
         run: |
+          echo "Generating portfolio.json..."
           if [ -d "public/images/portfolio" ] && [ "$(ls -A public/images/portfolio 2>/dev/null)" ]; then
             cd public/images/portfolio
             files=$(ls -1 *.jpg *.jpeg *.png *.webp *.gif 2>/dev/null | sed 's/^/"/;s/$/"/' | paste -sd, -)
@@ -35,7 +37,7 @@ jobs:
           else
             echo '{"portfolio": []}' > portfolio.json
           fi
-      
+
       - name: Commit JSON files
         run: |
           git config user.name "GitHub Actions"
@@ -43,3 +45,5 @@ jobs:
           git add flash.json portfolio.json
           git diff --staged --quiet || git commit -m "Auto-generate image JSON [skip ci]"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
