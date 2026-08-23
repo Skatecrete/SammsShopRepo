@@ -4,6 +4,9 @@
 [functions]
   directory = "netlify/functions"
 
+[build.environment]
+  GITHUB_TOKEN = "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"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
