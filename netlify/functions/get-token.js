@@ -4,7 +4,7 @@ exports.handler = async () => {
     if (!token) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'GitHub token not configured' })
+            body: JSON.stringify({ error: 'GitHub token not configured in environment variables' })
         };
     }
     
