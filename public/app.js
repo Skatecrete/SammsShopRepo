@@ -118,7 +118,6 @@ async function loadCalendar() {
     calendarContainer.innerHTML = `<p class="loading">Loading calendar...</p>`;
     
     try {
-        console.log('Fetching calendar from:', CONFIG.APPS_SCRIPT_URL);
         const response = await fetch(CONFIG.APPS_SCRIPT_URL);
         
         if (!response.ok) {
@@ -126,7 +125,6 @@ async function loadCalendar() {
         }
         
         const data = await response.json();
-        console.log('Calendar data received:', data);
         
         if (data.error) {
             calendarContainer.innerHTML = `<p class="loading">Error: ${data.error}</p>`;
@@ -220,11 +218,9 @@ function closeFullscreen() {
     document.body.style.overflow = 'auto';
 }
 
-// ========== ADMIN POPUP - USING BUTTON ==========
 if (adminBtn) {
     adminBtn.addEventListener('click', function(e) {
         e.stopPropagation();
-        console.log('Admin button clicked - showing modal');
         adminModal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     });
