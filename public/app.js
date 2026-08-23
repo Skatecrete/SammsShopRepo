@@ -28,6 +28,7 @@ const adminForm = document.getElementById('admin-login-form');
 const fullscreenOverlay = document.getElementById('fullscreen-overlay');
 const fullscreenImage = document.getElementById('fullscreen-image');
 const fullscreenClose = document.getElementById('fullscreen-close');
+const headerTitle = document.getElementById('header-title');
 
 tabs.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -44,6 +45,14 @@ function switchTab(tab) {
         contentSections[key].classList.remove('active');
     });
     contentSections[tab].classList.add('active');
+    
+    // Show/hide header title based on tab
+    if (tab === 'landing') {
+        headerTitle.style.display = 'none';
+    } else {
+        headerTitle.style.display = 'block';
+        headerTitle.textContent = 'SkinPrints and Piercings';
+    }
     
     currentTab = tab;
     
