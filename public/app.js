@@ -8,17 +8,10 @@ const CONFIG = {
     }
 };
 
-// ============================================
-// STATE
-// ============================================
-
 let currentTab = 'flash';
-
-// ============================================
-// DOM REFS
-// ============================================
-
 const tabs = document.querySelectorAll('.tab-btn');
+const mainContent = document.getElementById('content');
+const hero = document.getElementById('hero');
 const contentSections = {
     flash: document.getElementById('flash'),
     portfolio: document.getElementById('portfolio'),
@@ -37,10 +30,6 @@ const fullscreenOverlay = document.getElementById('fullscreen-overlay');
 const fullscreenImage = document.getElementById('fullscreen-image');
 const fullscreenClose = document.getElementById('fullscreen-close');
 
-// ============================================
-// NAVIGATION
-// ============================================
-
 tabs.forEach(btn => {
     btn.addEventListener('click', () => {
         const tab = btn.dataset.tab;
@@ -57,6 +46,10 @@ function switchTab(tab) {
     });
     contentSections[tab].classList.add('active');
     
+    // Show main content, hide hero
+    mainContent.classList.add('active');
+    hero.style.display = 'none';
+    
     currentTab = tab;
     
     if (tab === 'flash' && flashGrid.querySelector('.loading')) {
@@ -70,10 +63,6 @@ function switchTab(tab) {
     }
 }
 
-// ============================================
-// LOAD FLASH
-// ============================================
-
 async function loadFlash() {
     try {
         const response = await fetch('/flash.json');
@@ -86,10 +75,6 @@ async function loadFlash() {
     }
 }
 
-// ============================================
-// LOAD PORTFOLIO
-// ============================================
-
 async function loadPortfolio() {
     try {
         const response = await fetch('/portfolio.json');
@@ -101,10 +86,6 @@ async function loadPortfolio() {
         portfolioGrid.innerHTML = `<p class="loading">Error loading portfolio. Please refresh.</p>`;
     }
 }
-
-// ============================================
-// RENDER IMAGE GRID
-// ============================================
 
 function renderGrid(container, images, category) {
     if (!images || images.length === 0) {
@@ -126,10 +107,6 @@ function renderGrid(container, images, category) {
     }).join('');
 }
 
-// ============================================
-// LOAD CALENDAR
-// ============================================
-
 async function loadCalendar() {
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL);
@@ -148,17 +125,12 @@ async function loadCalendar() {
     }
 }
 
-// ============================================
-// RENDER CALENDAR
-// ============================================
-
 function renderCalendar(calendar) {
     if (!calendar || calendar.length === 0) {
         calendarContainer.innerHTML = `<p class="loading">No availability data.</p>`;
         return;
     }
     
-    // Group by month
     const months = {};
     calendar.forEach(day => {
         const date = new Date(day.date + 'T00:00:00');
@@ -170,8 +142,6 @@ function renderCalendar(calendar) {
     });
     
     let html = '';
-    
-    // Sort month keys
     const sortedMonths = Object.keys(months).sort();
     
     sortedMonths.forEach(monthKey => {
@@ -180,8 +150,7 @@ function renderCalendar(calendar) {
         const monthName = new Date(parseInt(year), parseInt(month) - 1, 1).toLocaleString('default', { month: 'long' });
         
         html += `<h3 style="margin: 20px 0 10px 0; color: #a64d79;">${monthName} ${year}</h3>`;
-        html += `<table class="calendar-table">`;
-        html += `<thead><tr><th>Date</th><th>Day</th><th>12pm Slot</th><th>4pm Slot</th></tr></thead><tbody>`;
+        html += `<table class="calendar-table"><thead><tr><th>Date</th><th>Day</th><th>12pm Slot</th><th>4pm Slot</th></tr></thead><tbody>`;
         
         days.forEach(day => {
             const date = new Date(day.date + 'T00:00:00');
@@ -205,10 +174,6 @@ function renderCalendar(calendar) {
     calendarContainer.innerHTML = html;
 }
 
-// ============================================
-// FULLSCREEN IMAGE
-// ============================================
-
 function openFullscreen(imageSrc) {
     fullscreenImage.src = imageSrc;
     fullscreenOverlay.style.display = 'flex';
@@ -228,10 +193,6 @@ function closeFullscreen() {
     fullscreenOverlay.style.display = 'none';
     document.body.style.overflow = 'auto';
 }
-
-// ============================================
-// ADMIN LOGIN
-// ============================================
 
 adminLink.addEventListener('click', (e) => {
     e.preventDefault();
@@ -262,15 +223,5 @@ adminForm.addEventListener('submit', (e) => {
         alert('Invalid username or password.');
     }
 });
-
-// ============================================
-// INIT - Load default tab
-// ============================================
-
-switchTab('flash');
-
-// ============================================
-// Expose functions globally
-// ============================================
 
 window.openFullscreen = openFullscreen;
