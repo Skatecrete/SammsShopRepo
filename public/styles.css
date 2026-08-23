@@ -332,15 +332,24 @@ footer p {
     margin-bottom: 0.5rem;
 }
 
-#admin-link {
+/* ============================================
+   ADMIN BUTTON (Looks like a link)
+   ============================================ */
+
+.admin-link-btn {
+    background: none;
+    border: none;
     color: #555;
-    text-decoration: none;
-    font-size: 0.8rem;
-    transition: color 0.3s;
     cursor: pointer;
+    font-size: 0.8rem;
+    text-decoration: underline;
+    padding: 0;
+    margin: 0;
+    transition: color 0.3s;
+    font-family: inherit;
 }
 
-#admin-link:hover {
+.admin-link-btn:hover {
     color: #888;
 }
 
@@ -479,6 +488,7 @@ footer p {
     #header-title {
         font-size: 1.2rem;
         text-align: center;
+        white-space: normal;
     }
     
     .nav-tabs {
