@@ -42,13 +42,11 @@ function switchTab(tab) {
     tabs.forEach(b => b.classList.remove('active'));
     document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
     
-    // HIDE ALL content sections
     Object.keys(contentSections).forEach(key => {
         contentSections[key].style.display = 'none';
         contentSections[key].classList.remove('active');
     });
     
-    // SHOW the selected tab
     contentSections[tab].style.display = 'block';
     contentSections[tab].classList.add('active');
     
@@ -56,7 +54,7 @@ function switchTab(tab) {
         headerTitle.style.display = 'none';
     } else {
         headerTitle.style.display = 'block';
-        headerTitle.textContent = 'SkinPrints and Piercings';
+        headerTitle.textContent = 'SkinPrints and Piercings by Samm (@GutterMuttx)';
     }
     
     currentTab = tab;
