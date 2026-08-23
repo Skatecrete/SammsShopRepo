@@ -18,37 +18,37 @@ jobs:
 
       - name: Generate flash.json
         run: |
-          echo "{\"flash\": [" > flash.json
-          first=true
-          for file in public/images/flash/*.{jpg,jpeg,png,webp,gif} 2>/dev/null; do
+          echo '{"flash": [' > flash.json
+          count=0
+          for file in public/images/flash/*.jpg public/images/flash/*.jpeg public/images/flash/*.png public/images/flash/*.webp public/images/flash/*.gif; do
             if [ -f "$file" ]; then
-              if [ "$first" = true ]; then
-                first=false
-              else
-                echo "," >> flash.json
+              if [ $count -gt 0 ]; then
+                echo ',' >> flash.json
               fi
               filename=$(basename "$file")
               echo "{\"image\": \"/images/flash/$filename\"}" >> flash.json
+              count=$((count + 1))
             fi
           done
-          echo "]}" >> flash.json
+          echo ']}' >> flash.json
+          echo "Generated flash.json with $count images"
 
       - name: Generate portfolio.json
         run: |
-          echo "{\"portfolio\": [" > portfolio.json
-          first=true
-          for file in public/images/portfolio/*.{jpg,jpeg,png,webp,gif} 2>/dev/null; do
+          echo '{"portfolio": [' > portfolio.json
+          count=0
+          for file in public/images/portfolio/*.jpg public/images/portfolio/*.jpeg public/images/portfolio/*.png public/images/portfolio/*.webp public/images/portfolio/*.gif; do
             if [ -f "$file" ]; then
-              if [ "$first" = true ]; then
-                first=false
-              else
-                echo "," >> portfolio.json
+              if [ $count -gt 0 ]; then
+                echo ',' >> portfolio.json
               fi
               filename=$(basename "$file")
               echo "{\"image\": \"/images/portfolio/$filename\"}" >> portfolio.json
+              count=$((count + 1))
             fi
           done
-          echo "]}" >> portfolio.json
+          echo ']}' >> portfolio.json
+          echo "Generated portfolio.json with $count images"
 
       - name: Commit JSON files
         run: |
