@@ -8,9 +8,10 @@ const CONFIG = {
     }
 };
 
-let currentTab = 'flash';
+let currentTab = 'landing';
 const tabs = document.querySelectorAll('.tab-btn');
 const contentSections = {
+    landing: document.getElementById('landing'),
     flash: document.getElementById('flash'),
     portfolio: document.getElementById('portfolio'),
     scheduler: document.getElementById('scheduler'),
