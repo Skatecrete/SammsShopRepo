@@ -308,20 +308,52 @@
         }
         
         async function triggerWorkflow() {
-            showStatus('action', '⏳ Triggering workflow...', '');
+            showStatus('action', '⏳ Finding workflow...', '');
             const token = await getGitHubToken();
+            
             try {
-                const response = await fetch(`https://api.github.com/repos/${CONFIG.GITHUB.owner}/${CONFIG.GITHUB.repo}/actions/workflows/generate-json.yml/dispatches`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ref: 'main' })
+                const workflowListResponse = await fetch(`https://api.github.com/repos/${CONFIG.GITHUB.owner}/${CONFIG.GITHUB.repo}/actions/workflows`, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
                 });
-                if (response.ok) {
-                    showStatus('action', '✅ Workflow triggered! Site updates in ~2 min.', 'success');
+                
+                if (!workflowListResponse.ok) {
+                    throw new Error(`Failed to list workflows: ${workflowListResponse.status}`);
+                }
+                
+                const workflowData = await workflowListResponse.json();
+                const workflow = workflowData.workflows.find(w => w.name === 'Generate JSON from Images');
+                
+                if (!workflow) {
+                    throw new Error('Workflow "Generate JSON from Images" not found. Make sure .github/workflows/generate-json.yml exists.');
+                }
+                
+                showStatus('action', '⏳ Triggering workflow...', '');
+                
+                const response = await fetch(`https://api.github.com/repos/${CONFIG.GITHUB.owner}/${CONFIG.GITHUB.repo}/actions/workflows/${workflow.id}/dispatches`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({ 
+                        ref: 'main' 
+                    })
+                });
+                
+                if (response.status === 204) {
+                    showStatus('action', '✅ Workflow triggered successfully! Site updates in ~2 min.', 'success');
+                } else if (response.status === 404) {
+                    showStatus('action', '❌ Workflow not found. Check that .github/workflows/generate-json.yml exists.', 'error');
                 } else {
-                    showStatus('action', '❌ Failed to trigger workflow.', 'error');
+                    const errorData = await response.json();
+                    showStatus('action', `❌ Error: ${errorData.message || 'Unknown error'}`, 'error');
                 }
             } catch (error) {
+                console.error('Workflow error:', error);
                 showStatus('action', `❌ Error: ${error.message}`, 'error');
             }
         }
