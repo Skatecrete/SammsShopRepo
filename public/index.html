@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ink & Soul Tattoo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">🖤 Ink & Soul</div>
+            <div class="nav-tabs">
+                <button class="tab-btn active" data-tab="flash">Flash</button>
+                <button class="tab-btn" data-tab="portfolio">Portfolio</button>
+                <button class="tab-btn" data-tab="scheduler">Scheduler</button>
+                <button class="tab-btn" data-tab="contact">Contact</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <main id="content">
+        <!-- Flash Tab -->
+        <section id="flash" class="tab-content active">
+            <h2>Available Flash</h2>
+            <div class="image-grid" id="flash-grid">
+                <p class="loading">Loading designs...</p>
+            </div>
+        </section>
+
+        <!-- Portfolio Tab -->
+        <section id="portfolio" class="tab-content">
+            <h2>Portfolio</h2>
+            <div class="image-grid" id="portfolio-grid">
+                <p class="loading">Loading portfolio...</p>
+            </div>
+        </section>
+
+        <!-- Scheduler Tab -->
+        <section id="scheduler" class="tab-content">
+            <h2>Availability Calendar</h2>
+            <div id="calendar-container">
+                <p class="loading">Loading calendar...</p>
+            </div>
+        </section>
+
+        <!-- Contact Tab -->
+        <section id="contact" class="tab-content">
+            <h2>Contact Us</h2>
+            <div class="contact-info">
+                <p><strong>📞 Phone:</strong> (555) 123-4567</p>
+                <p><strong>✉️ Email:</strong> wife@tattooshop.com</p>
+                <p><strong>📍 Location:</strong> 123 Main St, City, State</p>
+                <div class="social-links">
+                    <p><strong>Instagram:</strong> @inkandsoul</p>
+                    <p><strong>Facebook:</strong> /inkandsoul</p>
+                </div>
+                <div class="payment-section">
+                    <h3>Send Your Deposit</h3>
+                    <div class="payment-grid">
+                        <div class="payment-method">
+                            <h4>CashApp</h4>
+                            <p>$inkandsoul</p>
+                        </div>
+                        <div class="payment-method">
+                            <h4>PayPal</h4>
+                            <p>@inkandsoul</p>
+                        </div>
+                        <div class="payment-method">
+                            <h4>Venmo</h4>
+                            <p>@inkandsoul</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer with Admin Link -->
+    <footer>
+        <p>© 2026 Ink & Soul Tattoo</p>
+        <a href="#" id="admin-link">Admin</a>
+    </footer>
+
+    <!-- Admin Login Modal -->
+    <div id="admin-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <h2>Admin Login</h2>
+            <form id="admin-login-form">
+                <input type="text" id="admin-username" placeholder="Username" required>
+                <input type="password" id="admin-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Fullscreen Overlay -->
+    <div id="fullscreen-overlay" style="display:none;">
+        <button id="fullscreen-close">✕</button>
+        <img id="fullscreen-image" src="" alt="Fullscreen view">
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
