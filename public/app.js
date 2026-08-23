@@ -22,7 +22,7 @@ const contentSections = {
 const flashGrid = document.getElementById('flash-grid');
 const portfolioGrid = document.getElementById('portfolio-grid');
 const calendarContainer = document.getElementById('calendar-container');
-const adminLink = document.getElementById('admin-link');
+const adminBtn = document.getElementById('admin-btn');
 const adminModal = document.getElementById('admin-modal');
 const closeModal = document.getElementById('close-modal');
 const adminForm = document.getElementById('admin-login-form');
@@ -220,14 +220,15 @@ function closeFullscreen() {
     document.body.style.overflow = 'auto';
 }
 
-// ========== ADMIN POPUP - FIXED ==========
-adminLink.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log('Admin link clicked - showing modal');
-    adminModal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-});
+// ========== ADMIN POPUP - USING BUTTON ==========
+if (adminBtn) {
+    adminBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        console.log('Admin button clicked - showing modal');
+        adminModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    });
+}
 
 closeModal.addEventListener('click', function(e) {
     e.preventDefault();
