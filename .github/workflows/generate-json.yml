@@ -18,25 +18,37 @@ jobs:
 
       - name: Generate flash.json
         run: |
-          echo "Generating flash.json..."
-          if [ -d "public/images/flash" ] && [ "$(ls -A public/images/flash 2>/dev/null)" ]; then
-            cd public/images/flash
-            files=$(ls -1 *.jpg *.jpeg *.png *.webp *.gif 2>/dev/null | sed 's/^/"/;s/$/"/' | paste -sd, -)
-            echo "{\"flash\": [$(echo $files | sed 's/^/{"image":"\/images\/flash\/"/;s/,/"},{"image":"\/images\/flash\/"/g;s/$/"}}]/)}" > ../../../flash.json
-          else
-            echo '{"flash": []}' > flash.json
-          fi
+          echo "{\"flash\": [" > flash.json
+          first=true
+          for file in public/images/flash/*.{jpg,jpeg,png,webp,gif} 2>/dev/null; do
+            if [ -f "$file" ]; then
+              if [ "$first" = true ]; then
+                first=false
+              else
+                echo "," >> flash.json
+              fi
+              filename=$(basename "$file")
+              echo "{\"image\": \"/images/flash/$filename\"}" >> flash.json
+            fi
+          done
+          echo "]}" >> flash.json
 
       - name: Generate portfolio.json
         run: |
-          echo "Generating portfolio.json..."
-          if [ -d "public/images/portfolio" ] && [ "$(ls -A public/images/portfolio 2>/dev/null)" ]; then
-            cd public/images/portfolio
-            files=$(ls -1 *.jpg *.jpeg *.png *.webp *.gif 2>/dev/null | sed 's/^/"/;s/$/"/' | paste -sd, -)
-            echo "{\"portfolio\": [$(echo $files | sed 's/^/{"image":"\/images\/portfolio\/"/;s/,/"},{"image":"\/images\/portfolio\/"/g;s/$/"}}]/)}" > ../../../portfolio.json
-          else
-            echo '{"portfolio": []}' > portfolio.json
-          fi
+          echo "{\"portfolio\": [" > portfolio.json
+          first=true
+          for file in public/images/portfolio/*.{jpg,jpeg,png,webp,gif} 2>/dev/null; do
+            if [ -f "$file" ]; then
+              if [ "$first" = true ]; then
+                first=false
+              else
+                echo "," >> portfolio.json
+              fi
+              filename=$(basename "$file")
+              echo "{\"image\": \"/images/portfolio/$filename\"}" >> portfolio.json
+            fi
+          done
+          echo "]}" >> portfolio.json
 
       - name: Commit JSON files
         run: |
