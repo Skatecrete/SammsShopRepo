@@ -9,9 +9,6 @@ const CONFIG = {
 };
 
 let currentTab = 'flash';
-const nav = document.getElementById('main-nav');
-const mainContent = document.getElementById('content');
-const hero = document.getElementById('hero');
 const tabs = document.querySelectorAll('.tab-btn');
 const contentSections = {
     flash: document.getElementById('flash'),
@@ -39,11 +36,6 @@ tabs.forEach(btn => {
 });
 
 function switchTab(tab) {
-    // Show nav and main content, hide hero
-    nav.classList.add('visible');
-    mainContent.classList.add('visible');
-    hero.style.display = 'none';
-    
     tabs.forEach(b => b.classList.remove('active'));
     document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
     
@@ -110,20 +102,39 @@ function renderGrid(container, images, category) {
 }
 
 async function loadCalendar() {
+    calendarContainer.innerHTML = `<p class="loading">Loading calendar...</p>`;
+    
     try {
+        console.log('Fetching calendar from:', CONFIG.APPS_SCRIPT_URL);
         const response = await fetch(CONFIG.APPS_SCRIPT_URL);
-        if (!response.ok) throw new Error('Failed to load calendar');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
+        console.log('Calendar data received:', data);
         
         if (data.error) {
             calendarContainer.innerHTML = `<p class="loading">Error: ${data.error}</p>`;
             return;
         }
         
-        renderCalendar(data.calendar || []);
+        if (!data.calendar || data.calendar.length === 0) {
+            calendarContainer.innerHTML = `<p class="loading">No availability data found. Please check your Google Sheet.</p>`;
+            return;
+        }
+        
+        renderCalendar(data.calendar);
     } catch (error) {
         console.error('Error loading calendar:', error);
-        calendarContainer.innerHTML = `<p class="loading">Error loading calendar. Please refresh.</p>`;
+        calendarContainer.innerHTML = `
+            <p class="loading">Error loading calendar.</p>
+            <p style="font-size: 0.9rem; color: #999; margin-top: 0.5rem;">
+                Details: ${error.message}<br>
+                Make sure your Apps Script is deployed and set to "Anyone" access.
+            </p>
+        `;
     }
 }
 
