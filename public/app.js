@@ -220,20 +220,25 @@ function closeFullscreen() {
     document.body.style.overflow = 'auto';
 }
 
+// ========== ADMIN POPUP - FIXED ==========
 adminLink.addEventListener('click', function(e) {
     e.preventDefault();
     e.stopPropagation();
+    console.log('Admin link clicked - showing modal');
     adminModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 });
 
 closeModal.addEventListener('click', function(e) {
     e.preventDefault();
     adminModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
 });
 
 adminModal.addEventListener('click', function(e) {
     if (e.target === adminModal) {
         adminModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
 });
 
@@ -245,6 +250,7 @@ adminForm.addEventListener('submit', function(e) {
     
     if (username === CONFIG.ADMIN_USER && password === CONFIG.ADMIN_PASS) {
         adminModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
         localStorage.setItem('admin', 'true');
         window.location.href = '/admin.html';
     } else {
