@@ -1,0 +1,45 @@
+name: Generate JSON from Images
+
+on:
+  push:
+    paths:
+      - 'public/images/flash/**'
+      - 'public/images/portfolio/**'
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Generate flash.json
+        run: |
+          if [ -d "public/images/flash" ] && [ "$(ls -A public/images/flash 2>/dev/null)" ]; then
+            cd public/images/flash
+            files=$(ls -1 *.jpg *.jpeg *.png *.webp *.gif 2>/dev/null | sed 's/^/"/;s/$/"/' | paste -sd, -)
+            echo "{\"flash\": [$(echo $files | sed 's/^/{"image":"\/images\/flash\/"/;s/,/"},{"image":"\/images\/flash\/"/g;s/$/"}}]/)}" > ../../../flash.json
+          else
+            echo '{"flash": []}' > flash.json
+          fi
+      
+      - name: Generate portfolio.json
+        run: |
+          if [ -d "public/images/portfolio" ] && [ "$(ls -A public/images/portfolio 2>/dev/null)" ]; then
+            cd public/images/portfolio
+            files=$(ls -1 *.jpg *.jpeg *.png *.webp *.gif 2>/dev/null | sed 's/^/"/;s/$/"/' | paste -sd, -)
+            echo "{\"portfolio\": [$(echo $files | sed 's/^/{"image":"\/images\/portfolio\/"/;s/,/"},{"image":"\/images\/portfolio\/"/g;s/$/"}}]/)}" > ../../../portfolio.json
+          else
+            echo '{"portfolio": []}' > portfolio.json
+          fi
+      
+      - name: Commit JSON files
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add flash.json portfolio.json
+          git diff --staged --quiet || git commit -m "Auto-generate image JSON [skip ci]"
+          git push
