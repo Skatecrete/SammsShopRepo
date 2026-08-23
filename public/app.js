@@ -44,10 +44,12 @@ function switchTab(tab) {
     
     // HIDE ALL content sections
     Object.keys(contentSections).forEach(key => {
+        contentSections[key].style.display = 'none';
         contentSections[key].classList.remove('active');
     });
     
     // SHOW the selected tab
+    contentSections[tab].style.display = 'block';
     contentSections[tab].classList.add('active');
     
     if (tab === 'landing') {
