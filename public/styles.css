@@ -1,7 +1,3 @@
-/* ============================================
-   BASE
-   ============================================ */
-
 * {
     margin: 0;
     padding: 0;
@@ -16,10 +12,6 @@ body {
     display: flex;
     flex-direction: column;
 }
-
-/* ============================================
-   NAVIGATION (Always visible)
-   ============================================ */
 
 #main-nav {
     background: #1a1a1a;
@@ -82,10 +74,6 @@ body {
     border-color: #fff;
 }
 
-/* ============================================
-   LANDING PAGE (3 centered lines)
-   ============================================ */
-
 #landing {
     flex: 1;
     display: flex;
@@ -128,10 +116,6 @@ body {
     margin-top: 0.5rem;
 }
 
-/* ============================================
-   TAB CONTENT
-   ============================================ */
-
 .tab-content {
     display: none;
     flex: 1;
@@ -163,10 +147,6 @@ h2 {
     text-align: center;
     padding: 3rem;
 }
-
-/* ============================================
-   IMAGE GRID
-   ============================================ */
 
 .image-grid {
     display: grid;
@@ -214,10 +194,6 @@ h2 {
     transform: translateY(0);
 }
 
-/* ============================================
-   CALENDAR
-   ============================================ */
-
 #calendar-container {
     background: #fff;
     border-radius: 12px;
@@ -261,10 +237,6 @@ h2 {
 .calendar-table .date-cell {
     font-weight: 600;
 }
-
-/* ============================================
-   CONTACT
-   ============================================ */
 
 .contact-info {
     max-width: 600px;
@@ -316,10 +288,6 @@ h2 {
     padding: 0.3rem;
 }
 
-/* ============================================
-   FOOTER
-   ============================================ */
-
 footer {
     background: #1a1a1a;
     color: #666;
@@ -331,10 +299,6 @@ footer {
 footer p {
     margin-bottom: 0.5rem;
 }
-
-/* ============================================
-   ADMIN BUTTON (Looks like a link)
-   ============================================ */
 
 .admin-link-btn {
     background: none;
@@ -352,85 +316,6 @@ footer p {
 .admin-link-btn:hover {
     color: #888;
 }
-
-/* ============================================
-   MODAL (Admin Login)
-   ============================================ */
-
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 12px;
-    max-width: 400px;
-    width: 90%;
-    position: relative;
-}
-
-.modal-content .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #999;
-}
-
-.modal-content .close-btn:hover {
-    color: #333;
-}
-
-.modal-content h2 {
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-}
-
-.modal-content input {
-    width: 100%;
-    padding: 0.8rem;
-    margin-bottom: 1rem;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    font-size: 1rem;
-}
-
-.modal-content input:focus {
-    outline: none;
-    border-color: #1a1a1a;
-}
-
-.modal-content button[type="submit"] {
-    width: 100%;
-    padding: 0.8rem;
-    background: #1a1a1a;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.modal-content button[type="submit"]:hover {
-    background: #333;
-}
-
-/* ============================================
-   FULLSCREEN OVERLAY
-   ============================================ */
 
 #fullscreen-overlay {
     position: fixed;
@@ -471,58 +356,44 @@ footer p {
     transform: rotate(90deg);
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-
 @media (max-width: 768px) {
     .nav-container {
         flex-direction: column;
         align-items: stretch;
     }
-    
     .nav-left {
         justify-content: center;
     }
-    
     #header-title {
         font-size: 1.2rem;
         text-align: center;
         white-space: normal;
     }
-    
     .nav-tabs {
         justify-content: center;
     }
-    
     .tab-btn {
         padding: 0.4rem 0.8rem;
         font-size: 0.8rem;
     }
-    
     .landing-title {
         font-size: 3rem;
     }
-    
     .landing-name {
         font-size: 2rem;
     }
-    
     .image-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         gap: 0.8rem;
     }
-    
     .calendar-table th,
     .calendar-table td {
         padding: 6px 8px;
         font-size: 0.8rem;
     }
-    
     .payment-grid {
         grid-template-columns: 1fr;
     }
-    
     h2 {
         font-size: 1.5rem;
     }
@@ -533,28 +404,22 @@ footer p {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 0.5rem;
     }
-    
     .nav-tabs {
         gap: 0.3rem;
     }
-    
     .tab-btn {
         font-size: 0.7rem;
         padding: 0.3rem 0.6rem;
     }
-    
     #header-title {
         font-size: 1rem;
     }
-    
     .landing-title {
         font-size: 2.2rem;
     }
-    
     .landing-name {
         font-size: 1.5rem;
     }
-    
     .landing-by {
         font-size: 1rem;
     }
