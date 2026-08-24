@@ -4,7 +4,7 @@ const CONFIG = {
     ADMIN_PASS: '0510',
     GITHUB: {
         owner: 'Skatecrete',
-        repo: 'SamsmShopRepo'
+        repo: 'SammsShopRepo'
     }
 };
 
