@@ -6,11 +6,7 @@
     <title>Admin Dashboard - SkinPrints and Piercings</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .admin-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-        }
+        .admin-container { max-width: 1000px; margin: 0 auto; padding: 2rem 1rem; }
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -137,12 +133,6 @@
         .action-status.success { background: #d4edda; color: #155724; }
         .action-status.error { background: #f8d7da; color: #721c24; }
         .file-input-hidden { display: none; }
-        @media (max-width: 600px) {
-            .admin-header h1 { font-size: 1.5rem; }
-            .upload-buttons { flex-direction: column; }
-            .upload-btn { text-align: center; }
-            .image-grid-admin { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-        }
         .status-badge {
             display: inline-block;
             padding: 0.3rem 0.8rem;
@@ -154,6 +144,12 @@
         .status-badge.ready { background: #d4edda; color: #155724; }
         .status-badge.error { background: #f8d7da; color: #721c24; }
         .status-badge.loading { background: #fff3cd; color: #856404; }
+        @media (max-width: 600px) {
+            .admin-header h1 { font-size: 1.5rem; }
+            .upload-buttons { flex-direction: column; }
+            .upload-btn { text-align: center; }
+            .image-grid-admin { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+        }
     </style>
 </head>
 <body>
@@ -197,9 +193,9 @@
 
     <script>
         // ============================================
-        // CONFIGURATION - CHANGE THIS TOKEN IF NEEDED
+        // CONFIGURATION - PUT YOUR TOKEN HERE
         // ============================================
-        const GITHUB_TOKEN = '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';
+        const GITHUB_TOKEN = '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';
         const REPO_OWNER = 'Skatecrete';
         const REPO_NAME = 'SamsmShopRepo';
 
@@ -422,7 +418,8 @@
                 });
 
                 if (!workflowsRes.ok) {
-                    throw new Error('Failed to list workflows');
+                    const errorData = await workflowsRes.json();
+                    throw new Error(errorData.message || 'Failed to list workflows');
                 }
 
                 const workflowsData = await workflowsRes.json();
