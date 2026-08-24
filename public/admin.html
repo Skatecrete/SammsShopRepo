@@ -60,9 +60,7 @@
             cursor: pointer;
             transition: background 0.3s;
         }
-        .login-container button:hover {
-            background: #333;
-        }
+        .login-container button:hover { background: #333; }
         .login-container .error {
             color: #dc3545;
             font-size: 0.9rem;
@@ -109,9 +107,7 @@
                 window.location.href = '/admin-dashboard.html';
             } else {
                 errorMsg.classList.add('show');
-                setTimeout(function() {
-                    errorMsg.classList.remove('show');
-                }, 3000);
+                setTimeout(function() { errorMsg.classList.remove('show'); }, 3000);
             }
         });
     </script>
