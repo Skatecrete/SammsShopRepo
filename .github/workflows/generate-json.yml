@@ -31,6 +31,7 @@ jobs:
             fi
           done
           echo ']}' >> flash.json
+          echo "Generated flash.json with $count images"
 
       - name: Generate portfolio.json
         run: |
@@ -47,11 +48,12 @@ jobs:
             fi
           done
           echo ']}' >> portfolio.json
+          echo "Generated portfolio.json with $count images"
 
       - name: Commit JSON files
         run: |
           git config user.name "GitHub Actions"
-          git config.user.email "actions@github.com"
+          git config user.email "actions@github.com"
           git add flash.json portfolio.json
           git diff --staged --quiet || git commit -m "Auto-generate image JSON [skip ci]"
           git push
