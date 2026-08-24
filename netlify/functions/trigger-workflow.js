@@ -1,32 +1,62 @@
 exports.handler = async (event) => {
-    const token = process.env.GITHUB_TOKEN;
-    
-    if (!token) {
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: 'GitHub token not configured' })
-        };
-    }
-    
+    // CORS headers
+    const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type'
+    };
+
     try {
-        // Get the workflow ID first
+        // Get token from environment variable
+        const token = process.env.GITHUB_TOKEN;
+        
+        if (!token) {
+            console.error('❌ GITHUB_TOKEN not found in environment');
+            return {
+                statusCode: 500,
+                headers,
+                body: JSON.stringify({ 
+                    error: 'GitHub token not configured in Netlify environment variables' 
+                })
+            };
+        }
+
+        console.log('✅ Token found, length:', token.length);
+
+        // Get the workflow ID
         const workflowsRes = await fetch('https://api.github.com/repos/Skatecrete/SamsmShopRepo/actions/workflows', {
             headers: {
                 'Authorization': `token ${token}`,
                 'Accept': 'application/vnd.github.v3+json'
             }
         });
-        
-        const workflowsData = await workflowsRes.json();
-        const workflow = workflowsData.workflows?.find(w => w.name === 'Generate JSON from Images');
-        
-        if (!workflow) {
+
+        if (!workflowsRes.ok) {
+            console.error('❌ Failed to list workflows:', workflowsRes.status);
             return {
-                statusCode: 404,
-                body: JSON.stringify({ error: 'Workflow not found' })
+                statusCode: 500,
+                headers,
+                body: JSON.stringify({ 
+                    error: `GitHub API error: ${workflowsRes.status}` 
+                })
             };
         }
-        
+
+        const workflowsData = await workflowsRes.json();
+        const workflow = workflowsData.workflows?.find(w => w.name === 'Generate JSON from Images');
+
+        if (!workflow) {
+            console.error('❌ Workflow not found');
+            return {
+                statusCode: 404,
+                headers,
+                body: JSON.stringify({ 
+                    error: 'Workflow "Generate JSON from Images" not found' 
+                })
+            };
+        }
+
+        console.log('✅ Found workflow:', workflow.id);
+
         // Trigger the workflow
         const response = await fetch(`https://api.github.com/repos/Skatecrete/SamsmShopRepo/actions/workflows/${workflow.id}/dispatches`, {
             method: 'POST',
@@ -37,22 +67,35 @@ exports.handler = async (event) => {
             },
             body: JSON.stringify({ ref: 'main' })
         });
-        
+
         if (response.status === 204) {
+            console.log('✅ Workflow triggered successfully');
             return {
                 statusCode: 200,
-                body: JSON.stringify({ success: true, message: 'Workflow triggered successfully' })
+                headers,
+                body: JSON.stringify({ 
+                    success: true, 
+                    message: 'Workflow triggered successfully' 
+                })
             };
         } else {
+            console.error('❌ Failed to trigger workflow:', response.status);
             return {
-                statusCode: response.status,
-                body: JSON.stringify({ error: 'Failed to trigger workflow' })
+                statusCode: 500,
+                headers,
+                body: JSON.stringify({ 
+                    error: `GitHub API error: ${response.status}` 
+                })
             };
         }
     } catch (error) {
+        console.error('❌ Function error:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: error.message })
+            headers,
+            body: JSON.stringify({ 
+                error: 'Internal server error: ' + error.message 
+            })
         };
     }
 };
