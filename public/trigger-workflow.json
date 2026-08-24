@@ -1,5 +1,0 @@
-{
-    "trigger": "workflow",
-    "repo": "Skatecrete/SamsmShopRepo",
-    "workflow": "generate-json.yml"
-}
