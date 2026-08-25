@@ -6,7 +6,10 @@
     <title>Admin Dashboard - SkinPrints and Piercings</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* ===== BASE ===== */
         .admin-container { max-width: 1000px; margin: 0 auto; padding: 2rem 1rem; }
+        
+        /* ===== HEADER ===== */
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -28,13 +31,29 @@
             font-size: 1rem;
         }
         .admin-header .logout-btn:hover { background: #c82333; }
+        
+        /* ===== STATUS BADGE ===== */
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .status-badge.ready { background: #d4edda; color: #155724; }
+        .status-badge.error { background: #f8d7da; color: #721c24; }
+        .status-badge.loading { background: #fff3cd; color: #856404; }
+        
+        /* ===== UPLOAD SECTION ===== */
         .upload-section {
             background: #f8f8f8;
             padding: 1.5rem;
             border-radius: 8px;
             margin-bottom: 2rem;
+            border: 2px dashed #ccc;
         }
-        .upload-section h3 { margin-bottom: 1rem; }
+        .upload-section h3 { margin-bottom: 1rem; color: #333; }
         .upload-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
         .upload-btn {
             padding: 0.8rem 2rem;
@@ -44,6 +63,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s;
+            font-size: 0.95rem;
         }
         .upload-btn.flash { background: #28a745; }
         .upload-btn.flash:hover { background: #218838; }
@@ -52,6 +72,8 @@
         .upload-btn.portfolio { background: #007bff; }
         .upload-btn.portfolio:hover { background: #0069d9; }
         .upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* ===== STATUS MESSAGES ===== */
         .upload-status {
             margin-top: 1rem;
             padding: 0.8rem;
@@ -60,6 +82,8 @@
         }
         .upload-status.success { display: block; background: #d4edda; color: #155724; }
         .upload-status.error { display: block; background: #f8d7da; color: #721c24; }
+        
+        /* ===== IMAGE GRID ===== */
         .image-section { margin-bottom: 2rem; }
         .image-section h3 { margin-bottom: 0.5rem; }
         .image-section .count { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
@@ -112,21 +136,34 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        .action-section {
+        
+        /* ===== PUBLISH SECTION ===== */
+        .publish-section {
             margin-top: 2rem;
             padding-top: 1.5rem;
             border-top: 2px solid #ddd;
+            text-align: center;
         }
-        .action-section .btn {
-            padding: 0.8rem 2rem;
+        .publish-section .btn {
+            padding: 1rem 3rem;
             border: none;
-            border-radius: 6px;
-            font-weight: 600;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.2rem;
             cursor: pointer;
+            transition: background 0.3s;
         }
-        .action-section .btn.regenerate { background: #ffc107; color: #212529; }
-        .action-section .btn.regenerate:hover { background: #e0a800; }
-        .action-section .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .publish-section .btn.publish { background: #28a745; color: #fff; }
+        .publish-section .btn.publish:hover { background: #218838; }
+        .publish-section .btn.publish:disabled { opacity: 0.5; cursor: not-allowed; }
+        .publish-section .btn.publish:disabled:hover { background: #28a745; }
+        .publish-section .btn.publish .icon { font-size: 1.5rem; margin-right: 0.5rem; }
+        .publish-note {
+            margin-top: 0.8rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
         .action-status {
             margin-top: 0.5rem;
             padding: 0.5rem;
@@ -135,74 +172,77 @@
         .action-status.success { background: #d4edda; color: #155724; }
         .action-status.error { background: #f8d7da; color: #721c24; }
         .file-input-hidden { display: none; }
-        .status-badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        .status-badge.ready { background: #d4edda; color: #155724; }
-        .status-badge.error { background: #f8d7da; color: #721c24; }
-        .status-badge.loading { background: #fff3cd; color: #856404; }
+        
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 600px) {
             .admin-header h1 { font-size: 1.5rem; }
             .upload-buttons { flex-direction: column; }
             .upload-btn { text-align: center; }
             .image-grid-admin { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+            .publish-section .btn { padding: 0.8rem 1.5rem; font-size: 1rem; }
         }
     </style>
 </head>
 <body>
     <div class="admin-container">
+        <!-- ===== HEADER ===== -->
         <div class="admin-header">
-            <h1>🔐 Admin Panel</h1>
+            <h1>🔐 Shop Dashboard</h1>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
 
+        <!-- ===== STATUS ===== -->
         <div id="status-container">
             <span id="status-badge" class="status-badge ready">✅ Ready</span>
         </div>
 
+        <!-- ===== UPLOAD SECTION ===== -->
         <div class="upload-section">
-            <h3>📤 Upload Images</h3>
+            <h3>📤 Add New Images</h3>
+            <p style="color:#666; margin-bottom: 1rem;">Choose which section to add photos to:</p>
             <div class="upload-buttons">
-                <button class="upload-btn flash" onclick="triggerUpload('flash')">Upload to Flash</button>
-                <button class="upload-btn catalog" onclick="triggerUpload('catalog')">Upload to Catalog</button>
-                <button class="upload-btn portfolio" onclick="triggerUpload('portfolio')">Upload to Portfolio</button>
+                <button class="upload-btn flash" onclick="triggerUpload('flash')">+ Add Flash Design</button>
+                <button class="upload-btn catalog" onclick="triggerUpload('catalog')">+ Add Catalog Item</button>
+                <button class="upload-btn portfolio" onclick="triggerUpload('portfolio')">+ Add Portfolio Photo</button>
             </div>
             <input type="file" id="file-input" class="file-input-hidden" multiple accept="image/*">
             <div id="upload-status" class="upload-status"></div>
         </div>
 
+        <!-- ===== FLASH IMAGES ===== -->
         <div class="image-section">
-            <h3>🎨 Flash Images</h3>
+            <h3>⚡ Flash Designs</h3>
             <p class="count" id="flash-count">0 images</p>
             <div class="image-grid-admin" id="flash-admin-grid"><p>Loading...</p></div>
         </div>
 
+        <!-- ===== CATALOG IMAGES ===== -->
         <div class="image-section">
-            <h3>📚 Catalog Images</h3>
+            <h3>📚 Catalog</h3>
             <p class="count" id="catalog-count">0 images</p>
             <div class="image-grid-admin" id="catalog-admin-grid"><p>Loading...</p></div>
         </div>
 
+        <!-- ===== PORTFOLIO IMAGES ===== -->
         <div class="image-section">
-            <h3>🖼️ Portfolio Images</h3>
+            <h3>🖼️ Portfolio</h3>
             <p class="count" id="portfolio-count">0 images</p>
             <div class="image-grid-admin" id="portfolio-admin-grid"><p>Loading...</p></div>
         </div>
 
-        <div class="action-section">
-            <button class="btn regenerate" id="regenerate-btn" onclick="triggerWorkflow()">🔄 Regenerate JSON</button>
+        <!-- ===== PUBLISH SECTION ===== -->
+        <div class="publish-section">
+            <button class="btn publish" id="publish-btn" onclick="triggerWorkflow()">
+                <span class="icon">🚀</span> Publish Changes to Website
+            </button>
+            <p class="publish-note">Click this after adding or removing photos to update your live site.</p>
             <div id="action-status" class="action-status" style="display:none;"></div>
         </div>
     </div>
 
     <script>
         // ============================================
-        // CONFIGURATION - No token in code!
+        // CONFIGURATION
         // ============================================
         const REPO_OWNER = 'Skatecrete';
         const REPO_NAME = 'SammsShopRepo';
@@ -250,7 +290,7 @@
         const portfolioCount = document.getElementById('portfolio-count');
         const actionStatus = document.getElementById('action-status');
         const statusBadge = document.getElementById('status-badge');
-        const regenerateBtn = document.getElementById('regenerate-btn');
+        const publishBtn = document.getElementById('publish-btn');
 
         let currentCategory = '';
         let isProcessing = false;
@@ -306,9 +346,10 @@
                 showStatus('upload', `✅ ${successCount} image(s) uploaded!`, 'success');
                 setStatus('✅ Upload complete', 'ready');
                 loadAdminImages();
+                // Auto-publish after upload
                 await triggerWorkflow();
             } else {
-                showStatus('upload', '❌ Upload failed. Check console.', 'error');
+                showStatus('upload', '❌ Upload failed. Please try again.', 'error');
                 setStatus('❌ Upload failed', 'error');
             }
 
@@ -440,23 +481,25 @@
         }
 
         // ============================================
-        // TRIGGER WORKFLOW
+        // PUBLISH CHANGES (Wife-Friendly)
         // ============================================
 
         async function triggerWorkflow() {
             if (isProcessing) return;
             isProcessing = true;
-            regenerateBtn.disabled = true;
+            publishBtn.disabled = true;
+            publishBtn.innerHTML = '<span class="icon">⏳</span> Updating...';
 
-            showStatus('action', '⏳ Triggering workflow...', '');
-            setStatus('⏳ Triggering workflow...', 'loading');
+            showStatus('action', '⏳ Publishing changes...', '');
+            setStatus('⏳ Updating site...', 'loading');
 
             const token = await getGitHubToken();
             if (!token) {
-                showStatus('action', '❌ Failed to get token', 'error');
-                setStatus('❌ Token error', 'error');
+                showStatus('action', '❌ Something went wrong. Please try again.', 'error');
+                setStatus('❌ Error', 'error');
                 isProcessing = false;
-                regenerateBtn.disabled = false;
+                publishBtn.disabled = false;
+                publishBtn.innerHTML = '<span class="icon">🚀</span> Publish Changes to Website';
                 return;
             }
 
@@ -469,15 +512,14 @@
                 });
 
                 if (!workflowsRes.ok) {
-                    const errorData = await workflowsRes.text();
-                    throw new Error(`GitHub API error: ${workflowsRes.status} - ${errorData}`);
+                    throw new Error('Failed to connect to GitHub');
                 }
 
                 const workflowsData = await workflowsRes.json();
                 const workflow = workflowsData.workflows?.find(w => w.name === 'Generate JSON from Images');
 
                 if (!workflow) {
-                    throw new Error('Workflow "Generate JSON from Images" not found');
+                    throw new Error('Update system not found');
                 }
 
                 const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/${workflow.id}/dispatches`, {
@@ -491,20 +533,24 @@
                 });
 
                 if (response.status === 204) {
-                    showStatus('action', '✅ Workflow triggered successfully! Site updates in ~2 min.', 'success');
-                    setStatus('✅ Workflow triggered', 'ready');
+                    showStatus('action', '✅ Your site is updating! It will be live in about 2 minutes.', 'success');
+                    setStatus('✅ Site updating', 'ready');
+                    publishBtn.innerHTML = '✅ Changes Published!';
+                    setTimeout(() => {
+                        publishBtn.innerHTML = '<span class="icon">🚀</span> Publish Changes to Website';
+                    }, 3000);
                 } else {
-                    const errorText = await response.text();
-                    throw new Error(`GitHub API error: ${response.status} - ${errorText}`);
+                    throw new Error('Failed to publish');
                 }
             } catch (error) {
-                console.error('Workflow error:', error);
-                showStatus('action', `❌ Error: ${error.message}`, 'error');
-                setStatus('❌ ' + error.message, 'error');
+                console.error('Publish error:', error);
+                showStatus('action', `❌ Something went wrong: ${error.message}`, 'error');
+                setStatus('❌ Error', 'error');
+                publishBtn.innerHTML = '<span class="icon">🚀</span> Publish Changes to Website';
             }
 
             isProcessing = false;
-            regenerateBtn.disabled = false;
+            publishBtn.disabled = false;
         }
 
         // ============================================
