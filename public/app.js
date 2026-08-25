@@ -29,14 +29,8 @@ const calendarContainer = document.getElementById('calendar-container');
 const fullscreenOverlay = document.getElementById('fullscreen-overlay');
 const fullscreenImage = document.getElementById('fullscreen-image');
 const fullscreenClose = document.getElementById('fullscreen-close');
-const fullscreenPrev = document.getElementById('fullscreen-prev');
-const fullscreenNext = document.getElementById('fullscreen-next');
 const headerTitle = document.getElementById('header-title');
 const slideshowTrack = document.getElementById('slideshow-track');
-
-// Fullscreen gallery state
-let fullscreenImages = [];
-let currentFullscreenIndex = 0;
 
 // ============================================
 // NAVIGATION
@@ -279,68 +273,13 @@ function renderCalendar(calendar) {
 }
 
 // ============================================
-// FULLSCREEN WITH ARROWS (FIXED)
+// FULLSCREEN (Simple - No Arrows)
 // ============================================
 
 function openFullscreen(imageSrc) {
-    // Get all images from the current grid
-    const activeGrid = document.querySelector('.tab-content.active .image-grid');
-    if (activeGrid) {
-        const items = activeGrid.querySelectorAll('.image-item');
-        fullscreenImages = [];
-        items.forEach(item => {
-            const img = item.querySelector('img');
-            if (img) {
-                fullscreenImages.push(img.src);
-            }
-        });
-        // Find the clicked image index
-        const clickedIndex = fullscreenImages.indexOf(imageSrc);
-        currentFullscreenIndex = clickedIndex !== -1 ? clickedIndex : 0;
-    } else {
-        fullscreenImages = [imageSrc];
-        currentFullscreenIndex = 0;
-    }
-
-    // Show the image
-    updateFullscreenImage();
+    fullscreenImage.src = imageSrc;
     fullscreenOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
-
-    // Update counter and arrows
-    updateFullscreenUI();
-}
-
-function updateFullscreenImage() {
-    if (!fullscreenImages.length || currentFullscreenIndex >= fullscreenImages.length) {
-        return;
-    }
-    fullscreenImage.src = fullscreenImages[currentFullscreenIndex];
-}
-
-function updateFullscreenUI() {
-    // Update counter
-    const counter = document.getElementById('fullscreen-counter');
-    if (counter) {
-        counter.textContent = `${currentFullscreenIndex + 1} / ${fullscreenImages.length}`;
-    }
-    // Show/hide arrows based on number of images
-    if (fullscreenPrev && fullscreenNext) {
-        if (fullscreenImages.length <= 1) {
-            fullscreenPrev.style.display = 'none';
-            fullscreenNext.style.display = 'none';
-        } else {
-            fullscreenPrev.style.display = 'flex';
-            fullscreenNext.style.display = 'flex';
-        }
-    }
-}
-
-function navigateFullscreen(direction) {
-    if (!fullscreenImages.length) return;
-    currentFullscreenIndex = (currentFullscreenIndex + direction + fullscreenImages.length) % fullscreenImages.length;
-    updateFullscreenImage();
-    updateFullscreenUI();
 }
 
 function closeFullscreen() {
@@ -348,35 +287,10 @@ function closeFullscreen() {
     document.body.style.overflow = 'auto';
 }
 
-// --- Fullscreen Event Listeners ---
-
-if (fullscreenPrev) {
-    fullscreenPrev.addEventListener('click', (e) => {
-        e.stopPropagation();
-        navigateFullscreen(-1);
-    });
+// Close button
+if (fullscreenClose) {
+    fullscreenClose.addEventListener('click', closeFullscreen);
 }
-
-if (fullscreenNext) {
-    fullscreenNext.addEventListener('click', (e) => {
-        e.stopPropagation();
-        navigateFullscreen(1);
-    });
-}
-
-// Keyboard arrow keys
-document.addEventListener('keydown', (e) => {
-    if (fullscreenOverlay.style.display !== 'flex') return;
-    if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        navigateFullscreen(-1);
-    } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        navigateFullscreen(1);
-    } else if (e.key === 'Escape') {
-        closeFullscreen();
-    }
-});
 
 // Click background to close
 fullscreenOverlay.addEventListener('click', (e) => {
@@ -385,10 +299,12 @@ fullscreenOverlay.addEventListener('click', (e) => {
     }
 });
 
-// Close button
-if (fullscreenClose) {
-    fullscreenClose.addEventListener('click', closeFullscreen);
-}
+// ESC key to close
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && fullscreenOverlay.style.display === 'flex') {
+        closeFullscreen();
+    }
+});
 
 // ============================================
 // ADMIN LINK
