@@ -14,7 +14,7 @@ body {
 }
 
 /* ============================================
-   NAVIGATION
+   NAVIGATION - 2 ROWS
    ============================================ */
 
 #main-nav {
@@ -51,6 +51,14 @@ body {
 
 .nav-tabs {
     display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 100%;
+}
+
+.nav-row {
+    display: flex;
+    justify-content: center;
     gap: 0.3rem;
     flex-wrap: wrap;
 }
@@ -65,6 +73,7 @@ body {
     font-size: 0.75rem;
     font-weight: 600;
     transition: all 0.3s;
+    white-space: nowrap;
 }
 
 .tab-btn:hover {
@@ -391,7 +400,7 @@ footer p {
 }
 
 /* ============================================
-   FULLSCREEN (Simple)
+   FULLSCREEN
    ============================================ */
 
 #fullscreen-overlay {
@@ -478,7 +487,12 @@ footer {
         white-space: normal;
     }
     .nav-tabs {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+    .nav-row {
         justify-content: center;
+        gap: 0.3rem;
     }
     .tab-btn {
         padding: 0.3rem 0.6rem;
@@ -533,6 +547,9 @@ footer {
         gap: 0.5rem;
     }
     .nav-tabs {
+        gap: 0.2rem;
+    }
+    .nav-row {
         gap: 0.2rem;
     }
     .tab-btn {
