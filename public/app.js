@@ -27,9 +27,16 @@ const catalogGrid = document.getElementById('catalog-grid');
 const portfolioGrid = document.getElementById('portfolio-grid');
 const calendarContainer = document.getElementById('calendar-container');
 const fullscreenOverlay = document.getElementById('fullscreen-overlay');
+const fullscreenImage = document.getElementById('fullscreen-image');
 const fullscreenClose = document.getElementById('fullscreen-close');
+const fullscreenPrev = document.getElementById('fullscreen-prev');
+const fullscreenNext = document.getElementById('fullscreen-next');
 const headerTitle = document.getElementById('header-title');
 const slideshowTrack = document.getElementById('slideshow-track');
+
+// Fullscreen gallery state
+let fullscreenImages = [];
+let currentFullscreenIndex = 0;
 
 // ============================================
 // NAVIGATION
@@ -272,14 +279,11 @@ function renderCalendar(calendar) {
 }
 
 // ============================================
-// FULLSCREEN GALLERY (Camera Roll Style)
+// FULLSCREEN WITH ARROWS
 // ============================================
 
-let fullscreenImages = [];
-let currentFullscreenIndex = 0;
-
 function openFullscreen(imageSrc) {
-    // Get all visible images from the current grid
+    // Get all images from the current grid
     const activeGrid = document.querySelector('.tab-content.active .image-grid');
     if (activeGrid) {
         const items = activeGrid.querySelectorAll('.image-item');
@@ -290,84 +294,66 @@ function openFullscreen(imageSrc) {
                 fullscreenImages.push(img.src);
             }
         });
-        // Find the index of the clicked image
         const clickedIndex = fullscreenImages.indexOf(imageSrc);
-        if (clickedIndex !== -1) {
-            currentFullscreenIndex = clickedIndex;
-        } else {
-            // Fallback: if not found, add just this image
-            fullscreenImages = [imageSrc];
-            currentFullscreenIndex = 0;
-        }
+        currentFullscreenIndex = clickedIndex !== -1 ? clickedIndex : 0;
     } else {
-        // Fallback for any other case
         fullscreenImages = [imageSrc];
         currentFullscreenIndex = 0;
     }
 
-    renderFullscreen();
+    showFullscreenImage();
     fullscreenOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 
-function renderFullscreen() {
-    if (!fullscreenImages.length) {
+function showFullscreenImage() {
+    if (!fullscreenImages.length || currentFullscreenIndex >= fullscreenImages.length) {
         return;
     }
-
-    // Build the slide container
-    let slidesHtml = fullscreenImages.map((src, index) => {
-        return `<div class="fullscreen-slide" data-index="${index}">
-                    <img src="${src}" alt="Fullscreen view" loading="lazy">
-                </div>`;
-    }).join('');
-
-    // Create or get wrapper
-    let wrapper = document.getElementById('fullscreen-wrapper');
-    if (!wrapper) {
-        wrapper = document.createElement('div');
-        wrapper.id = 'fullscreen-wrapper';
-        wrapper.className = 'fullscreen-wrapper';
-        fullscreenOverlay.insertBefore(wrapper, fullscreenOverlay.firstChild);
+    fullscreenImage.src = fullscreenImages[currentFullscreenIndex];
+    // Update counter
+    const counter = document.getElementById('fullscreen-counter');
+    if (counter) {
+        counter.textContent = `${currentFullscreenIndex + 1} / ${fullscreenImages.length}`;
     }
-    wrapper.innerHTML = slidesHtml;
-
-    // Center the current slide after a short delay to ensure layout
-    setTimeout(() => {
-        const slides = wrapper.querySelectorAll('.fullscreen-slide');
-        if (slides.length && slides[0]) {
-            const slideWidth = slides[0].offsetWidth || window.innerWidth;
-            wrapper.scrollLeft = currentFullscreenIndex * (slideWidth + 4);
+    // Show/hide arrows based on number of images
+    if (fullscreenPrev && fullscreenNext) {
+        if (fullscreenImages.length <= 1) {
+            fullscreenPrev.style.display = 'none';
+            fullscreenNext.style.display = 'none';
+        } else {
+            fullscreenPrev.style.display = 'flex';
+            fullscreenNext.style.display = 'flex';
         }
-    }, 50);
+    }
 }
 
 function navigateFullscreen(direction) {
     if (!fullscreenImages.length) return;
-    const total = fullscreenImages.length;
-    currentFullscreenIndex = (currentFullscreenIndex + direction + total) % total;
-
-    const wrapper = document.getElementById('fullscreen-wrapper');
-    if (wrapper) {
-        const slides = wrapper.querySelectorAll('.fullscreen-slide');
-        if (slides.length && slides[0]) {
-            const slideWidth = slides[0].offsetWidth || window.innerWidth;
-            wrapper.scrollTo({
-                left: currentFullscreenIndex * (slideWidth + 4),
-                behavior: 'smooth'
-            });
-        }
-    }
+    currentFullscreenIndex = (currentFullscreenIndex + direction + fullscreenImages.length) % fullscreenImages.length;
+    showFullscreenImage();
 }
 
 function closeFullscreen() {
     fullscreenOverlay.style.display = 'none';
     document.body.style.overflow = 'auto';
-    const wrapper = document.getElementById('fullscreen-wrapper');
-    if (wrapper) wrapper.innerHTML = '';
 }
 
-// --- Event Listeners for Gallery Navigation ---
+// --- Fullscreen Event Listeners ---
+
+if (fullscreenPrev) {
+    fullscreenPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navigateFullscreen(-1);
+    });
+}
+
+if (fullscreenNext) {
+    fullscreenNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navigateFullscreen(1);
+    });
+}
 
 // Keyboard arrow keys
 document.addEventListener('keydown', (e) => {
@@ -383,34 +369,14 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Touch swipe support
-let touchStartX = 0;
-let touchEndX = 0;
-
-fullscreenOverlay.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-}, { passive: true });
-
-fullscreenOverlay.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    const diff = touchStartX - touchEndX;
-    if (Math.abs(diff) > 50) {
-        if (diff > 0) {
-            navigateFullscreen(1);
-        } else {
-            navigateFullscreen(-1);
-        }
-    }
-}, { passive: true });
-
-// Click on overlay background to close
+// Click background to close
 fullscreenOverlay.addEventListener('click', (e) => {
     if (e.target === fullscreenOverlay) {
         closeFullscreen();
     }
 });
 
-// X button
+// Close button
 if (fullscreenClose) {
     fullscreenClose.addEventListener('click', closeFullscreen);
 }
