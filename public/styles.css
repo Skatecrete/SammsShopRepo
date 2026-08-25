@@ -14,7 +14,7 @@ body {
 }
 
 /* ============================================
-   NAVIGATION - 2 ROWS
+   NAVIGATION - 2 ROWS WITH BIGGER TABS
    ============================================ */
 
 #main-nav {
@@ -52,14 +52,14 @@ body {
 .nav-tabs {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.5rem;
     width: 100%;
 }
 
 .nav-row {
     display: flex;
     justify-content: center;
-    gap: 0.3rem;
+    gap: 0.5rem;
     flex-wrap: wrap;
 }
 
@@ -67,10 +67,10 @@ body {
     background: transparent;
     border: 2px solid #444;
     color: #999;
-    padding: 0.4rem 0.8rem;
-    border-radius: 25px;
+    padding: 0.7rem 1.5rem;
+    border-radius: 30px;
     cursor: pointer;
-    font-size: 0.75rem;
+    font-size: 1rem;
     font-weight: 600;
     transition: all 0.3s;
     white-space: nowrap;
@@ -488,15 +488,16 @@ footer {
     }
     .nav-tabs {
         flex-direction: column;
-        gap: 0.3rem;
+        gap: 0.4rem;
     }
     .nav-row {
         justify-content: center;
-        gap: 0.3rem;
+        gap: 0.4rem;
     }
     .tab-btn {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.65rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        border-radius: 25px;
     }
     .landing-title {
         font-size: 3rem;
@@ -547,14 +548,15 @@ footer {
         gap: 0.5rem;
     }
     .nav-tabs {
-        gap: 0.2rem;
+        gap: 0.3rem;
     }
     .nav-row {
-        gap: 0.2rem;
+        gap: 0.3rem;
     }
     .tab-btn {
-        font-size: 0.55rem;
-        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        padding: 0.4rem 0.7rem;
+        border-radius: 20px;
     }
     #header-title {
         font-size: 0.9rem;
