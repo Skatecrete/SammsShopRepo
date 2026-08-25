@@ -279,7 +279,7 @@ function renderCalendar(calendar) {
 }
 
 // ============================================
-// FULLSCREEN WITH ARROWS
+// FULLSCREEN WITH ARROWS (FIXED)
 // ============================================
 
 function openFullscreen(imageSrc) {
@@ -294,6 +294,7 @@ function openFullscreen(imageSrc) {
                 fullscreenImages.push(img.src);
             }
         });
+        // Find the clicked image index
         const clickedIndex = fullscreenImages.indexOf(imageSrc);
         currentFullscreenIndex = clickedIndex !== -1 ? clickedIndex : 0;
     } else {
@@ -301,16 +302,23 @@ function openFullscreen(imageSrc) {
         currentFullscreenIndex = 0;
     }
 
-    showFullscreenImage();
+    // Show the image
+    updateFullscreenImage();
     fullscreenOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+
+    // Update counter and arrows
+    updateFullscreenUI();
 }
 
-function showFullscreenImage() {
+function updateFullscreenImage() {
     if (!fullscreenImages.length || currentFullscreenIndex >= fullscreenImages.length) {
         return;
     }
     fullscreenImage.src = fullscreenImages[currentFullscreenIndex];
+}
+
+function updateFullscreenUI() {
     // Update counter
     const counter = document.getElementById('fullscreen-counter');
     if (counter) {
@@ -331,7 +339,8 @@ function showFullscreenImage() {
 function navigateFullscreen(direction) {
     if (!fullscreenImages.length) return;
     currentFullscreenIndex = (currentFullscreenIndex + direction + fullscreenImages.length) % fullscreenImages.length;
-    showFullscreenImage();
+    updateFullscreenImage();
+    updateFullscreenUI();
 }
 
 function closeFullscreen() {
