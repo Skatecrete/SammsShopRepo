@@ -13,6 +13,10 @@ body {
     flex-direction: column;
 }
 
+/* ============================================
+   NAVIGATION
+   ============================================ */
+
 #main-nav {
     background: #1a1a1a;
     padding: 1rem 0;
@@ -30,7 +34,7 @@ body {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.5rem;
 }
 
 .nav-left {
@@ -40,14 +44,14 @@ body {
 
 #header-title {
     font-family: 'Great Vibes', cursive;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: #fff;
     white-space: nowrap;
 }
 
 .nav-tabs {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.3rem;
     flex-wrap: wrap;
 }
 
@@ -55,10 +59,10 @@ body {
     background: transparent;
     border: 2px solid #444;
     color: #999;
-    padding: 0.6rem 1.2rem;
+    padding: 0.4rem 0.8rem;
     border-radius: 25px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     font-weight: 600;
     transition: all 0.3s;
 }
@@ -74,9 +78,14 @@ body {
     border-color: #fff;
 }
 
+/* ============================================
+   LANDING PAGE
+   ============================================ */
+
 #landing {
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 70vh;
@@ -116,6 +125,53 @@ body {
     margin-top: 0.5rem;
 }
 
+/* ============================================
+   SLIDESHOW
+   ============================================ */
+
+.slideshow-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 2rem auto 0;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    background: #fff;
+    position: relative;
+}
+
+.slideshow-track {
+    display: flex;
+    width: max-content;
+    animation: scrollSlideshow 30s linear infinite;
+}
+
+.slideshow-track:hover {
+    animation-play-state: paused;
+}
+
+.slide-item {
+    flex: 0 0 200px;
+    height: 200px;
+    padding: 4px;
+}
+
+.slide-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+@keyframes scrollSlideshow {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-33.33%); }
+}
+
+/* ============================================
+   TAB CONTENT
+   ============================================ */
+
 .tab-content {
     display: none;
     flex: 1;
@@ -147,6 +203,10 @@ h2 {
     text-align: center;
     padding: 3rem;
 }
+
+/* ============================================
+   IMAGE GRID
+   ============================================ */
 
 .image-grid {
     display: grid;
@@ -194,6 +254,10 @@ h2 {
     transform: translateY(0);
 }
 
+/* ============================================
+   CALENDAR
+   ============================================ */
+
 #calendar-container {
     background: #fff;
     border-radius: 12px;
@@ -237,6 +301,10 @@ h2 {
 .calendar-table .date-cell {
     font-weight: 600;
 }
+
+/* ============================================
+   CONTACT
+   ============================================ */
 
 .contact-info {
     max-width: 600px;
@@ -288,6 +356,10 @@ h2 {
     padding: 0.3rem;
 }
 
+/* ============================================
+   FOOTER
+   ============================================ */
+
 footer {
     background: #1a1a1a;
     color: #666;
@@ -316,6 +388,10 @@ footer p {
 .admin-link-btn:hover {
     color: #888;
 }
+
+/* ============================================
+   FULLSCREEN OVERLAY
+   ============================================ */
 
 #fullscreen-overlay {
     position: fixed;
@@ -356,16 +432,21 @@ footer p {
     transform: rotate(90deg);
 }
 
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
 @media (max-width: 768px) {
     .nav-container {
         flex-direction: column;
         align-items: stretch;
+        gap: 0.5rem;
     }
     .nav-left {
         justify-content: center;
     }
     #header-title {
-        font-size: 1.2rem;
+        font-size: 1rem;
         text-align: center;
         white-space: normal;
     }
@@ -373,8 +454,8 @@ footer p {
         justify-content: center;
     }
     .tab-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.65rem;
     }
     .landing-title {
         font-size: 3rem;
@@ -397,6 +478,10 @@ footer p {
     h2 {
         font-size: 1.5rem;
     }
+    .slide-item {
+        flex: 0 0 150px;
+        height: 150px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -405,14 +490,14 @@ footer p {
         gap: 0.5rem;
     }
     .nav-tabs {
-        gap: 0.3rem;
+        gap: 0.2rem;
     }
     .tab-btn {
-        font-size: 0.7rem;
-        padding: 0.3rem 0.6rem;
+        font-size: 0.55rem;
+        padding: 0.2rem 0.5rem;
     }
     #header-title {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
     .landing-title {
         font-size: 2.2rem;
@@ -422,5 +507,9 @@ footer p {
     }
     .landing-by {
         font-size: 1rem;
+    }
+    .slide-item {
+        flex: 0 0 120px;
+        height: 120px;
     }
 }
