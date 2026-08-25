@@ -16,15 +16,15 @@ const landing = document.getElementById('landing');
 const contentSections = {
     landing: landing,
     flash: document.getElementById('flash'),
+    catalog: document.getElementById('catalog'),
     portfolio: document.getElementById('portfolio'),
-    healed: document.getElementById('healed'),
     scheduler: document.getElementById('scheduler'),
     contact: document.getElementById('contact')
 };
 
 const flashGrid = document.getElementById('flash-grid');
+const catalogGrid = document.getElementById('catalog-grid');
 const portfolioGrid = document.getElementById('portfolio-grid');
-const healedGrid = document.getElementById('healed-grid');
 const calendarContainer = document.getElementById('calendar-container');
 const fullscreenOverlay = document.getElementById('fullscreen-overlay');
 const fullscreenImage = document.getElementById('fullscreen-image');
@@ -67,8 +67,8 @@ function switchTab(tab) {
     currentTab = tab;
     
     if (tab === 'flash' && flashGrid.querySelector('.loading')) loadFlash();
+    if (tab === 'catalog' && catalogGrid.querySelector('.loading')) loadCatalog();
     if (tab === 'portfolio' && portfolioGrid.querySelector('.loading')) loadPortfolio();
-    if (tab === 'healed' && healedGrid.querySelector('.loading')) loadHealed();
     if (tab === 'scheduler' && calendarContainer.querySelector('.loading')) loadCalendar();
 }
 
@@ -132,6 +132,22 @@ async function loadFlash() {
 }
 
 // ============================================
+// LOAD CATALOG
+// ============================================
+
+async function loadCatalog() {
+    try {
+        const response = await fetch('/catalog.json');
+        if (!response.ok) throw new Error('Failed to load catalog');
+        const data = await response.json();
+        renderGrid(catalogGrid, data.catalog || [], 'catalog');
+    } catch (error) {
+        console.error('Error loading catalog:', error);
+        catalogGrid.innerHTML = `<p class="loading">Error loading catalog. Please refresh.</p>`;
+    }
+}
+
+// ============================================
 // LOAD PORTFOLIO
 // ============================================
 
@@ -144,22 +160,6 @@ async function loadPortfolio() {
     } catch (error) {
         console.error('Error loading portfolio:', error);
         portfolioGrid.innerHTML = `<p class="loading">Error loading portfolio. Please refresh.</p>`;
-    }
-}
-
-// ============================================
-// LOAD HEALED
-// ============================================
-
-async function loadHealed() {
-    try {
-        const response = await fetch('/healed.json');
-        if (!response.ok) throw new Error('Failed to load healed tattoos');
-        const data = await response.json();
-        renderGrid(healedGrid, data.healed || [], 'healed');
-    } catch (error) {
-        console.error('Error loading healed:', error);
-        healedGrid.innerHTML = `<p class="loading">No healed tattoos yet.</p>`;
     }
 }
 
