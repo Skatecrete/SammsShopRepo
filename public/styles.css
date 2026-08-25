@@ -391,7 +391,7 @@ footer p {
 }
 
 /* ============================================
-   FULLSCREEN OVERLAY
+   FULLSCREEN GALLERY (Camera Roll)
    ============================================ */
 
 #fullscreen-overlay {
@@ -400,36 +400,75 @@ footer p {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.95);
+    background: rgba(0, 0, 0, 0.95);
     z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: default;
+}
+
+.fullscreen-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    gap: 4px;
+    padding: 0 4px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.fullscreen-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.fullscreen-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    scroll-snap-align: start;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    background: transparent;
 }
 
-#fullscreen-overlay img {
-    max-width: 95%;
-    max-height: 95%;
+.fullscreen-slide img {
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
     border-radius: 4px;
-    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 #fullscreen-close {
     position: fixed;
     top: 20px;
     right: 30px;
-    background: none;
-    border: none;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     color: #fff;
-    font-size: 3rem;
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     cursor: pointer;
     z-index: 2001;
-    transition: transform 0.2s;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #fullscreen-close:hover {
+    background: rgba(255, 255, 255, 0.2);
     transform: rotate(90deg);
 }
 
@@ -499,6 +538,13 @@ footer {
         flex: 0 0 150px;
         height: 150px;
     }
+    #fullscreen-close {
+        top: 15px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
     #landing,
     .tab-content,
     section,
@@ -537,6 +583,13 @@ footer {
     .slide-item {
         flex: 0 0 120px;
         height: 120px;
+    }
+    #fullscreen-close {
+        top: 10px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 1.2rem;
     }
     #landing,
     .tab-content,
