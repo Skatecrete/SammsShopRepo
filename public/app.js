@@ -27,7 +27,6 @@ const catalogGrid = document.getElementById('catalog-grid');
 const portfolioGrid = document.getElementById('portfolio-grid');
 const calendarContainer = document.getElementById('calendar-container');
 const fullscreenOverlay = document.getElementById('fullscreen-overlay');
-const fullscreenImage = document.getElementById('fullscreen-image');
 const fullscreenClose = document.getElementById('fullscreen-close');
 const headerTitle = document.getElementById('header-title');
 const slideshowTrack = document.getElementById('slideshow-track');
@@ -273,27 +272,147 @@ function renderCalendar(calendar) {
 }
 
 // ============================================
-// FULLSCREEN
+// FULLSCREEN GALLERY (Camera Roll Style)
 // ============================================
 
+let fullscreenImages = [];
+let currentFullscreenIndex = 0;
+
 function openFullscreen(imageSrc) {
-    fullscreenImage.src = imageSrc;
+    // Get all visible images from the current grid
+    const activeGrid = document.querySelector('.tab-content.active .image-grid');
+    if (activeGrid) {
+        const items = activeGrid.querySelectorAll('.image-item');
+        fullscreenImages = [];
+        items.forEach(item => {
+            const img = item.querySelector('img');
+            if (img) {
+                fullscreenImages.push(img.src);
+            }
+        });
+        // Find the index of the clicked image
+        const clickedIndex = fullscreenImages.indexOf(imageSrc);
+        if (clickedIndex !== -1) {
+            currentFullscreenIndex = clickedIndex;
+        } else {
+            // Fallback: if not found, add just this image
+            fullscreenImages = [imageSrc];
+            currentFullscreenIndex = 0;
+        }
+    } else {
+        // Fallback for any other case
+        fullscreenImages = [imageSrc];
+        currentFullscreenIndex = 0;
+    }
+
+    renderFullscreen();
     fullscreenOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 
-fullscreenClose.addEventListener('click', closeFullscreen);
-fullscreenOverlay.addEventListener('click', (e) => {
-    if (e.target === fullscreenOverlay) closeFullscreen();
-});
+function renderFullscreen() {
+    if (!fullscreenImages.length) {
+        return;
+    }
 
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeFullscreen();
-});
+    // Build the slide container
+    let slidesHtml = fullscreenImages.map((src, index) => {
+        return `<div class="fullscreen-slide" data-index="${index}">
+                    <img src="${src}" alt="Fullscreen view" loading="lazy">
+                </div>`;
+    }).join('');
+
+    // Create or get wrapper
+    let wrapper = document.getElementById('fullscreen-wrapper');
+    if (!wrapper) {
+        wrapper = document.createElement('div');
+        wrapper.id = 'fullscreen-wrapper';
+        wrapper.className = 'fullscreen-wrapper';
+        fullscreenOverlay.insertBefore(wrapper, fullscreenOverlay.firstChild);
+    }
+    wrapper.innerHTML = slidesHtml;
+
+    // Center the current slide after a short delay to ensure layout
+    setTimeout(() => {
+        const slides = wrapper.querySelectorAll('.fullscreen-slide');
+        if (slides.length && slides[0]) {
+            const slideWidth = slides[0].offsetWidth || window.innerWidth;
+            wrapper.scrollLeft = currentFullscreenIndex * (slideWidth + 4);
+        }
+    }, 50);
+}
+
+function navigateFullscreen(direction) {
+    if (!fullscreenImages.length) return;
+    const total = fullscreenImages.length;
+    currentFullscreenIndex = (currentFullscreenIndex + direction + total) % total;
+
+    const wrapper = document.getElementById('fullscreen-wrapper');
+    if (wrapper) {
+        const slides = wrapper.querySelectorAll('.fullscreen-slide');
+        if (slides.length && slides[0]) {
+            const slideWidth = slides[0].offsetWidth || window.innerWidth;
+            wrapper.scrollTo({
+                left: currentFullscreenIndex * (slideWidth + 4),
+                behavior: 'smooth'
+            });
+        }
+    }
+}
 
 function closeFullscreen() {
     fullscreenOverlay.style.display = 'none';
     document.body.style.overflow = 'auto';
+    const wrapper = document.getElementById('fullscreen-wrapper');
+    if (wrapper) wrapper.innerHTML = '';
+}
+
+// --- Event Listeners for Gallery Navigation ---
+
+// Keyboard arrow keys
+document.addEventListener('keydown', (e) => {
+    if (fullscreenOverlay.style.display !== 'flex') return;
+    if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        navigateFullscreen(-1);
+    } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        navigateFullscreen(1);
+    } else if (e.key === 'Escape') {
+        closeFullscreen();
+    }
+});
+
+// Touch swipe support
+let touchStartX = 0;
+let touchEndX = 0;
+
+fullscreenOverlay.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+fullscreenOverlay.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+            navigateFullscreen(1);
+        } else {
+            navigateFullscreen(-1);
+        }
+    }
+}, { passive: true });
+
+// Click on overlay background to close
+fullscreenOverlay.addEventListener('click', (e) => {
+    if (e.target === fullscreenOverlay) {
+        closeFullscreen();
+    }
+});
+
+// X button
+if (fullscreenClose) {
+    fullscreenClose.addEventListener('click', closeFullscreen);
 }
 
 // ============================================
