@@ -14,6 +14,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 2rem 1rem 8rem 1rem;
         }
         .login-container {
             background: #fff;
@@ -76,6 +77,13 @@
             text-decoration: none;
         }
         .login-container .back-link:hover { color: #666; }
+        @media (max-width: 600px) {
+            .login-container { padding: 2rem; }
+            body { padding-bottom: 7rem; }
+        }
+        @media (max-width: 400px) {
+            body { padding-bottom: 6rem; }
+        }
     </style>
 </head>
 <body>
