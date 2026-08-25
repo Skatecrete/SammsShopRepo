@@ -14,6 +14,33 @@ body {
 }
 
 /* ============================================
+   FIX NETLIFY BADGE & BOTTOM SPACING
+   ============================================ */
+
+/* Hide Netlify badge */
+.deploy-page-indicator,
+[data-deploy-indicator],
+.deploy-indicator,
+#netlify-deploy-indicator,
+.netlify-footer-banner,
+.netlify-badge {
+    display: none !important;
+}
+
+/* Add bottom spacing */
+main, section, .tab-content, #landing {
+    padding-bottom: 5rem !important;
+}
+
+/* Footer spacing */
+footer {
+    padding-bottom: 2.5rem !important;
+    margin-bottom: 0;
+    padding-top: 1.5rem;
+    margin-top: auto;
+}
+
+/* ============================================
    NAVIGATION
    ============================================ */
 
@@ -89,7 +116,7 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 70vh;
-    padding: 2rem 1rem;
+    padding: 2rem 1rem 5rem 1rem;
 }
 
 .landing-content {
@@ -177,7 +204,7 @@ body {
     flex: 1;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 2rem 1rem 5rem 1rem;
     width: 100%;
     animation: fadeIn 0.3s ease;
 }
@@ -364,7 +391,7 @@ footer {
     background: #1a1a1a;
     color: #666;
     text-align: center;
-    padding: 1.5rem;
+    padding: 1.5rem 1rem 2.5rem 1rem;
     margin-top: auto;
 }
 
@@ -482,6 +509,9 @@ footer p {
         flex: 0 0 150px;
         height: 150px;
     }
+    main, section, .tab-content, #landing {
+        padding-bottom: 4rem !important;
+    }
 }
 
 @media (max-width: 480px) {
@@ -511,5 +541,8 @@ footer p {
     .slide-item {
         flex: 0 0 120px;
         height: 120px;
+    }
+    main, section, .tab-content, #landing {
+        padding-bottom: 3.5rem !important;
     }
 }
