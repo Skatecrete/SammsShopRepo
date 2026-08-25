@@ -37,3 +37,43 @@ jobs:
       - name: Generate catalog.json
         run: |
           echo '{"catalog": [' > public/catalog.json
+          count=0
+          for file in public/images/catalog/*.jpg public/images/catalog/*.jpeg public/images/catalog/*.png public/images/catalog/*.webp public/images/catalog/*.gif; do
+            if [ -f "$file" ]; then
+              if [ $count -gt 0 ]; then
+                echo ',' >> public/catalog.json
+              fi
+              filename=$(basename "$file")
+              echo "{\"image\": \"/images/catalog/$filename\"}" >> public/catalog.json
+              count=$((count + 1))
+            fi
+          done
+          echo ']}' >> public/catalog.json
+          echo "Generated catalog.json with $count images"
+
+      - name: Generate portfolio.json
+        run: |
+          echo '{"portfolio": [' > public/portfolio.json
+          count=0
+          for file in public/images/portfolio/*.jpg public/images/portfolio/*.jpeg public/images/portfolio/*.png public/images/portfolio/*.webp public/images/portfolio/*.gif; do
+            if [ -f "$file" ]; then
+              if [ $count -gt 0 ]; then
+                echo ',' >> public/portfolio.json
+              fi
+              filename=$(basename "$file")
+              echo "{\"image\": \"/images/portfolio/$filename\"}" >> public/portfolio.json
+              count=$((count + 1))
+            fi
+          done
+          echo ']}' >> public/portfolio.json
+          echo "Generated portfolio.json with $count images"
+
+      - name: Commit JSON files
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add public/flash.json public/catalog.json public/portfolio.json
+          git diff --staged --quiet || git commit -m "Auto-generate image JSON [skip ci]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
