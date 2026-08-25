@@ -14,33 +14,6 @@ body {
 }
 
 /* ============================================
-   FIX NETLIFY BADGE & BOTTOM SPACING
-   ============================================ */
-
-/* Hide Netlify badge */
-.deploy-page-indicator,
-[data-deploy-indicator],
-.deploy-indicator,
-#netlify-deploy-indicator,
-.netlify-footer-banner,
-.netlify-badge {
-    display: none !important;
-}
-
-/* Add bottom spacing */
-main, section, .tab-content, #landing {
-    padding-bottom: 5rem !important;
-}
-
-/* Footer spacing */
-footer {
-    padding-bottom: 2.5rem !important;
-    margin-bottom: 0;
-    padding-top: 1.5rem;
-    margin-top: auto;
-}
-
-/* ============================================
    NAVIGATION
    ============================================ */
 
@@ -116,7 +89,7 @@ footer {
     align-items: center;
     justify-content: center;
     min-height: 70vh;
-    padding: 2rem 1rem 5rem 1rem;
+    padding: 2rem 1rem 8rem 1rem;
 }
 
 .landing-content {
@@ -204,7 +177,7 @@ footer {
     flex: 1;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1rem 5rem 1rem;
+    padding: 2rem 1rem 8rem 1rem;
     width: 100%;
     animation: fadeIn 0.3s ease;
 }
@@ -391,8 +364,9 @@ footer {
     background: #1a1a1a;
     color: #666;
     text-align: center;
-    padding: 1.5rem 1rem 2.5rem 1rem;
+    padding: 1.5rem 1rem 6rem 1rem;
     margin-top: auto;
+    width: 100%;
 }
 
 footer p {
@@ -460,6 +434,22 @@ footer p {
 }
 
 /* ============================================
+   BOTTOM SPACING FIX (Netlify Badge)
+   ============================================ */
+
+#landing,
+.tab-content,
+section,
+main {
+    padding-bottom: 8rem !important;
+}
+
+footer {
+    padding-bottom: 6rem !important;
+    margin-bottom: 0 !important;
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 
@@ -509,8 +499,14 @@ footer p {
         flex: 0 0 150px;
         height: 150px;
     }
-    main, section, .tab-content, #landing {
-        padding-bottom: 4rem !important;
+    #landing,
+    .tab-content,
+    section,
+    main {
+        padding-bottom: 7rem !important;
+    }
+    footer {
+        padding-bottom: 5rem !important;
     }
 }
 
@@ -542,7 +538,13 @@ footer p {
         flex: 0 0 120px;
         height: 120px;
     }
-    main, section, .tab-content, #landing {
-        padding-bottom: 3.5rem !important;
+    #landing,
+    .tab-content,
+    section,
+    main {
+        padding-bottom: 6rem !important;
+    }
+    footer {
+        padding-bottom: 4.5rem !important;
     }
 }
