@@ -49,8 +49,8 @@
         .upload-btn.flash:hover { background: #218838; }
         .upload-btn.portfolio { background: #007bff; }
         .upload-btn.portfolio:hover { background: #0069d9; }
-        .upload-btn.healed { background: #6f42c1; }
-        .upload-btn.healed:hover { background: #5a32a3; }
+        .upload-btn.catalog { background: #6f42c1; }
+        .upload-btn.catalog:hover { background: #5a32a3; }
         .upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .upload-status {
             margin-top: 1rem;
@@ -169,8 +169,8 @@
             <h3>📤 Upload Images</h3>
             <div class="upload-buttons">
                 <button class="upload-btn flash" onclick="triggerUpload('flash')">Upload to Flash</button>
+                <button class="upload-btn catalog" onclick="triggerUpload('catalog')">Upload to Catalog</button>
                 <button class="upload-btn portfolio" onclick="triggerUpload('portfolio')">Upload to Portfolio</button>
-                <button class="upload-btn healed" onclick="triggerUpload('healed')">Upload to Healed</button>
             </div>
             <input type="file" id="file-input" class="file-input-hidden" multiple accept="image/*">
             <div id="upload-status" class="upload-status"></div>
@@ -183,15 +183,15 @@
         </div>
 
         <div class="image-section">
-            <h3>🖼️ Portfolio Images</h3>
-            <p class="count" id="portfolio-count">0 images</p>
-            <div class="image-grid-admin" id="portfolio-admin-grid"><p>Loading...</p></div>
+            <h3>📚 Catalog Images</h3>
+            <p class="count" id="catalog-count">0 images</p>
+            <div class="image-grid-admin" id="catalog-admin-grid"><p>Loading...</p></div>
         </div>
 
         <div class="image-section">
-            <h3>🎯 Healed Images</h3>
-            <p class="count" id="healed-count">0 images</p>
-            <div class="image-grid-admin" id="healed-admin-grid"><p>Loading...</p></div>
+            <h3>🖼️ Portfolio Images</h3>
+            <p class="count" id="portfolio-count">0 images</p>
+            <div class="image-grid-admin" id="portfolio-admin-grid"><p>Loading...</p></div>
         </div>
 
         <div class="action-section">
@@ -225,11 +225,11 @@
         const fileInput = document.getElementById('file-input');
         const uploadStatus = document.getElementById('upload-status');
         const flashAdminGrid = document.getElementById('flash-admin-grid');
+        const catalogAdminGrid = document.getElementById('catalog-admin-grid');
         const portfolioAdminGrid = document.getElementById('portfolio-admin-grid');
-        const healedAdminGrid = document.getElementById('healed-admin-grid');
         const flashCount = document.getElementById('flash-count');
+        const catalogCount = document.getElementById('catalog-count');
         const portfolioCount = document.getElementById('portfolio-count');
-        const healedCount = document.getElementById('healed-count');
         const actionStatus = document.getElementById('action-status');
         const statusBadge = document.getElementById('status-badge');
         const regenerateBtn = document.getElementById('regenerate-btn');
@@ -364,15 +364,15 @@
         async function loadAdminImages() {
             await Promise.all([
                 loadCategoryImages('flash', flashAdminGrid, flashCount),
-                loadCategoryImages('portfolio', portfolioAdminGrid, portfolioCount),
-                loadCategoryImages('healed', healedAdminGrid, healedCount)
+                loadCategoryImages('catalog', catalogAdminGrid, catalogCount),
+                loadCategoryImages('portfolio', portfolioAdminGrid, portfolioCount)
             ]);
         }
 
         async function loadCategoryImages(category, container, countElement) {
             try {
                 const jsonFile = category === 'flash' ? '/flash.json' : 
-                                category === 'portfolio' ? '/portfolio.json' : '/healed.json';
+                                category === 'catalog' ? '/catalog.json' : '/portfolio.json';
                 const response = await fetch(jsonFile);
 
                 if (!response.ok) {
