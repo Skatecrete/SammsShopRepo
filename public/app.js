@@ -9,23 +9,32 @@ const CONFIG = {
 };
 
 let currentTab = 'landing';
+let slideshowInterval = null;
+
 const tabs = document.querySelectorAll('.tab-btn');
 const landing = document.getElementById('landing');
 const contentSections = {
     landing: landing,
     flash: document.getElementById('flash'),
     portfolio: document.getElementById('portfolio'),
+    healed: document.getElementById('healed'),
     scheduler: document.getElementById('scheduler'),
     contact: document.getElementById('contact')
 };
 
 const flashGrid = document.getElementById('flash-grid');
 const portfolioGrid = document.getElementById('portfolio-grid');
+const healedGrid = document.getElementById('healed-grid');
 const calendarContainer = document.getElementById('calendar-container');
 const fullscreenOverlay = document.getElementById('fullscreen-overlay');
 const fullscreenImage = document.getElementById('fullscreen-image');
 const fullscreenClose = document.getElementById('fullscreen-close');
 const headerTitle = document.getElementById('header-title');
+const slideshowTrack = document.getElementById('slideshow-track');
+
+// ============================================
+// NAVIGATION
+// ============================================
 
 tabs.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -48,23 +57,67 @@ function switchTab(tab) {
     
     if (tab === 'landing') {
         headerTitle.style.display = 'none';
+        startSlideshow();
     } else {
         headerTitle.style.display = 'block';
-        headerTitle.textContent = 'SkinPrints and Piercings by Samm (@GutterMuttx)';
+        headerTitle.textContent = 'SkinPrints & Piercings by Samm (@GutterMuttx)';
+        stopSlideshow();
     }
     
     currentTab = tab;
     
-    if (tab === 'flash' && flashGrid.querySelector('.loading')) {
-        loadFlash();
-    }
-    if (tab === 'portfolio' && portfolioGrid.querySelector('.loading')) {
-        loadPortfolio();
-    }
-    if (tab === 'scheduler' && calendarContainer.querySelector('.loading')) {
-        loadCalendar();
+    if (tab === 'flash' && flashGrid.querySelector('.loading')) loadFlash();
+    if (tab === 'portfolio' && portfolioGrid.querySelector('.loading')) loadPortfolio();
+    if (tab === 'healed' && healedGrid.querySelector('.loading')) loadHealed();
+    if (tab === 'scheduler' && calendarContainer.querySelector('.loading')) loadCalendar();
+}
+
+// ============================================
+// SLIDESHOW
+// ============================================
+
+async function loadSlideshow() {
+    try {
+        const response = await fetch('/portfolio.json');
+        if (!response.ok) throw new Error('Failed to load portfolio for slideshow');
+        const data = await response.json();
+        const images = data.portfolio || [];
+        
+        if (images.length === 0) {
+            slideshowTrack.innerHTML = '<p style="color:#999; text-align:center;">No portfolio images yet.</p>';
+            return;
+        }
+        
+        const allImages = [...images, ...images, ...images];
+        
+        slideshowTrack.innerHTML = allImages.map(item => {
+            const imagePath = item.image || item;
+            return `<div class="slide-item"><img src="${imagePath}" alt="Portfolio" loading="lazy"></div>`;
+        }).join('');
+        
+        setTimeout(() => {
+            const slideWidth = slideshowTrack.querySelector('.slide-item')?.offsetWidth || 200;
+            const totalSlides = images.length;
+            const duration = totalSlides * 3;
+            
+            slideshowTrack.style.animation = `scrollSlideshow ${duration}s linear infinite`;
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error loading slideshow:', error);
+        slideshowTrack.innerHTML = '<p style="color:#999; text-align:center;">Loading portfolio images...</p>';
     }
 }
+
+function startSlideshow() {
+    loadSlideshow();
+}
+
+function stopSlideshow() {}
+
+// ============================================
+// LOAD FLASH
+// ============================================
 
 async function loadFlash() {
     try {
@@ -78,6 +131,10 @@ async function loadFlash() {
     }
 }
 
+// ============================================
+// LOAD PORTFOLIO
+// ============================================
+
 async function loadPortfolio() {
     try {
         const response = await fetch('/portfolio.json');
@@ -89,6 +146,26 @@ async function loadPortfolio() {
         portfolioGrid.innerHTML = `<p class="loading">Error loading portfolio. Please refresh.</p>`;
     }
 }
+
+// ============================================
+// LOAD HEALED
+// ============================================
+
+async function loadHealed() {
+    try {
+        const response = await fetch('/healed.json');
+        if (!response.ok) throw new Error('Failed to load healed tattoos');
+        const data = await response.json();
+        renderGrid(healedGrid, data.healed || [], 'healed');
+    } catch (error) {
+        console.error('Error loading healed:', error);
+        healedGrid.innerHTML = `<p class="loading">No healed tattoos yet.</p>`;
+    }
+}
+
+// ============================================
+// RENDER IMAGE GRID
+// ============================================
 
 function renderGrid(container, images, category) {
     if (!images || images.length === 0) {
@@ -110,16 +187,16 @@ function renderGrid(container, images, category) {
     }).join('');
 }
 
+// ============================================
+// LOAD CALENDAR
+// ============================================
+
 async function loadCalendar() {
     calendarContainer.innerHTML = `<p class="loading">Loading calendar...</p>`;
     
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         
         if (data.error) {
@@ -128,7 +205,7 @@ async function loadCalendar() {
         }
         
         if (!data.calendar || data.calendar.length === 0) {
-            calendarContainer.innerHTML = `<p class="loading">No availability data found. Please check your Google Sheet.</p>`;
+            calendarContainer.innerHTML = `<p class="loading">No availability data found.</p>`;
             return;
         }
         
@@ -138,12 +215,15 @@ async function loadCalendar() {
         calendarContainer.innerHTML = `
             <p class="loading">Error loading calendar.</p>
             <p style="font-size: 0.9rem; color: #999; margin-top: 0.5rem;">
-                Details: ${error.message}<br>
-                Make sure your Apps Script is deployed and set to "Anyone" access.
+                Details: ${error.message}
             </p>
         `;
     }
 }
+
+// ============================================
+// RENDER CALENDAR
+// ============================================
 
 function renderCalendar(calendar) {
     if (!calendar || calendar.length === 0) {
@@ -155,9 +235,7 @@ function renderCalendar(calendar) {
     calendar.forEach(day => {
         const date = new Date(day.date + 'T00:00:00');
         const monthKey = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
-        if (!months[monthKey]) {
-            months[monthKey] = [];
-        }
+        if (!months[monthKey]) months[monthKey] = [];
         months[monthKey].push(day);
     });
     
@@ -194,6 +272,10 @@ function renderCalendar(calendar) {
     calendarContainer.innerHTML = html;
 }
 
+// ============================================
+// FULLSCREEN
+// ============================================
+
 function openFullscreen(imageSrc) {
     fullscreenImage.src = imageSrc;
     fullscreenOverlay.style.display = 'flex';
@@ -213,5 +295,25 @@ function closeFullscreen() {
     fullscreenOverlay.style.display = 'none';
     document.body.style.overflow = 'auto';
 }
+
+// ============================================
+// ADMIN LINK
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const adminLink = document.getElementById('admin-link');
+    if (adminLink) {
+        adminLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/admin.html';
+        });
+    }
+});
+
+// ============================================
+// INIT
+// ============================================
+
+switchTab('landing');
 
 window.openFullscreen = openFullscreen;
