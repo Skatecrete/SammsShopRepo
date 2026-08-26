@@ -16,6 +16,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history so we can pull
+
+      - name: Pull latest changes
+        run: |
+          git config pull.rebase false
+          git pull origin main || true
 
       - name: Generate flash.json
         run: |
@@ -74,6 +81,7 @@ jobs:
           git config user.email "actions@github.com"
           git add public/flash.json public/catalog.json public/portfolio.json
           git diff --staged --quiet || git commit -m "Auto-generate image JSON [skip ci]"
+          git pull origin main --rebase || true
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
