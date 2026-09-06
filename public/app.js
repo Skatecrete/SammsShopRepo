@@ -33,44 +33,70 @@ if (isLandingPage) {
 }
 
 async function loadLandingSlideshows() {
+    // TATTOO SLIDESHOW - get images from ALL tattoo tabs
     try {
-        const response = await fetch('/tattoo/portfolio.json');
-        if (response.ok) {
-            const data = await response.json();
-            const images = data.portfolio || [];
-            if (images.length > 0) {
-                const track = document.getElementById('landing-slideshow-track');
-                if (track) {
-                    const allImages = [...images, ...images, ...images];
-                    track.innerHTML = allImages.map(item => {
-                        const imagePath = item.image || item;
-                        return `<div class="slide-item"><img src="${imagePath}" alt="Portfolio" loading="lazy"></div>`;
-                    }).join('');
-                    track.style.animation = 'scrollSlideshow 30s linear infinite';
-                    console.log('✅ Tattoo slideshow loaded with', images.length, 'images');
+        const tattooCategories = ['flash', 'catalog', 'portfolio'];
+        let allImages = [];
+        
+        for (const category of tattooCategories) {
+            try {
+                const response = await fetch(`/tattoo/${category}.json`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const images = data[category] || [];
+                    allImages = allImages.concat(images.map(img => img.image || img));
                 }
+            } catch (e) {
+                console.log(`No images in tattoo/${category}`);
+            }
+        }
+        
+        if (allImages.length > 0) {
+            const shuffled = allImages.sort(() => Math.random() - 0.5);
+            const selectedImages = shuffled.slice(0, 30);
+            const track = document.getElementById('landing-slideshow-track');
+            if (track) {
+                const allImagesForScroll = [...selectedImages, ...selectedImages, ...selectedImages];
+                track.innerHTML = allImagesForScroll.map(imagePath => {
+                    return `<div class="slide-item"><img src="${imagePath}" alt="Tattoo" loading="lazy"></div>`;
+                }).join('');
+                track.style.animation = 'scrollSlideshow 30s linear infinite';
+                console.log('✅ Tattoo slideshow loaded with', selectedImages.length, 'images');
             }
         }
     } catch (e) { 
-        console.warn('⚠️ No portfolio images for slideshow:', e.message);
+        console.warn('⚠️ No tattoo images for slideshow:', e.message);
     }
 
+    // SHOP SLIDESHOW - get images from ALL shop tabs
     try {
-        const response = await fetch('/shop/jewelry.json');
-        if (response.ok) {
-            const data = await response.json();
-            const images = data.jewelry || [];
-            if (images.length > 0) {
-                const track = document.getElementById('landing-shop-slideshow-track');
-                if (track) {
-                    const allImages = [...images, ...images, ...images];
-                    track.innerHTML = allImages.map(item => {
-                        const imagePath = item.image || item;
-                        return `<div class="slide-item"><img src="${imagePath}" alt="Shop" loading="lazy"></div>`;
-                    }).join('');
-                    track.style.animation = 'scrollSlideshow 30s linear infinite';
-                    console.log('✅ Shop slideshow loaded with', images.length, 'images');
+        const shopCategories = ['paintings', 'jewelry', 'sculptures'];
+        let allShopImages = [];
+        
+        for (const category of shopCategories) {
+            try {
+                const response = await fetch(`/shop/${category}.json`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const images = data[category] || [];
+                    allShopImages = allShopImages.concat(images.map(img => img.image || img));
                 }
+            } catch (e) {
+                console.log(`No images in shop/${category}`);
+            }
+        }
+        
+        if (allShopImages.length > 0) {
+            const shuffled = allShopImages.sort(() => Math.random() - 0.5);
+            const selectedImages = shuffled.slice(0, 30);
+            const track = document.getElementById('landing-shop-slideshow-track');
+            if (track) {
+                const allImagesForScroll = [...selectedImages, ...selectedImages, ...selectedImages];
+                track.innerHTML = allImagesForScroll.map(imagePath => {
+                    return `<div class="slide-item"><img src="${imagePath}" alt="Shop" loading="lazy"></div>`;
+                }).join('');
+                track.style.animation = 'scrollSlideshow 30s linear infinite';
+                console.log('✅ Shop slideshow loaded with', selectedImages.length, 'images');
             }
         }
     } catch (e) { 
@@ -313,7 +339,7 @@ window.openTattooFullscreen = function(src) {
         img.src = src;
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        console.log('🖼️ Fullscreen opened:', src);
+        console.log('🖼️ Tattoo fullscreen opened:', src);
     } catch (error) {
         console.error('❌ openTattooFullscreen() error:', error);
     }
@@ -448,7 +474,7 @@ if (isShopPage) {
             const imagePath = item.image || `/images/shop/${category}/placeholder.jpg`;
             return `
                 <div class="shop-item">
-                    <img src="${imagePath}" alt="${title}" class="shop-image" onclick="window.openShopFullscreen('${imagePath}')">
+                    <img src="${imagePath}" alt="${title}" class="shop-image" onclick="openShopFullscreen('${imagePath}')">
                     <div class="shop-details" style="text-align:center;">
                         <div class="shop-title" style="font-size:1.2rem; font-weight:600; font-style:italic; color:#1a1a1a; text-align:center;">${title}</div>
                         <div class="shop-price" style="font-size:1.1rem; font-weight:600; font-style:italic; color:#a64d79; text-align:center;">${displayCost}</div>
@@ -457,6 +483,26 @@ if (isShopPage) {
             `;
         }).join('');
     }
+    
+    function openShopFullscreen(src) {
+        try {
+            const overlay = document.getElementById('fullscreen-overlay');
+            const img = document.getElementById('fullscreen-image');
+            if (!overlay || !img) {
+                console.error('❌ Fullscreen elements not found');
+                return;
+            }
+            img.src = src;
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            console.log('🖼️ Shop fullscreen opened:', src);
+        } catch (error) {
+            console.error('❌ openShopFullscreen() error:', error);
+        }
+    }
+    
+    // Expose to global scope
+    window.openShopFullscreen = openShopFullscreen;
     
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
         console.log('⏱️ DOM already ready, initializing immediately');
