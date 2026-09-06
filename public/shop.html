@@ -7,25 +7,6 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        #shop-content {
-            position: relative;
-            min-height: 80vh;
-            background-image: url('/images/landing/shop_logo.png');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            opacity: 0.15;
-            z-index: 0;
-        }
-        #shop-content .content-wrapper {
-            position: relative;
-            z-index: 1;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(2px);
-            padding: 2rem 1rem 8rem 1rem;
-            min-height: 80vh;
-        }
         .shop-bg-logo {
             position: fixed;
             top: 50%;
@@ -33,9 +14,19 @@
             transform: translate(-50%, -50%);
             width: 60%;
             max-width: 500px;
-            opacity: 0.08;
+            opacity: 0.06;
             pointer-events: none;
-            z-index: -1;
+            z-index: 0;
+        }
+        #shop-content {
+            position: relative;
+            z-index: 1;
+        }
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            padding: 2rem 1rem 8rem 1rem;
+            min-height: 80vh;
         }
     </style>
 </head>
