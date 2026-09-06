@@ -322,7 +322,7 @@
     <script>
         const REPO_OWNER = 'Skatecrete';
         const REPO_NAME = 'SammsShopRepo';
-        const SHOP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWh3AsmhzASofyW3c0CEIEMD_2meFvTmIxA-vgFau2S8gn57bbeg2-8nGlw8NP6HzX5A/exec';
+        const SHOP_SCRIPT_URL = '/.netlify/functions/shop-proxy';
 
         let currentTab = '';
         let currentCategory = '';
@@ -403,11 +403,11 @@
 
         async function updateShopSheet(category, items) {
             try {
-                // Capitalize category to match dropdown values in sheet
-                category = category.charAt(0).toUpperCase() + category.slice(1);
-                
-                const url = SHOP_SCRIPT_URL + '?_method=POST&category=' + encodeURIComponent(category) + '&data=' + encodeURIComponent(JSON.stringify(items));
-                const response = await fetch(url);
+                const response = await fetch(SHOP_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ category: category, items: items })
+                });
                 const data = await response.json();
                 return data.success;
             } catch (error) {
