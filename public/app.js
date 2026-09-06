@@ -67,7 +67,8 @@ async function loadLandingSlideshows() {
 // ============================================
 
 if (isTattooPage) {
-    const tabs = document.querySelectorAll('.nav-tabs-tattoo .tab-btn');
+    // Get all tattoo tabs (excluding Home button which is an <a> tag)
+    const tabs = document.querySelectorAll('.nav-tabs-tattoo .tab-btn:not(.home-btn)');
     const contentSections = {};
     const grids = {};
 
@@ -82,24 +83,34 @@ if (isTattooPage) {
     const fullscreenImage = document.getElementById('fullscreen-image');
     const fullscreenClose = document.getElementById('fullscreen-close');
 
+    // Add click listeners to tattoo tabs
     tabs.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tab = btn.dataset.tab;
-            switchTab(tab);
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const tab = this.dataset.tab;
+            switchTattooTab(tab);
         });
     });
 
-    function switchTab(tab) {
+    function switchTattooTab(tab) {
+        // Update active class on buttons
         tabs.forEach(b => b.classList.remove('active'));
-        document.querySelector(`.nav-tabs-tattoo .tab-btn[data-tab="${tab}"]`).classList.add('active');
+        const activeBtn = document.querySelector(`.nav-tabs-tattoo .tab-btn[data-tab="${tab}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
 
+        // Hide all content sections
         Object.keys(contentSections).forEach(key => {
-            contentSections[key].style.display = 'none';
-            contentSections[key].classList.remove('active');
+            if (contentSections[key]) {
+                contentSections[key].style.display = 'none';
+                contentSections[key].classList.remove('active');
+            }
         });
 
-        contentSections[tab].style.display = 'block';
-        contentSections[tab].classList.add('active');
+        // Show the selected content
+        if (contentSections[tab]) {
+            contentSections[tab].style.display = 'block';
+            contentSections[tab].classList.add('active');
+        }
 
         const grid = grids[tab];
         if (grid && grid.querySelector('.loading')) {
@@ -118,13 +129,13 @@ if (isTattooPage) {
             if (!response.ok) throw new Error('Failed to load');
             const data = await response.json();
             const images = data[category] || [];
-            renderGrid(container, images);
+            renderTattooGrid(container, images);
         } catch (error) {
             container.innerHTML = `<p class="loading">No images yet.</p>`;
         }
     }
 
-    function renderGrid(container, images) {
+    function renderTattooGrid(container, images) {
         if (!images || images.length === 0) {
             container.innerHTML = `<p class="loading">No images yet.</p>`;
             return;
@@ -227,7 +238,7 @@ if (isTattooPage) {
     window.openFullscreen = openFullscreen;
 
     // Activate default tab
-    switchTab('tattoo-flash');
+    switchTattooTab('tattoo-flash');
 }
 
 // ============================================
@@ -235,7 +246,8 @@ if (isTattooPage) {
 // ============================================
 
 if (isShopPage) {
-    const tabs = document.querySelectorAll('.nav-tabs-shop .tab-btn');
+    // Get all shop tabs (excluding Home button which is an <a> tag)
+    const tabs = document.querySelectorAll('.nav-tabs-shop .tab-btn:not(.home-btn)');
     const contentSections = {};
     const grids = {};
 
@@ -249,24 +261,34 @@ if (isShopPage) {
     const fullscreenImage = document.getElementById('fullscreen-image');
     const fullscreenClose = document.getElementById('fullscreen-close');
 
+    // Add click listeners to shop tabs
     tabs.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tab = btn.dataset.tab;
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const tab = this.dataset.tab;
             switchShopTab(tab);
         });
     });
 
     function switchShopTab(tab) {
+        // Update active class on buttons
         tabs.forEach(b => b.classList.remove('active'));
-        document.querySelector(`.nav-tabs-shop .tab-btn[data-tab="${tab}"]`).classList.add('active');
+        const activeBtn = document.querySelector(`.nav-tabs-shop .tab-btn[data-tab="${tab}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
 
+        // Hide all content sections
         Object.keys(contentSections).forEach(key => {
-            contentSections[key].style.display = 'none';
-            contentSections[key].classList.remove('active');
+            if (contentSections[key]) {
+                contentSections[key].style.display = 'none';
+                contentSections[key].classList.remove('active');
+            }
         });
 
-        contentSections[tab].style.display = 'block';
-        contentSections[tab].classList.add('active');
+        // Show the selected content
+        if (contentSections[tab]) {
+            contentSections[tab].style.display = 'block';
+            contentSections[tab].classList.add('active');
+        }
 
         const grid = grids[tab];
         if (grid && grid.querySelector('.loading')) {
