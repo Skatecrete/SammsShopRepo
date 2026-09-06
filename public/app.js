@@ -9,7 +9,7 @@ const CONFIG = {
 };
 
 // ============================================
-// DETECT WHICH PAGE WE'RE ON
+// DETECT PAGE
 // ============================================
 
 const isTattooPage = window.location.pathname.includes('tattoo.html');
@@ -17,7 +17,7 @@ const isShopPage = window.location.pathname.includes('shop.html');
 const isLandingPage = !isTattooPage && !isShopPage;
 
 // ============================================
-// LANDING PAGE SLIDESHOW
+// LANDING PAGE
 // ============================================
 
 if (isLandingPage) {
@@ -25,7 +25,6 @@ if (isLandingPage) {
 }
 
 async function loadLandingSlideshows() {
-    // Load portfolio images for tattoo slideshow
     try {
         const response = await fetch('/tattoo/portfolio.json');
         if (response.ok) {
@@ -41,9 +40,8 @@ async function loadLandingSlideshows() {
                 track.style.animation = 'scrollSlideshow 30s linear infinite';
             }
         }
-    } catch (e) { console.log('No portfolio images for slideshow'); }
+    } catch (e) { console.log('No portfolio images'); }
 
-    // Load shop images for shop slideshow
     try {
         const response = await fetch('/shop/jewelry.json');
         if (response.ok) {
@@ -59,7 +57,7 @@ async function loadLandingSlideshows() {
                 track.style.animation = 'scrollSlideshow 30s linear infinite';
             }
         }
-    } catch (e) { console.log('No shop images for slideshow'); }
+    } catch (e) { console.log('No shop images'); }
 }
 
 // ============================================
@@ -67,198 +65,165 @@ async function loadLandingSlideshows() {
 // ============================================
 
 if (isTattooPage) {
-    console.log('Tattoo page loaded');
-    
-    // Get ALL buttons in the tattoo nav (including Home)
-    const allTattooBtns = document.querySelectorAll('.nav-tabs-tattoo .tab-btn');
-    const tattooContentSections = {};
-    const tattooGrids = {};
+    // Get all button tabs (skip Home which is <a>)
+    const tabs = document.querySelectorAll('.nav-tabs-tattoo button.tab-btn');
+    const contentMap = {};
+    const gridMap = {};
 
-    // Filter out the Home button (it's an <a> tag, not a <button>)
-    const tattooTabs = [];
-    allTattooBtns.forEach(btn => {
-        if (btn.tagName === 'BUTTON') {
-            const tabId = btn.dataset.tab;
-            if (tabId) {
-                tattooTabs.push(btn);
-                tattooContentSections[tabId] = document.getElementById(tabId);
-                tattooGrids[tabId] = document.getElementById(`${tabId}-grid`);
-            }
-        }
+    tabs.forEach(btn => {
+        const id = btn.dataset.tab;
+        contentMap[id] = document.getElementById(id);
+        gridMap[id] = document.getElementById(id + '-grid');
     });
 
-    const tattooCalendarContainer = document.getElementById('tattoo-calendar-container');
-    const tattooFullscreenOverlay = document.getElementById('fullscreen-overlay');
-    const tattooFullscreenImage = document.getElementById('fullscreen-image');
-    const tattooFullscreenClose = document.getElementById('fullscreen-close');
+    const calendarContainer = document.getElementById('tattoo-calendar-container');
+    const overlay = document.getElementById('fullscreen-overlay');
+    const overlayImg = document.getElementById('fullscreen-image');
+    const closeBtn = document.getElementById('fullscreen-close');
 
-    // Add click listeners to tattoo tabs
-    tattooTabs.forEach(btn => {
+    // Add click listeners
+    tabs.forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
-            e.stopPropagation();
             const tab = this.dataset.tab;
-            console.log('Tattoo tab clicked:', tab);
-            switchTattooTab(tab);
+            switchTab(tab);
         });
     });
 
-    function switchTattooTab(tab) {
-        console.log('Switching to tattoo tab:', tab);
-        
-        // Update active class on buttons
-        tattooTabs.forEach(b => b.classList.remove('active'));
-        const activeBtn = document.querySelector(`.nav-tabs-tattoo .tab-btn[data-tab="${tab}"]`);
+    function switchTab(tab) {
+        // Update buttons
+        tabs.forEach(b => b.classList.remove('active'));
+        const activeBtn = document.querySelector(`.nav-tabs-tattoo button[data-tab="${tab}"]`);
         if (activeBtn) activeBtn.classList.add('active');
 
-        // Hide all content sections
-        Object.keys(tattooContentSections).forEach(key => {
-            if (tattooContentSections[key]) {
-                tattooContentSections[key].style.display = 'none';
-                tattooContentSections[key].classList.remove('active');
+        // Hide all content
+        Object.keys(contentMap).forEach(key => {
+            if (contentMap[key]) {
+                contentMap[key].style.display = 'none';
+                contentMap[key].classList.remove('active');
             }
         });
 
-        // Show the selected content
-        if (tattooContentSections[tab]) {
-            tattooContentSections[tab].style.display = 'block';
-            tattooContentSections[tab].classList.add('active');
+        // Show selected
+        if (contentMap[tab]) {
+            contentMap[tab].style.display = 'block';
+            contentMap[tab].classList.add('active');
         }
 
-        const grid = tattooGrids[tab];
+        // Load grid
+        const grid = gridMap[tab];
         if (grid) {
-            // Check if grid has a loading message or is empty
-            const hasLoading = grid.querySelector('.loading');
-            const isGridEmpty = grid.children.length === 0;
-            if (hasLoading || isGridEmpty) {
-                loadTattooGrid(tab, grid);
-            }
+            loadGrid(tab, grid);
         }
 
+        // Load calendar
         if (tab === 'tattoo-scheduler') {
-            loadTattooCalendar();
+            loadCalendar();
         }
     }
 
-    async function loadTattooGrid(tab, container) {
+    async function loadGrid(tab, container) {
         const category = tab.replace('tattoo-', '');
         try {
-            const response = await fetch(`/tattoo/${category}.json`);
-            if (!response.ok) throw new Error('Failed to load');
-            const data = await response.json();
+            const res = await fetch(`/tattoo/${category}.json`);
+            if (!res.ok) throw new Error('No data');
+            const data = await res.json();
             const images = data[category] || [];
-            renderTattooGrid(container, images);
-        } catch (error) {
-            container.innerHTML = `<p class="loading">No images yet.</p>`;
-        }
-    }
-
-    function renderTattooGrid(container, images) {
-        if (!images || images.length === 0) {
-            container.innerHTML = `<p class="loading">No images yet.</p>`;
-            return;
-        }
-        container.innerHTML = images.map(item => {
-            const imagePath = item.image || item;
-            return `
-                <div class="image-item" onclick="openTattooFullscreen('${imagePath}')">
-                    <img src="${imagePath}" alt="Image" loading="lazy">
-                </div>
-            `;
-        }).join('');
-    }
-
-    async function loadTattooCalendar() {
-        tattooCalendarContainer.innerHTML = `<p class="loading">Loading calendar...</p>`;
-        try {
-            const response = await fetch(CONFIG.APPS_SCRIPT_URL);
-            if (!response.ok) throw new Error('Failed to load');
-            const data = await response.json();
-            if (data.error || !data.calendar || data.calendar.length === 0) {
-                tattooCalendarContainer.innerHTML = `<p class="loading">No availability data.</p>`;
+            if (images.length === 0) {
+                container.innerHTML = '<p class="loading">No images yet.</p>';
                 return;
             }
-            renderTattooCalendar(data.calendar);
-        } catch (error) {
-            tattooCalendarContainer.innerHTML = `<p class="loading">Error loading calendar.</p>`;
+            container.innerHTML = images.map(item => {
+                const path = item.image || item;
+                return `<div class="image-item" onclick="openFullscreen('${path}')">
+                            <img src="${path}" alt="Image" loading="lazy">
+                        </div>`;
+            }).join('');
+        } catch (e) {
+            container.innerHTML = '<p class="loading">No images yet.</p>';
         }
     }
 
-    function renderTattooCalendar(calendar) {
+    async function loadCalendar() {
+        calendarContainer.innerHTML = '<p class="loading">Loading calendar...</p>';
+        try {
+            const res = await fetch(CONFIG.APPS_SCRIPT_URL);
+            if (!res.ok) throw new Error('Failed');
+            const data = await res.json();
+            if (data.error || !data.calendar || data.calendar.length === 0) {
+                calendarContainer.innerHTML = '<p class="loading">No availability data.</p>';
+                return;
+            }
+            renderCalendar(data.calendar);
+        } catch (e) {
+            calendarContainer.innerHTML = '<p class="loading">Error loading calendar.</p>';
+        }
+    }
+
+    function renderCalendar(calendar) {
         const months = {};
         calendar.forEach(day => {
             const date = new Date(day.date + 'T00:00:00');
-            const monthKey = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
-            if (!months[monthKey]) months[monthKey] = [];
-            months[monthKey].push(day);
+            const key = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+            if (!months[key]) months[key] = [];
+            months[key].push(day);
         });
 
         let html = '';
-        const sortedMonths = Object.keys(months).sort();
-
-        sortedMonths.forEach(monthKey => {
-            const days = months[monthKey];
-            const [year, month] = monthKey.split('-');
-            const monthName = new Date(parseInt(year), parseInt(month) - 1, 1).toLocaleString('default', { month: 'long' });
-
-            html += `<h3 style="margin: 20px 0 10px 0; color: #a64d79;">${monthName} ${year}</h3>`;
-            html += `<table class="calendar-table"><thead><tr><th>Date</th><th>Day</th><th>12pm Slot</th><th>4pm Slot</th></tr></thead><tbody>`;
-
-            days.forEach(day => {
+        Object.keys(months).sort().forEach(key => {
+            const [year, month] = key.split('-');
+            const name = new Date(parseInt(year), parseInt(month) - 1, 1).toLocaleString('default', { month: 'long' });
+            html += `<h3 style="margin:20px 0 10px; color:#a64d79;">${name} ${year}</h3>`;
+            html += `<table class="calendar-table"><thead><tr><th>Date</th><th>Day</th><th>12pm</th><th>4pm</th></tr></thead><tbody>`;
+            months[key].forEach(day => {
                 const date = new Date(day.date + 'T00:00:00');
                 const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
                 const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
-                const slot12Class = day.slot12 === 'Unavailable' ? 'unavailable' : 'available';
-                const slot4Class = day.slot4 === 'Unavailable' ? 'unavailable' : 'available';
-
+                const c12 = day.slot12 === 'Unavailable' ? 'unavailable' : 'available';
+                const c4 = day.slot4 === 'Unavailable' ? 'unavailable' : 'available';
                 html += `<tr>
                     <td class="date-cell">${dateStr}</td>
                     <td>${dayName}</td>
-                    <td class="${slot12Class}">${day.slot12}</td>
-                    <td class="${slot4Class}">${day.slot4}</td>
+                    <td class="${c12}">${day.slot12}</td>
+                    <td class="${c4}">${day.slot4}</td>
                 </tr>`;
             });
-
             html += `</tbody></table>`;
         });
-
-        tattooCalendarContainer.innerHTML = html;
+        calendarContainer.innerHTML = html;
     }
 
-    function openTattooFullscreen(imageSrc) {
-        tattooFullscreenImage.src = imageSrc;
-        tattooFullscreenOverlay.style.display = 'flex';
+    function openFullscreen(src) {
+        overlayImg.src = src;
+        overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 
-    if (tattooFullscreenClose) {
-        tattooFullscreenClose.addEventListener('click', () => {
-            tattooFullscreenOverlay.style.display = 'none';
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            overlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         });
     }
 
-    tattooFullscreenOverlay.addEventListener('click', (e) => {
-        if (e.target === tattooFullscreenOverlay) {
-            tattooFullscreenOverlay.style.display = 'none';
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            overlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && tattooFullscreenOverlay.style.display === 'flex') {
-            tattooFullscreenOverlay.style.display = 'none';
+        if (e.key === 'Escape' && overlay.style.display === 'flex') {
+            overlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     });
 
-    window.openTattooFullscreen = openTattooFullscreen;
+    window.openFullscreen = openFullscreen;
 
-    // Activate default tab
-    setTimeout(() => {
-        switchTattooTab('tattoo-flash');
-    }, 100);
+    // Default tab
+    switchTab('tattoo-flash');
 }
 
 // ============================================
@@ -266,140 +231,108 @@ if (isTattooPage) {
 // ============================================
 
 if (isShopPage) {
-    console.log('Shop page loaded');
-    
-    // Get ALL buttons in the shop nav (including Home)
-    const allShopBtns = document.querySelectorAll('.nav-tabs-shop .tab-btn');
-    const shopContentSections = {};
-    const shopGrids = {};
+    const tabs = document.querySelectorAll('.nav-tabs-shop button.tab-btn');
+    const contentMap = {};
+    const gridMap = {};
 
-    // Filter out the Home button (it's an <a> tag, not a <button>)
-    const shopTabs = [];
-    allShopBtns.forEach(btn => {
-        if (btn.tagName === 'BUTTON') {
-            const tabId = btn.dataset.tab;
-            if (tabId) {
-                shopTabs.push(btn);
-                shopContentSections[tabId] = document.getElementById(tabId);
-                shopGrids[tabId] = document.getElementById(`${tabId}-grid`);
-            }
-        }
+    tabs.forEach(btn => {
+        const id = btn.dataset.tab;
+        contentMap[id] = document.getElementById(id);
+        gridMap[id] = document.getElementById(id + '-grid');
     });
 
-    const shopFullscreenOverlay = document.getElementById('fullscreen-overlay');
-    const shopFullscreenImage = document.getElementById('fullscreen-image');
-    const shopFullscreenClose = document.getElementById('fullscreen-close');
+    const overlay = document.getElementById('fullscreen-overlay');
+    const overlayImg = document.getElementById('fullscreen-image');
+    const closeBtn = document.getElementById('fullscreen-close');
 
-    // Add click listeners to shop tabs
-    shopTabs.forEach(btn => {
+    tabs.forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
-            e.stopPropagation();
             const tab = this.dataset.tab;
-            console.log('Shop tab clicked:', tab);
-            switchShopTab(tab);
+            switchTab(tab);
         });
     });
 
-    function switchShopTab(tab) {
-        console.log('Switching to shop tab:', tab);
-        
-        // Update active class on buttons
-        shopTabs.forEach(b => b.classList.remove('active'));
-        const activeBtn = document.querySelector(`.nav-tabs-shop .tab-btn[data-tab="${tab}"]`);
+    function switchTab(tab) {
+        tabs.forEach(b => b.classList.remove('active'));
+        const activeBtn = document.querySelector(`.nav-tabs-shop button[data-tab="${tab}"]`);
         if (activeBtn) activeBtn.classList.add('active');
 
-        // Hide all content sections
-        Object.keys(shopContentSections).forEach(key => {
-            if (shopContentSections[key]) {
-                shopContentSections[key].style.display = 'none';
-                shopContentSections[key].classList.remove('active');
+        Object.keys(contentMap).forEach(key => {
+            if (contentMap[key]) {
+                contentMap[key].style.display = 'none';
+                contentMap[key].classList.remove('active');
             }
         });
 
-        // Show the selected content
-        if (shopContentSections[tab]) {
-            shopContentSections[tab].style.display = 'block';
-            shopContentSections[tab].classList.add('active');
+        if (contentMap[tab]) {
+            contentMap[tab].style.display = 'block';
+            contentMap[tab].classList.add('active');
         }
 
-        const grid = shopGrids[tab];
+        const grid = gridMap[tab];
         if (grid) {
-            const hasLoading = grid.querySelector('.loading');
-            const isGridEmpty = grid.children.length === 0;
-            if (hasLoading || isGridEmpty) {
-                loadShopGrid(tab, grid);
-            }
+            loadGrid(tab, grid);
         }
     }
 
-    async function loadShopGrid(tab, container) {
+    async function loadGrid(tab, container) {
         const category = tab.replace('shop-', '');
         try {
-            const response = await fetch(`/shop/${category}.json`);
-            if (!response.ok) throw new Error('Failed to load');
-            const data = await response.json();
+            const res = await fetch(`/shop/${category}.json`);
+            if (!res.ok) throw new Error('No data');
+            const data = await res.json();
             const items = data[category] || [];
-            renderShopGrid(container, items);
-        } catch (error) {
-            container.innerHTML = `<p class="loading">No items yet.</p>`;
+            if (items.length === 0) {
+                container.innerHTML = '<p class="loading">No items yet.</p>';
+                return;
+            }
+            container.innerHTML = items.map(item => {
+                const path = item.image || item;
+                const title = item.title || '';
+                const price = item.price || '';
+                return `<div class="shop-item">
+                            <img src="${path}" alt="${title}" class="shop-image" onclick="openFullscreen('${path}')">
+                            <div class="shop-details">
+                                <div class="shop-title">${title}</div>
+                                <div class="shop-price">${price}</div>
+                            </div>
+                        </div>`;
+            }).join('');
+        } catch (e) {
+            container.innerHTML = '<p class="loading">No items yet.</p>';
         }
     }
 
-    function renderShopGrid(container, items) {
-        if (!items || items.length === 0) {
-            container.innerHTML = `<p class="loading">No items yet.</p>`;
-            return;
-        }
-        container.innerHTML = items.map(item => {
-            const imagePath = item.image || item;
-            const title = item.title || '';
-            const price = item.price || '';
-            return `
-                <div class="shop-item">
-                    <img src="${imagePath}" alt="${title}" class="shop-image" onclick="openShopFullscreen('${imagePath}')">
-                    <div class="shop-details">
-                        <div class="shop-title">${title}</div>
-                        <div class="shop-price">${price}</div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    function openShopFullscreen(imageSrc) {
-        shopFullscreenImage.src = imageSrc;
-        shopFullscreenOverlay.style.display = 'flex';
+    function openFullscreen(src) {
+        overlayImg.src = src;
+        overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 
-    if (shopFullscreenClose) {
-        shopFullscreenClose.addEventListener('click', () => {
-            shopFullscreenOverlay.style.display = 'none';
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            overlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         });
     }
 
-    shopFullscreenOverlay.addEventListener('click', (e) => {
-        if (e.target === shopFullscreenOverlay) {
-            shopFullscreenOverlay.style.display = 'none';
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            overlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && shopFullscreenOverlay.style.display === 'flex') {
-            shopFullscreenOverlay.style.display = 'none';
+        if (e.key === 'Escape' && overlay.style.display === 'flex') {
+            overlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     });
 
-    window.openShopFullscreen = openShopFullscreen;
+    window.openFullscreen = openFullscreen;
 
-    // Activate default tab - Paintings
-    setTimeout(() => {
-        switchShopTab('shop-paintings');
-    }, 100);
+    // Default tab - Paintings
+    switchTab('shop-paintings');
 }
-
-console.log('App.js loaded. Page:', window.location.pathname);
