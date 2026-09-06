@@ -1,19 +1,37 @@
 exports.handler = async (event) => {
     const SHOP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWh3AsmhzASofyW3c0CEIEMD_2meFvTmIxA-vgFau2S8gn57bbeg2-8nGlw8NP6HzX5A/exec';
     
+    const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+    };
+    
+    // Handle preflight OPTIONS request
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            statusCode: 200,
+            headers: headers,
+            body: ''
+        };
+    }
+    
     try {
         let url = SHOP_SCRIPT_URL;
         let options = {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            method: event.httpMethod
         };
         
         if (event.httpMethod === 'POST') {
-            options.method = 'POST';
+            // Forward POST body
             options.body = event.body;
-        } else {
-            // GET request - pass query parameters
+            // Also add _method=POST to query params for Apps Script
+            url += '?_method=POST';
+        } else if (event.queryStringParameters) {
+            // Forward GET parameters
             const params = new URLSearchParams(event.queryStringParameters);
             url += '?' + params.toString();
         }
@@ -23,20 +41,19 @@ exports.handler = async (event) => {
         
         return {
             statusCode: 200,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json'
-            },
+            headers: headers,
             body: JSON.stringify(data)
         };
+        
     } catch (error) {
         return {
             statusCode: 500,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ error: error.message })
+            headers: headers,
+            body: JSON.stringify({ 
+                success: false, 
+                error: error.message,
+                details: error.toString()
+            })
         };
     }
 };
