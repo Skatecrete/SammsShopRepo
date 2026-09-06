@@ -83,21 +83,19 @@ body {
     max-width: 450px;
     padding: 1.5rem 2rem;
     margin: 2rem auto;
-    background: #fff;
-    border: 2px solid #ddd;
+    background: transparent;
+    border: none;
     border-radius: 60px;
     text-decoration: none;
     color: #1a1a1a;
     transition: all 0.3s;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: none;
     gap: 1.5rem;
 }
 
 .landing-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-    border-color: #888;
+    transform: scale(1.02);
 }
 
 .landing-btn-icon {
@@ -199,15 +197,27 @@ body {
 }
 
 .nav-right-logo {
-    flex: 1;
+    flex: 2;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0 1rem;
 }
 
 .nav-right-logo img {
     max-height: 55px;
     width: auto;
+}
+
+.admin-logo-link {
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.admin-logo-link:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s;
 }
 
 /* ============================================
@@ -375,6 +385,7 @@ h2 {
 
 .shop-item .shop-details {
     padding: 0.8rem 1rem 1rem;
+    text-align: center;
 }
 
 .shop-item .shop-title {
@@ -513,23 +524,6 @@ footer {
 
 footer p {
     margin-bottom: 0.5rem;
-}
-
-.admin-link-btn {
-    background: none;
-    border: none;
-    color: #555;
-    cursor: pointer;
-    font-size: 0.8rem;
-    text-decoration: underline;
-    padding: 0;
-    margin: 0;
-    transition: color 0.3s;
-    font-family: inherit;
-}
-
-.admin-link-btn:hover {
-    color: #888;
 }
 
 /* ============================================
