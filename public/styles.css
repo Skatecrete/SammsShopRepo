@@ -14,7 +14,104 @@ body {
 }
 
 /* ============================================
-   NAVIGATION - 2 ROWS WITH BIGGER TABS
+   LANDING PAGE
+   ============================================ */
+
+#landing-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem 4rem 1rem;
+    background: #f5f3f0;
+}
+
+.landing-title-section {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.landing-main-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: 3.5rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin-bottom: 0.2rem;
+}
+
+.landing-sub-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: #666;
+    letter-spacing: 2px;
+}
+
+.landing-slideshow {
+    width: 100%;
+    max-width: 600px;
+    margin: 0.5rem auto;
+}
+
+.landing-slideshow .slideshow-container {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.landing-slideshow .slide-item {
+    flex: 0 0 150px;
+    height: 150px;
+}
+
+/* ============================================
+   LANDING BUTTONS
+   ============================================ */
+
+.landing-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 400px;
+    padding: 1rem 1.5rem;
+    margin: 0.8rem auto;
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 60px;
+    text-decoration: none;
+    color: #1a1a1a;
+    transition: all 0.3s;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.landing-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    border-color: #888;
+}
+
+.landing-btn-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 1.2rem;
+    border: 2px solid #eee;
+}
+
+.landing-btn-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 2px;
+}
+
+/* ============================================
+   NAVIGATION
    ============================================ */
 
 #main-nav {
@@ -88,50 +185,30 @@ body {
 }
 
 /* ============================================
-   LANDING PAGE
+   HOME BUTTON
    ============================================ */
 
-#landing {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+.home-btn {
+    background: transparent;
+    border: 2px solid #a64d79;
+    color: #a64d79;
+    padding: 0.7rem 1.5rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 70vh;
-    padding: 2rem 1rem 8rem 1rem;
+    white-space: nowrap;
 }
 
-.landing-content {
-    text-align: center;
-    max-width: 800px;
-    padding: 2rem;
-}
-
-.landing-title {
-    font-family: 'Great Vibes', cursive;
-    font-size: 4.5rem;
-    font-weight: 400;
-    color: #1a1a1a;
-    margin-bottom: 0.5rem;
-    line-height: 1.1;
-}
-
-.landing-by {
-    font-family: 'Inter', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 300;
-    color: #666;
-    text-transform: lowercase;
-    letter-spacing: 4px;
-    margin: 0.5rem 0;
-}
-
-.landing-name {
-    font-family: 'Great Vibes', cursive;
-    font-size: 3rem;
-    font-weight: 400;
-    color: #1a1a1a;
-    margin-top: 0.5rem;
+.home-btn:hover {
+    background: #a64d79;
+    color: #fff;
+    border-color: #a64d79;
 }
 
 /* ============================================
@@ -140,13 +217,9 @@ body {
 
 .slideshow-container {
     width: 100%;
-    max-width: 800px;
-    margin: 2rem auto 0;
     overflow: hidden;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    background: #fff;
     position: relative;
+    background: #fff;
 }
 
 .slideshow-track {
@@ -214,7 +287,7 @@ h2 {
 }
 
 /* ============================================
-   IMAGE GRID
+   IMAGE GRID (Tattoo)
    ============================================ */
 
 .image-grid {
@@ -245,29 +318,58 @@ h2 {
     display: block;
 }
 
-.image-grid .image-item .image-name {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0,0,0,0.7);
-    color: #fff;
-    padding: 0.5rem;
-    font-size: 0.8rem;
-    text-align: center;
-    transform: translateY(100%);
-    transition: transform 0.3s;
+/* ============================================
+   SHOP GRID (2 columns with text)
+   ============================================ */
+
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
 }
 
-.image-grid .image-item:hover .image-name {
-    transform: translateY(0);
+.shop-item {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
+}
+
+.shop-item:hover {
+    transform: translateY(-4px);
+}
+
+.shop-item .shop-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.shop-item .shop-details {
+    padding: 0.8rem 1rem 1rem;
+}
+
+.shop-item .shop-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.2rem;
+}
+
+.shop-item .shop-price {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #a64d79;
 }
 
 /* ============================================
    CALENDAR
    ============================================ */
 
-#calendar-container {
+#calendar-container,
+#tattoo-calendar-container {
     background: #fff;
     border-radius: 12px;
     padding: 1.5rem;
@@ -499,11 +601,31 @@ footer {
         font-size: 0.85rem;
         border-radius: 25px;
     }
-    .landing-title {
-        font-size: 3rem;
+    .home-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        border-radius: 25px;
     }
-    .landing-name {
-        font-size: 2rem;
+    .landing-main-title {
+        font-size: 2.5rem;
+    }
+    .landing-sub-title {
+        font-size: 1rem;
+    }
+    .landing-btn {
+        max-width: 320px;
+        padding: 0.8rem 1.2rem;
+    }
+    .landing-btn-icon {
+        width: 48px;
+        height: 48px;
+    }
+    .landing-btn-text {
+        font-size: 1.4rem;
+    }
+    .shop-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
     .image-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -521,8 +643,12 @@ footer {
         font-size: 1.5rem;
     }
     .slide-item {
-        flex: 0 0 150px;
-        height: 150px;
+        flex: 0 0 120px;
+        height: 120px;
+    }
+    .landing-slideshow .slide-item {
+        flex: 0 0 120px;
+        height: 120px;
     }
     #fullscreen-close {
         top: 15px;
@@ -547,6 +673,10 @@ footer {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 0.5rem;
     }
+    .shop-grid {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
     .nav-tabs {
         gap: 0.3rem;
     }
@@ -558,21 +688,35 @@ footer {
         padding: 0.4rem 0.7rem;
         border-radius: 20px;
     }
+    .home-btn {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.7rem;
+        border-radius: 20px;
+    }
     #header-title {
         font-size: 0.9rem;
     }
-    .landing-title {
-        font-size: 2.2rem;
+    .landing-main-title {
+        font-size: 2rem;
     }
-    .landing-name {
-        font-size: 1.5rem;
+    .landing-btn {
+        max-width: 280px;
+        padding: 0.6rem 1rem;
     }
-    .landing-by {
-        font-size: 1rem;
+    .landing-btn-icon {
+        width: 40px;
+        height: 40px;
+    }
+    .landing-btn-text {
+        font-size: 1.2rem;
+    }
+    .landing-slideshow .slide-item {
+        flex: 0 0 100px;
+        height: 100px;
     }
     .slide-item {
-        flex: 0 0 120px;
-        height: 120px;
+        flex: 0 0 100px;
+        height: 100px;
     }
     #fullscreen-close {
         top: 10px;
