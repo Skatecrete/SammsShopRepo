@@ -8,25 +8,55 @@ exports.handler = async (event) => {
     };
     
     if (event.httpMethod === 'OPTIONS') {
-        return { statusCode: 200, headers, body: '' };
+        return {
+            statusCode: 200,
+            headers: headers,
+            body: ''
+        };
     }
     
     try {
+        console.log('📤 Proxying request:', event.httpMethod);
+        console.log('📤 Path:', event.path);
+        
         let url = SHOP_SCRIPT_URL;
         let options = {
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             method: event.httpMethod
         };
         
+        // Handle POST requests
         if (event.httpMethod === 'POST') {
+            console.log('📤 POST body:', event.body);
             options.body = event.body;
-        } else if (event.queryStringParameters) {
+        } 
+        // Handle GET requests with query parameters
+        else if (event.queryStringParameters) {
             const params = new URLSearchParams(event.queryStringParameters);
-            url += '?' + params.toString();
+            const queryString = params.toString();
+            if (queryString) {
+                url += '?' + queryString;
+            }
+            console.log('📤 GET URL:', url);
         }
         
+        console.log('📤 Fetching:', url);
+        
         const response = await fetch(url, options);
-        const data = await response.json();
+        console.log('📤 Response status:', response.status);
+        
+        const responseText = await response.text();
+        console.log('📤 Response body (first 200 chars):', responseText.substring(0, 200));
+        
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (e) {
+            console.error('❌ Failed to parse JSON:', e.message);
+            data = { error: 'Invalid JSON response from Google Sheets', raw: responseText };
+        }
         
         return {
             statusCode: 200,
@@ -35,10 +65,17 @@ exports.handler = async (event) => {
         };
         
     } catch (error) {
+        console.error('❌ Proxy error:', error.message);
+        console.error('❌ Error stack:', error.stack);
+        
         return {
             statusCode: 500,
             headers: headers,
-            body: JSON.stringify({ success: false, error: error.message })
+            body: JSON.stringify({
+                success: false,
+                error: error.message,
+                stack: error.stack
+            })
         };
     }
 };
