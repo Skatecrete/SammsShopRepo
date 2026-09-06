@@ -9,14 +9,15 @@ const CONFIG = {
 };
 
 // ============================================
-// DETECT PAGE
+// DETECT PAGE - FIXED
 // ============================================
 
-const isTattooPage = window.location.pathname.includes('tattoo.html');
-const isShopPage = window.location.pathname.includes('shop.html');
-const isLandingPage = !isTattooPage && !isShopPage;
+const path = window.location.pathname;
+const isTattooPage = path.includes('tattoo') || path.includes('tattoo.html');
+const isShopPage = path.includes('shop') || path.includes('shop.html');
+const isLandingPage = path === '/' || path === '/index.html' || path === '';
 
-console.log('🔍 Page detected:', window.location.pathname);
+console.log('🔍 Page detected:', path);
 console.log('  - isTattooPage:', isTattooPage);
 console.log('  - isShopPage:', isShopPage);
 console.log('  - isLandingPage:', isLandingPage);
@@ -87,12 +88,10 @@ async function loadLandingSlideshows() {
 if (isTattooPage) {
     console.log('📄 Tattoo page - initializing...');
     
-    // Wait for DOM to be ready
     function initTattoo() {
         try {
             console.log('🔄 initTattoo() called');
             
-            // Get all tabs
             const tabs = document.querySelectorAll('.nav-tabs-tattoo .tab-btn');
             console.log('  - Found', tabs.length, 'tattoo tabs');
             
@@ -101,12 +100,10 @@ if (isTattooPage) {
                 return;
             }
             
-            // Log each tab
             tabs.forEach((btn, i) => {
                 console.log(`  - Tab ${i}:`, btn.dataset.tab, btn.className);
             });
             
-            // Add click listeners
             tabs.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -121,7 +118,6 @@ if (isTattooPage) {
                 });
             });
             
-            // Check if content sections exist
             const contentSections = document.querySelectorAll('#tattoo-content .tab-content');
             console.log('  - Found', contentSections.length, 'content sections');
             
@@ -129,7 +125,6 @@ if (isTattooPage) {
                 console.error('❌ No content sections found! Check #tattoo-content in HTML.');
             }
             
-            // Set default tab
             console.log('🔄 Setting default tab: tattoo-flash');
             switchTattooTab('tattoo-flash');
             
@@ -138,7 +133,6 @@ if (isTattooPage) {
         }
     }
     
-    // Try to initialize immediately
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
         console.log('⏱️ DOM already ready, initializing immediately');
         initTattoo();
@@ -155,7 +149,6 @@ function switchTattooTab(tab) {
     try {
         console.log('🔄 switchTattooTab() called with:', tab);
         
-        // Update active class on buttons
         const allTabs = document.querySelectorAll('.nav-tabs-tattoo .tab-btn');
         allTabs.forEach(b => b.classList.remove('active'));
         
@@ -167,7 +160,6 @@ function switchTattooTab(tab) {
             console.warn('  - No button found for tab:', tab);
         }
         
-        // Hide all content
         const contentSections = document.querySelectorAll('#tattoo-content .tab-content');
         console.log('  - Hiding', contentSections.length, 'content sections');
         contentSections.forEach(section => {
@@ -175,7 +167,6 @@ function switchTattooTab(tab) {
             section.classList.remove('active');
         });
         
-        // Show selected
         const targetSection = document.getElementById(tab);
         if (targetSection) {
             targetSection.style.display = 'block';
@@ -186,7 +177,6 @@ function switchTattooTab(tab) {
             console.error('❌ No content section found for tab:', tab);
         }
         
-        // Load calendar
         if (tab === 'tattoo-scheduler') {
             console.log('  - Loading calendar...');
             loadTattooCalendar();
@@ -208,7 +198,6 @@ function loadTattooGrid(tab) {
         
         console.log('  - Loading grid for:', category);
         
-        // Check if we already have content
         if (container.children.length > 0 && !container.querySelector('.loading')) {
             console.log('  - Grid already has content, skipping load');
             return;
@@ -414,7 +403,6 @@ function switchShopTab(tab) {
         }
         
         const contentSections = document.querySelectorAll('#shop-content .tab-content');
-        console.log('  - Hiding', contentSections.length, 'content sections');
         contentSections.forEach(section => {
             section.style.display = 'none';
             section.classList.remove('active');
