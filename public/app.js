@@ -1,5 +1,6 @@
 const CONFIG = {
     APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwEGoZ83eDemeVFFI1YHby4eNOQ4EJFFgOXtsz00x-ubNlsgqzAupVDoFeZRYqyIrEG/exec',
+    SHOP_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzWh3AsmhzASofyW3c0CEIEMD_2meFvTmIxA-vgFau2S8gn57bbeg2-8nGlw8NP6HzX5A/exec',
     ADMIN_USER: 'Samm',
     ADMIN_PASS: '0510',
     GITHUB: {
@@ -325,7 +326,6 @@ window.openTattooFullscreen = function(src) {
 if (isShopPage) {
     console.log('📄 Shop page - initializing...');
     
-    const SHOP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWh3AsmhzASofyW3c0CEIEMD_2meFvTmIxA-vgFau2S8gn57bbeg2-8nGlw8NP6HzX5A/exec';
     let shopDataCache = null;
     
     function initShop() {
@@ -367,7 +367,7 @@ if (isShopPage) {
     
     async function loadShopDataFromSheets() {
         try {
-            const response = await fetch(SHOP_SCRIPT_URL);
+            const response = await fetch(CONFIG.SHOP_SCRIPT_URL);
             if (!response.ok) throw new Error('Failed to fetch shop data');
             const data = await response.json();
             
@@ -448,7 +448,7 @@ if (isShopPage) {
                     <img src="${imagePath}" alt="${title}" class="shop-image" onerror="this.style.display='none'">
                     <div class="shop-details">
                         <div class="shop-title" style="font-size:1.2rem; font-weight:600; font-style:italic; color:#1a1a1a;">${title}</div>
-                        <div class="shop-price" style="font-size:1.1rem; font-weight:600; font-style:italic; color:#a64d79;">${cost ? '$' + cost : 'Price upon request'}</div>
+                        <div class="shop-price" style="font-size:1.1rem; font-weight:600; font-style:italic; color:#a64d79;">${cost}</div>
                     </div>
                 </div>
             `;
