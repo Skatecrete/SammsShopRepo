@@ -1,3 +1,12 @@
-{"paintings": [
-{"image": "/images/shop/paintings/skarmory-mega-shiny.png"}
-]}
+{
+  "paintings": [
+    {
+      "image": "/images/shop/paintings/skarmory-mega-shiny.png"
+    },
+    {
+      "image": "/images/shop/paintings/Controller.png",
+      "title": "fghfghfg",
+      "price": "$45.00"
+    }
+  ]
+}
