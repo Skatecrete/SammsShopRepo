@@ -307,7 +307,6 @@
             <div id="upload-status" class="upload-status"></div>
         </div>
 
-        <!-- SAVE CHANGES SECTION -->
         <div id="save-changes-section" class="save-changes-section">
             <button class="save-btn" id="save-changes-btn" onclick="saveAllChanges()">💾 Save All Changes</button>
             <div class="save-status" id="save-status"></div>
@@ -323,11 +322,13 @@
     <script>
         const REPO_OWNER = 'Skatecrete';
         const REPO_NAME = 'SammsShopRepo';
+        const SHOP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWh3AsmhzASofyW3c0CEIEMD_2meFvTmIxA-vgFau2S8gn57bbeg2-8nGlw8NP6HzX5A/exec';
 
         let currentTab = '';
         let currentCategory = '';
         let currentSection = '';
         let isShop = false;
+        let shopDataCache = null;
 
         (function checkAuth() {
             if (localStorage.getItem('admin') !== 'true') {
@@ -365,8 +366,6 @@
         const saveBtn = document.getElementById('save-changes-btn');
         const saveStatus = document.getElementById('save-status');
 
-        let pendingChanges = [];
-
         function setStatus(text, type) {
             statusBadge.textContent = text;
             statusBadge.className = 'status-badge ' + type;
@@ -381,6 +380,34 @@
         function showSaveStatus(message, isSuccess) {
             saveStatus.textContent = message;
             saveStatus.style.color = isSuccess ? '#28a745' : '#dc3545';
+        }
+
+        async function fetchShopData() {
+            try {
+                const response = await fetch(SHOP_SCRIPT_URL);
+                if (!response.ok) throw new Error('Failed to fetch shop data');
+                const data = await response.json();
+                shopDataCache = data.shop || {};
+                return shopDataCache;
+            } catch (error) {
+                console.error('Error fetching shop data:', error);
+                return null;
+            }
+        }
+
+        async function updateShopSheet(category, items) {
+            try {
+                const response = await fetch(SHOP_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ category: category, items: items })
+                });
+                const data = await response.json();
+                return data.success;
+            } catch (error) {
+                console.error('Error updating shop sheet:', error);
+                return false;
+            }
         }
 
         tabSelect.addEventListener('change', function() {
@@ -406,7 +433,6 @@
             shopItemForm.style.display = isShop ? 'flex' : 'none';
 
             currentTab = value;
-            pendingChanges = [];
             loadImages();
         });
 
@@ -414,167 +440,116 @@
             return str.charAt(0).toUpperCase() + str.slice(1);
         }
 
-        function markChange() {
-            pendingChanges.push(Date.now());
-            saveBtn.disabled = false;
-            saveBtn.textContent = '💾 Save All Changes';
-            showSaveStatus('Changes pending...', false);
-        }
-
         async function loadImages() {
             if (!currentTab) return;
             imageGrid.innerHTML = '<p>Loading...</p>';
 
             try {
-                const jsonFile = `/${currentSection}/${currentCategory}.json`;
-                const response = await fetch(jsonFile);
-
-                if (!response.ok) {
-                    imageGrid.innerHTML = '<p>No images yet. Upload some!</p>';
-                    imageCount.textContent = '0 images';
-                    return;
+                if (isShop) {
+                    await loadShopImages();
+                } else {
+                    await loadTattooImages();
                 }
-
-                const data = await response.json();
-                const items = data[currentCategory] || [];
-
-                if (items.length === 0) {
-                    imageGrid.innerHTML = '<p>No images yet. Upload some!</p>';
-                    imageCount.textContent = '0 images';
-                    return;
-                }
-
-                let html = '';
-                items.forEach((item, index) => {
-                    const imagePath = item.image || item;
-                    const filename = imagePath.split('/').pop();
-                    const title = item.title || '';
-                    const price = item.price || '';
-
-                    html += `
-                        <div class="image-item-admin" data-index="${index}" data-filename="${filename}">
-                            <div class="image-wrapper">
-                                <img src="${imagePath}" alt="${filename}" onerror="this.style.display='none'">
-                                <button class="delete-btn" onclick="deleteImage('${currentTab}', '${filename}')">✕</button>
-                            </div>
-                            <div class="item-details">
-                                ${isShop ? `
-                                    <div class="current-title">${title || '(no title)'}</div>
-                                    <div class="current-price">${price ? '$' + price : '(no price)'}</div>
-                                    <input type="text" class="shop-title-input" value="${title}" placeholder="Item title..." data-filename="${filename}" onchange="markChange()">
-                                    <div class="price-input-wrapper">
-                                        <span class="price-currency">$</span>
-                                        <input type="text" class="shop-price-input" value="${price}" placeholder="0.00" data-filename="${filename}" onchange="markChange()">
-                                    </div>
-                                ` : `
-                                    <div style="font-size:0.75rem; color:#666; padding:0.3rem;">${filename}</div>
-                                `}
-                            </div>
-                        </div>
-                    `;
-                });
-
-                imageGrid.innerHTML = html;
-                imageCount.textContent = `${items.length} images`;
-                saveBtn.disabled = true;
-                saveBtn.textContent = '💾 Save All Changes';
-                showSaveStatus('No changes to save', false);
-
             } catch (error) {
                 console.error('Error loading images:', error);
                 imageGrid.innerHTML = '<p>Error loading images.</p>';
             }
         }
 
-        async function saveAllChanges() {
-            if (!currentTab || !isShop) {
-                showSaveStatus('Nothing to save for this tab.', false);
+        async function loadTattooImages() {
+            const jsonFile = `/${currentSection}/${currentCategory}.json`;
+            const response = await fetch(jsonFile);
+            if (!response.ok) {
+                imageGrid.innerHTML = '<p>No images yet. Upload some!</p>';
+                imageCount.textContent = '0 images';
                 return;
             }
+            const data = await response.json();
+            const items = data[currentCategory] || [];
+            renderImageGrid(items);
+        }
 
-            saveBtn.disabled = true;
-            saveBtn.textContent = '⏳ Saving...';
-            showSaveStatus('Saving changes...', false);
+        async function loadShopImages() {
+            await fetchShopData();
+            const items = shopDataCache?.[currentCategory] || [];
+            
+            // Also get images from GitHub
+            const imageFiles = await getShopImagesFromGitHub();
+            
+            // Merge: show all images with their titles/prices from sheet
+            const mergedItems = imageFiles.map(img => {
+                const existing = items.find(item => item.image === img.image);
+                return {
+                    image: img.image,
+                    title: existing?.title || '',
+                    cost: existing?.cost || ''
+                };
+            });
+            
+            renderImageGrid(mergedItems);
+        }
 
-            const [section, category] = currentTab.split('-');
-            const jsonPath = `public/${section}/${category}.json`;
-            const token = await getGitHubToken();
-            if (!token) {
-                showSaveStatus('Failed to get token.', false);
-                saveBtn.disabled = false;
-                saveBtn.textContent = '💾 Save All Changes';
-                return;
-            }
-
+        async function getShopImagesFromGitHub() {
             try {
-                const items = [];
-                const containers = document.querySelectorAll('.image-item-admin');
-                
-                containers.forEach(container => {
-                    const filename = container.dataset.filename;
-                    const titleInput = container.querySelector('.shop-title-input');
-                    const priceInput = container.querySelector('.shop-price-input');
-                    
-                    if (titleInput && priceInput) {
-                        const title = titleInput.value.trim();
-                        let price = priceInput.value.trim().replace(/^\$/, '');
-                        items.push({
-                            image: `/images/${section}/${category}/${filename}`,
-                            title: title,
-                            price: price
-                        });
-                    }
-                });
-
-                if (items.length === 0) {
-                    showSaveStatus('No items to save.', false);
-                    saveBtn.disabled = false;
-                    saveBtn.textContent = '💾 Save All Changes';
-                    return;
-                }
-
-                const newContent = JSON.stringify({ [category]: items }, null, 2);
-
-                const jsonResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${jsonPath}`, {
+                const token = await getGitHubToken();
+                if (!token) return [];
+                const path = `public/images/${currentSection}/${currentCategory}`;
+                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-
-                let sha = null;
-                if (jsonResponse.ok) {
-                    const jsonData = await jsonResponse.json();
-                    sha = jsonData.sha;
-                }
-
-                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${jsonPath}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: `Update ${category} items`,
-                        content: btoa(newContent),
-                        sha: sha,
-                        branch: 'main'
-                    })
-                });
-
-                if (!response.ok) throw new Error('Failed to save changes');
-
-                showSaveStatus('✅ All changes saved successfully!', true);
-                pendingChanges = [];
-                saveBtn.disabled = true;
-                saveBtn.textContent = '✅ Saved!';
-                
-                // Reload images WITHOUT clearing the display first
-                await loadImages();
-
+                if (!response.ok) return [];
+                const data = await response.json();
+                return data.map(file => ({
+                    image: `/images/${currentSection}/${currentCategory}/${file.name}`,
+                    filename: file.name
+                }));
             } catch (error) {
-                console.error('Save error:', error);
-                showSaveStatus('❌ Failed to save: ' + error.message, false);
-                saveBtn.disabled = false;
-                saveBtn.textContent = '💾 Save All Changes';
+                console.error('Error fetching shop images from GitHub:', error);
+                return [];
             }
+        }
+
+        function renderImageGrid(items) {
+            if (items.length === 0) {
+                imageGrid.innerHTML = '<p>No images yet. Upload some!</p>';
+                imageCount.textContent = '0 images';
+                return;
+            }
+
+            let html = '';
+            items.forEach((item, index) => {
+                const imagePath = item.image || item;
+                const filename = imagePath.split('/').pop();
+                const title = item.title || '';
+                const cost = item.cost || '';
+
+                html += `
+                    <div class="image-item-admin" data-index="${index}" data-filename="${filename}">
+                        <div class="image-wrapper">
+                            <img src="${imagePath}" alt="${filename}" onerror="this.style.display='none'">
+                            <button class="delete-btn" onclick="deleteImage('${currentTab}', '${filename}')">✕</button>
+                        </div>
+                        <div class="item-details">
+                            ${isShop ? `
+                                <div class="current-title">${title || '(no title)'}</div>
+                                <div class="current-price">${cost ? '$' + cost : '(no price)'}</div>
+                                <input type="text" class="shop-title-input" value="${title}" placeholder="Item title..." data-filename="${filename}">
+                                <div class="price-input-wrapper">
+                                    <span class="price-currency">$</span>
+                                    <input type="text" class="shop-cost-input" value="${cost}" placeholder="0.00" data-filename="${filename}">
+                                </div>
+                            ` : `
+                                <div style="font-size:0.75rem; color:#666; padding:0.3rem;">${filename}</div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            });
+
+            imageGrid.innerHTML = html;
+            imageCount.textContent = `${items.length} images`;
+            saveBtn.disabled = true;
+            showSaveStatus('No changes to save', false);
         }
 
         function triggerUpload() {
@@ -590,8 +565,8 @@
             if (!files.length) return;
 
             let title = document.getElementById('shop-item-title')?.value?.trim() || '';
-            let price = document.getElementById('shop-item-price')?.value?.trim() || '';
-            price = price.replace(/^\$/, '');
+            let cost = document.getElementById('shop-item-price')?.value?.trim() || '';
+            cost = cost.replace(/^\$/, '');
 
             uploadBtn.disabled = true;
             showStatus('Uploading...', '');
@@ -607,23 +582,34 @@
             }
 
             let successCount = 0;
+            const uploadedFiles = [];
             for (const file of files) {
                 try {
                     await uploadFile(currentTab, file, token);
                     successCount++;
+                    uploadedFiles.push(file.name);
                 } catch (error) {
                     console.error('Upload failed:', error);
                 }
             }
 
             if (successCount > 0) {
-                if (isShop && (title || price)) {
-                    await saveAllShopItems(files, title, price);
+                if (isShop && (title || cost)) {
+                    // Add to Google Sheet
+                    const existingItems = shopDataCache?.[currentCategory] || [];
+                    for (const filename of uploadedFiles) {
+                        const imagePath = `/images/${currentSection}/${currentCategory}/${filename}`;
+                        const exists = existingItems.some(item => item.image === imagePath);
+                        if (!exists) {
+                            existingItems.push({ image: imagePath, title: title, cost: cost });
+                        }
+                    }
+                    await updateShopSheet(currentCategory, existingItems);
+                    shopDataCache[currentCategory] = existingItems;
                 }
                 showStatus(`✅ ${successCount} image(s) uploaded!`, 'success');
                 setStatus('✅ Upload complete', 'ready');
                 await loadImages();
-                await triggerWorkflow();
             } else {
                 showStatus('❌ Upload failed. Please try again.', 'error');
                 setStatus('❌ Upload failed', 'error');
@@ -668,66 +654,6 @@
             return await response.json();
         }
 
-        async function saveAllShopItems(files, title, price) {
-            const [section, category] = currentTab.split('-');
-            const jsonPath = `public/${section}/${category}.json`;
-            const token = await getGitHubToken();
-            if (!token) return;
-
-            try {
-                const jsonResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${jsonPath}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                let items = [];
-                let sha = null;
-
-                if (jsonResponse.ok) {
-                    const jsonData = await jsonResponse.json();
-                    sha = jsonData.sha;
-                    const content = atob(jsonData.content);
-                    const parsed = JSON.parse(content);
-                    items = parsed[category] || [];
-                }
-
-                for (const file of files) {
-                    const filename = file.name;
-                    const exists = items.some(item => {
-                        const itemFilename = item.image ? item.image.split('/').pop() : item;
-                        return itemFilename === filename;
-                    });
-                    if (!exists) {
-                        items.push({
-                            image: `/images/${section}/${category}/${filename}`,
-                            title: title,
-                            price: price
-                        });
-                    }
-                }
-
-                const newContent = JSON.stringify({ [category]: items }, null, 2);
-
-                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${jsonPath}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: `Add shop items to ${category}`,
-                        content: btoa(newContent),
-                        sha: sha,
-                        branch: 'main'
-                    })
-                });
-
-                if (!response.ok) throw new Error('Failed to save shop items');
-
-            } catch (error) {
-                console.error('Save shop items error:', error);
-            }
-        }
-
         async function deleteImage(tab, filename) {
             if (!confirm(`Delete "${filename}"?`)) return;
 
@@ -760,46 +686,76 @@
 
                 if (!response.ok) throw new Error('Delete failed');
 
+                if (isShop) {
+                    // Remove from Google Sheet
+                    const existingItems = shopDataCache?.[currentCategory] || [];
+                    const imagePath = `/images/${section}/${category}/${filename}`;
+                    const updatedItems = existingItems.filter(item => item.image !== imagePath);
+                    await updateShopSheet(currentCategory, updatedItems);
+                    shopDataCache[currentCategory] = updatedItems;
+                }
+
                 await loadImages();
-                await triggerWorkflow();
             } catch (error) {
                 alert(`Failed to delete: ${error.message}`);
             }
         }
 
-        async function triggerWorkflow() {
-            const token = await getGitHubToken();
-            if (!token) return;
+        async function saveAllChanges() {
+            if (!currentTab || !isShop) {
+                showSaveStatus('Nothing to save for this tab.', false);
+                return;
+            }
+
+            saveBtn.disabled = true;
+            saveBtn.textContent = '⏳ Saving...';
+            showSaveStatus('Saving changes to Google Sheet...', false);
 
             try {
-                const workflowsRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/vnd.github.v3+json'
+                const items = [];
+                const containers = document.querySelectorAll('.image-item-admin');
+                
+                containers.forEach(container => {
+                    const filename = container.dataset.filename;
+                    const titleInput = container.querySelector('.shop-title-input');
+                    const costInput = container.querySelector('.shop-cost-input');
+                    
+                    if (titleInput && costInput) {
+                        const title = titleInput.value.trim();
+                        let cost = costInput.value.trim().replace(/^\$/, '');
+                        items.push({
+                            image: `/images/${currentSection}/${currentCategory}/${filename}`,
+                            title: title,
+                            cost: cost
+                        });
                     }
                 });
 
-                if (!workflowsRes.ok) throw new Error('Failed to list workflows');
+                if (items.length === 0) {
+                    showSaveStatus('No items to save.', false);
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = '💾 Save All Changes';
+                    return;
+                }
 
-                const workflowsData = await workflowsRes.json();
-                const workflow = workflowsData.workflows?.find(w => w.name === 'Generate JSON from Images');
-
-                if (!workflow) throw new Error('Workflow not found');
-
-                await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/${workflow.id}/dispatches`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/vnd.github.v3+json'
-                    },
-                    body: JSON.stringify({ ref: 'main' })
-                });
-
-                console.log('✅ Workflow triggered');
+                const success = await updateShopSheet(currentCategory, items);
+                if (success) {
+                    shopDataCache[currentCategory] = items;
+                    showSaveStatus('✅ All changes saved to Google Sheet!', true);
+                    saveBtn.disabled = true;
+                    saveBtn.textContent = '✅ Saved!';
+                    setTimeout(() => {
+                        saveBtn.textContent = '💾 Save All Changes';
+                    }, 2000);
+                } else {
+                    throw new Error('Failed to save to Google Sheet');
+                }
 
             } catch (error) {
-                console.error('Workflow error:', error);
+                console.error('Save error:', error);
+                showSaveStatus('❌ Failed to save: ' + error.message, false);
+                saveBtn.disabled = false;
+                saveBtn.textContent = '💾 Save All Changes';
             }
         }
 
@@ -814,7 +770,6 @@
         window.triggerUpload = triggerUpload;
         window.deleteImage = deleteImage;
         window.saveAllChanges = saveAllChanges;
-        window.markChange = markChange;
         window.logout = logout;
     </script>
 </body>
