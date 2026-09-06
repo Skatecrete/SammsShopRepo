@@ -6,6 +6,38 @@
     <title>Shop - SkinPrints and Piercings</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        #shop-content {
+            position: relative;
+            min-height: 80vh;
+            background-image: url('/images/landing/shop_logo.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            opacity: 0.15;
+            z-index: 0;
+        }
+        #shop-content .content-wrapper {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(2px);
+            padding: 2rem 1rem 8rem 1rem;
+            min-height: 80vh;
+        }
+        .shop-bg-logo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            max-width: 500px;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
 </head>
 <body>
     <nav id="main-nav">
@@ -24,19 +56,23 @@
         </div>
     </nav>
 
+    <img src="/images/landing/shop_logo.png" alt="Shop Logo" class="shop-bg-logo">
+
     <main id="shop-content">
-        <section id="shop-paintings" class="tab-content active">
-            <h2>Paintings</h2>
-            <div class="shop-grid" id="shop-paintings-grid"><p class="loading">Loading paintings...</p></div>
-        </section>
-        <section id="shop-jewelry" class="tab-content">
-            <h2>Jewelry</h2>
-            <div class="shop-grid" id="shop-jewelry-grid"><p class="loading">Loading jewelry...</p></div>
-        </section>
-        <section id="shop-sculptures" class="tab-content">
-            <h2>Sculptures</h2>
-            <div class="shop-grid" id="shop-sculptures-grid"><p class="loading">Loading sculptures...</p></div>
-        </section>
+        <div class="content-wrapper">
+            <section id="shop-paintings" class="tab-content active">
+                <h2>Paintings</h2>
+                <div class="shop-grid" id="shop-paintings-grid"><p class="loading">Loading paintings...</p></div>
+            </section>
+            <section id="shop-jewelry" class="tab-content">
+                <h2>Jewelry</h2>
+                <div class="shop-grid" id="shop-jewelry-grid"><p class="loading">Loading jewelry...</p></div>
+            </section>
+            <section id="shop-sculptures" class="tab-content">
+                <h2>Sculptures</h2>
+                <div class="shop-grid" id="shop-sculptures-grid"><p class="loading">Loading sculptures...</p></div>
+            </section>
+        </div>
     </main>
 
     <footer>
