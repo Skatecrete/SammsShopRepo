@@ -442,7 +442,7 @@ if (isShopPage) {
         container.innerHTML = items.map(item => {
             const title = item.title || 'Untitled';
             const cost = item.cost || '';
-            const imagePath = `/images/shop/${category}/placeholder.jpg`;
+            const imagePath = item.image || `/images/shop/${category}/placeholder.jpg`;
             return `
                 <div class="shop-item">
                     <img src="${imagePath}" alt="${title}" class="shop-image" onerror="this.style.display='none'">
