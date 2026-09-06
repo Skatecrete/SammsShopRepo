@@ -403,6 +403,9 @@
 
         async function updateShopSheet(category, items) {
             try {
+                // Capitalize category to match dropdown values in sheet
+                category = category.charAt(0).toUpperCase() + category.slice(1);
+                
                 const url = SHOP_SCRIPT_URL + '?_method=POST&category=' + encodeURIComponent(category) + '&data=' + encodeURIComponent(JSON.stringify(items));
                 const response = await fetch(url);
                 const data = await response.json();
