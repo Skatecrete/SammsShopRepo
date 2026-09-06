@@ -67,58 +67,76 @@ async function loadLandingSlideshows() {
 // ============================================
 
 if (isTattooPage) {
-    // Get all tattoo tabs (excluding Home button which is an <a> tag)
-    const tabs = document.querySelectorAll('.nav-tabs-tattoo .tab-btn:not(.home-btn)');
-    const contentSections = {};
-    const grids = {};
+    console.log('Tattoo page loaded');
+    
+    // Get ALL buttons in the tattoo nav (including Home)
+    const allTattooBtns = document.querySelectorAll('.nav-tabs-tattoo .tab-btn');
+    const tattooContentSections = {};
+    const tattooGrids = {};
 
-    tabs.forEach(btn => {
-        const tabId = btn.dataset.tab;
-        contentSections[tabId] = document.getElementById(tabId);
-        grids[tabId] = document.getElementById(`${tabId}-grid`);
+    // Filter out the Home button (it's an <a> tag, not a <button>)
+    const tattooTabs = [];
+    allTattooBtns.forEach(btn => {
+        if (btn.tagName === 'BUTTON') {
+            const tabId = btn.dataset.tab;
+            if (tabId) {
+                tattooTabs.push(btn);
+                tattooContentSections[tabId] = document.getElementById(tabId);
+                tattooGrids[tabId] = document.getElementById(`${tabId}-grid`);
+            }
+        }
     });
 
-    const calendarContainer = document.getElementById('tattoo-calendar-container');
-    const fullscreenOverlay = document.getElementById('fullscreen-overlay');
-    const fullscreenImage = document.getElementById('fullscreen-image');
-    const fullscreenClose = document.getElementById('fullscreen-close');
+    const tattooCalendarContainer = document.getElementById('tattoo-calendar-container');
+    const tattooFullscreenOverlay = document.getElementById('fullscreen-overlay');
+    const tattooFullscreenImage = document.getElementById('fullscreen-image');
+    const tattooFullscreenClose = document.getElementById('fullscreen-close');
 
     // Add click listeners to tattoo tabs
-    tabs.forEach(btn => {
+    tattooTabs.forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             const tab = this.dataset.tab;
+            console.log('Tattoo tab clicked:', tab);
             switchTattooTab(tab);
         });
     });
 
     function switchTattooTab(tab) {
+        console.log('Switching to tattoo tab:', tab);
+        
         // Update active class on buttons
-        tabs.forEach(b => b.classList.remove('active'));
+        tattooTabs.forEach(b => b.classList.remove('active'));
         const activeBtn = document.querySelector(`.nav-tabs-tattoo .tab-btn[data-tab="${tab}"]`);
         if (activeBtn) activeBtn.classList.add('active');
 
         // Hide all content sections
-        Object.keys(contentSections).forEach(key => {
-            if (contentSections[key]) {
-                contentSections[key].style.display = 'none';
-                contentSections[key].classList.remove('active');
+        Object.keys(tattooContentSections).forEach(key => {
+            if (tattooContentSections[key]) {
+                tattooContentSections[key].style.display = 'none';
+                tattooContentSections[key].classList.remove('active');
             }
         });
 
         // Show the selected content
-        if (contentSections[tab]) {
-            contentSections[tab].style.display = 'block';
-            contentSections[tab].classList.add('active');
+        if (tattooContentSections[tab]) {
+            tattooContentSections[tab].style.display = 'block';
+            tattooContentSections[tab].classList.add('active');
         }
 
-        const grid = grids[tab];
-        if (grid && grid.querySelector('.loading')) {
-            loadTattooGrid(tab, grid);
+        const grid = tattooGrids[tab];
+        if (grid) {
+            // Check if grid has a loading message or is empty
+            const hasLoading = grid.querySelector('.loading');
+            const isGridEmpty = grid.children.length === 0;
+            if (hasLoading || isGridEmpty) {
+                loadTattooGrid(tab, grid);
+            }
         }
 
         if (tab === 'tattoo-scheduler') {
-            loadCalendar();
+            loadTattooCalendar();
         }
     }
 
@@ -143,30 +161,30 @@ if (isTattooPage) {
         container.innerHTML = images.map(item => {
             const imagePath = item.image || item;
             return `
-                <div class="image-item" onclick="openFullscreen('${imagePath}')">
+                <div class="image-item" onclick="openTattooFullscreen('${imagePath}')">
                     <img src="${imagePath}" alt="Image" loading="lazy">
                 </div>
             `;
         }).join('');
     }
 
-    async function loadCalendar() {
-        calendarContainer.innerHTML = `<p class="loading">Loading calendar...</p>`;
+    async function loadTattooCalendar() {
+        tattooCalendarContainer.innerHTML = `<p class="loading">Loading calendar...</p>`;
         try {
             const response = await fetch(CONFIG.APPS_SCRIPT_URL);
             if (!response.ok) throw new Error('Failed to load');
             const data = await response.json();
             if (data.error || !data.calendar || data.calendar.length === 0) {
-                calendarContainer.innerHTML = `<p class="loading">No availability data.</p>`;
+                tattooCalendarContainer.innerHTML = `<p class="loading">No availability data.</p>`;
                 return;
             }
-            renderCalendar(data.calendar);
+            renderTattooCalendar(data.calendar);
         } catch (error) {
-            calendarContainer.innerHTML = `<p class="loading">Error loading calendar.</p>`;
+            tattooCalendarContainer.innerHTML = `<p class="loading">Error loading calendar.</p>`;
         }
     }
 
-    function renderCalendar(calendar) {
+    function renderTattooCalendar(calendar) {
         const months = {};
         calendar.forEach(day => {
             const date = new Date(day.date + 'T00:00:00');
@@ -205,40 +223,42 @@ if (isTattooPage) {
             html += `</tbody></table>`;
         });
 
-        calendarContainer.innerHTML = html;
+        tattooCalendarContainer.innerHTML = html;
     }
 
-    function openFullscreen(imageSrc) {
-        fullscreenImage.src = imageSrc;
-        fullscreenOverlay.style.display = 'flex';
+    function openTattooFullscreen(imageSrc) {
+        tattooFullscreenImage.src = imageSrc;
+        tattooFullscreenOverlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 
-    if (fullscreenClose) {
-        fullscreenClose.addEventListener('click', () => {
-            fullscreenOverlay.style.display = 'none';
+    if (tattooFullscreenClose) {
+        tattooFullscreenClose.addEventListener('click', () => {
+            tattooFullscreenOverlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         });
     }
 
-    fullscreenOverlay.addEventListener('click', (e) => {
-        if (e.target === fullscreenOverlay) {
-            fullscreenOverlay.style.display = 'none';
+    tattooFullscreenOverlay.addEventListener('click', (e) => {
+        if (e.target === tattooFullscreenOverlay) {
+            tattooFullscreenOverlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && fullscreenOverlay.style.display === 'flex') {
-            fullscreenOverlay.style.display = 'none';
+        if (e.key === 'Escape' && tattooFullscreenOverlay.style.display === 'flex') {
+            tattooFullscreenOverlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     });
 
-    window.openFullscreen = openFullscreen;
+    window.openTattooFullscreen = openTattooFullscreen;
 
     // Activate default tab
-    switchTattooTab('tattoo-flash');
+    setTimeout(() => {
+        switchTattooTab('tattoo-flash');
+    }, 100);
 }
 
 // ============================================
@@ -246,53 +266,70 @@ if (isTattooPage) {
 // ============================================
 
 if (isShopPage) {
-    // Get all shop tabs (excluding Home button which is an <a> tag)
-    const tabs = document.querySelectorAll('.nav-tabs-shop .tab-btn:not(.home-btn)');
-    const contentSections = {};
-    const grids = {};
+    console.log('Shop page loaded');
+    
+    // Get ALL buttons in the shop nav (including Home)
+    const allShopBtns = document.querySelectorAll('.nav-tabs-shop .tab-btn');
+    const shopContentSections = {};
+    const shopGrids = {};
 
-    tabs.forEach(btn => {
-        const tabId = btn.dataset.tab;
-        contentSections[tabId] = document.getElementById(tabId);
-        grids[tabId] = document.getElementById(`${tabId}-grid`);
+    // Filter out the Home button (it's an <a> tag, not a <button>)
+    const shopTabs = [];
+    allShopBtns.forEach(btn => {
+        if (btn.tagName === 'BUTTON') {
+            const tabId = btn.dataset.tab;
+            if (tabId) {
+                shopTabs.push(btn);
+                shopContentSections[tabId] = document.getElementById(tabId);
+                shopGrids[tabId] = document.getElementById(`${tabId}-grid`);
+            }
+        }
     });
 
-    const fullscreenOverlay = document.getElementById('fullscreen-overlay');
-    const fullscreenImage = document.getElementById('fullscreen-image');
-    const fullscreenClose = document.getElementById('fullscreen-close');
+    const shopFullscreenOverlay = document.getElementById('fullscreen-overlay');
+    const shopFullscreenImage = document.getElementById('fullscreen-image');
+    const shopFullscreenClose = document.getElementById('fullscreen-close');
 
     // Add click listeners to shop tabs
-    tabs.forEach(btn => {
+    shopTabs.forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             const tab = this.dataset.tab;
+            console.log('Shop tab clicked:', tab);
             switchShopTab(tab);
         });
     });
 
     function switchShopTab(tab) {
+        console.log('Switching to shop tab:', tab);
+        
         // Update active class on buttons
-        tabs.forEach(b => b.classList.remove('active'));
+        shopTabs.forEach(b => b.classList.remove('active'));
         const activeBtn = document.querySelector(`.nav-tabs-shop .tab-btn[data-tab="${tab}"]`);
         if (activeBtn) activeBtn.classList.add('active');
 
         // Hide all content sections
-        Object.keys(contentSections).forEach(key => {
-            if (contentSections[key]) {
-                contentSections[key].style.display = 'none';
-                contentSections[key].classList.remove('active');
+        Object.keys(shopContentSections).forEach(key => {
+            if (shopContentSections[key]) {
+                shopContentSections[key].style.display = 'none';
+                shopContentSections[key].classList.remove('active');
             }
         });
 
         // Show the selected content
-        if (contentSections[tab]) {
-            contentSections[tab].style.display = 'block';
-            contentSections[tab].classList.add('active');
+        if (shopContentSections[tab]) {
+            shopContentSections[tab].style.display = 'block';
+            shopContentSections[tab].classList.add('active');
         }
 
-        const grid = grids[tab];
-        if (grid && grid.querySelector('.loading')) {
-            loadShopGrid(tab, grid);
+        const grid = shopGrids[tab];
+        if (grid) {
+            const hasLoading = grid.querySelector('.loading');
+            const isGridEmpty = grid.children.length === 0;
+            if (hasLoading || isGridEmpty) {
+                loadShopGrid(tab, grid);
+            }
         }
     }
 
@@ -331,34 +368,38 @@ if (isShopPage) {
     }
 
     function openShopFullscreen(imageSrc) {
-        fullscreenImage.src = imageSrc;
-        fullscreenOverlay.style.display = 'flex';
+        shopFullscreenImage.src = imageSrc;
+        shopFullscreenOverlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 
-    if (fullscreenClose) {
-        fullscreenClose.addEventListener('click', () => {
-            fullscreenOverlay.style.display = 'none';
+    if (shopFullscreenClose) {
+        shopFullscreenClose.addEventListener('click', () => {
+            shopFullscreenOverlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         });
     }
 
-    fullscreenOverlay.addEventListener('click', (e) => {
-        if (e.target === fullscreenOverlay) {
-            fullscreenOverlay.style.display = 'none';
+    shopFullscreenOverlay.addEventListener('click', (e) => {
+        if (e.target === shopFullscreenOverlay) {
+            shopFullscreenOverlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && fullscreenOverlay.style.display === 'flex') {
-            fullscreenOverlay.style.display = 'none';
+        if (e.key === 'Escape' && shopFullscreenOverlay.style.display === 'flex') {
+            shopFullscreenOverlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     });
 
     window.openShopFullscreen = openShopFullscreen;
 
-    // Activate default tab - Jewelry
-    switchShopTab('shop-jewelry');
+    // Activate default tab - Paintings
+    setTimeout(() => {
+        switchShopTab('shop-paintings');
+    }, 100);
 }
+
+console.log('App.js loaded. Page:', window.location.pathname);
