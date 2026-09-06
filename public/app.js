@@ -319,11 +319,14 @@ window.openTattooFullscreen = function(src) {
 };
 
 // ============================================
-// SHOP PAGE
+// SHOP PAGE - Google Sheets
 // ============================================
 
 if (isShopPage) {
     console.log('📄 Shop page - initializing...');
+    
+    const SHOP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWh3AsmhzASofyW3c0CEIEMD_2meFvTmIxA-vgFau2S8gn57bbeg2-8nGlw8NP6HzX5A/exec';
+    let shopDataCache = null;
     
     function initShop() {
         try {
@@ -336,10 +339,6 @@ if (isShopPage) {
                 console.error('❌ No shop tabs found! Check HTML structure.');
                 return;
             }
-            
-            tabs.forEach((btn, i) => {
-                console.log(`  - Tab ${i}:`, btn.dataset.tab, btn.className);
-            });
             
             tabs.forEach(btn => {
                 btn.addEventListener('click', function(e) {
@@ -358,15 +357,102 @@ if (isShopPage) {
                 });
             });
             
-            const contentSections = document.querySelectorAll('#shop-content .tab-content');
-            console.log('  - Found', contentSections.length, 'content sections');
-            
-            console.log('🔄 Setting default tab: shop-paintings');
-            switchShopTab('shop-paintings');
+            console.log('🔄 Loading shop data from Google Sheets...');
+            loadShopDataFromSheets();
             
         } catch (error) {
             console.error('❌ initShop() error:', error);
         }
+    }
+    
+    async function loadShopDataFromSheets() {
+        try {
+            const response = await fetch(SHOP_SCRIPT_URL);
+            if (!response.ok) throw new Error('Failed to fetch shop data');
+            const data = await response.json();
+            
+            if (data.error) {
+                console.error('Shop sheet error:', data.error);
+                return;
+            }
+            
+            shopDataCache = data.shop || {};
+            console.log('✅ Shop data loaded:', Object.keys(shopDataCache));
+            
+            switchShopTab('shop-paintings');
+            
+        } catch (error) {
+            console.error('❌ Error loading shop data:', error);
+            document.querySelectorAll('.shop-grid').forEach(grid => {
+                grid.innerHTML = '<p class="loading">Error loading shop data. Please refresh.</p>';
+            });
+        }
+    }
+    
+    function switchShopTab(tab) {
+        try {
+            console.log('🔄 switchShopTab() called with:', tab);
+            
+            const allTabs = document.querySelectorAll('.nav-tabs-shop .tab-btn');
+            allTabs.forEach(b => b.classList.remove('active'));
+            
+            const activeBtn = document.querySelector(`.nav-tabs-shop .tab-btn[data-tab="${tab}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                console.log('  - Active button set:', tab);
+            }
+            
+            const contentSections = document.querySelectorAll('#shop-content .tab-content');
+            contentSections.forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active');
+            });
+            
+            const targetSection = document.getElementById(tab);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+                targetSection.classList.add('active');
+                console.log('  - Showing content for:', tab);
+                
+                const grid = document.getElementById(tab + '-grid');
+                if (grid) {
+                    renderShopGrid(grid, tab);
+                }
+            }
+            
+        } catch (error) {
+            console.error('❌ switchShopTab() error:', error);
+        }
+    }
+    
+    function renderShopGrid(container, tab) {
+        if (!shopDataCache) {
+            container.innerHTML = '<p class="loading">Loading shop data...</p>';
+            return;
+        }
+        
+        const category = tab.replace('shop-', '');
+        const items = shopDataCache[category] || [];
+        
+        if (items.length === 0) {
+            container.innerHTML = '<p class="loading">No items in this category yet.</p>';
+            return;
+        }
+        
+        container.innerHTML = items.map(item => {
+            const title = item.title || 'Untitled';
+            const cost = item.cost || '';
+            const imagePath = `/images/shop/${category}/placeholder.jpg`;
+            return `
+                <div class="shop-item">
+                    <img src="${imagePath}" alt="${title}" class="shop-image" onerror="this.style.display='none'">
+                    <div class="shop-details">
+                        <div class="shop-title" style="font-size:1.2rem; font-weight:600; font-style:italic; color:#1a1a1a;">${title}</div>
+                        <div class="shop-price" style="font-size:1.1rem; font-weight:600; font-style:italic; color:#a64d79;">${cost ? '$' + cost : 'Price upon request'}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
     
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
@@ -380,119 +466,6 @@ if (isShopPage) {
         });
     }
 }
-
-function switchShopTab(tab) {
-    try {
-        console.log('🔄 switchShopTab() called with:', tab);
-        
-        const allTabs = document.querySelectorAll('.nav-tabs-shop .tab-btn');
-        allTabs.forEach(b => b.classList.remove('active'));
-        
-        const activeBtn = document.querySelector(`.nav-tabs-shop .tab-btn[data-tab="${tab}"]`);
-        if (activeBtn) {
-            activeBtn.classList.add('active');
-            console.log('  - Active button set:', tab);
-        } else {
-            console.warn('  - No button found for tab:', tab);
-        }
-        
-        const contentSections = document.querySelectorAll('#shop-content .tab-content');
-        contentSections.forEach(section => {
-            section.style.display = 'none';
-            section.classList.remove('active');
-        });
-        
-        const targetSection = document.getElementById(tab);
-        if (targetSection) {
-            targetSection.style.display = 'block';
-            targetSection.classList.add('active');
-            console.log('  - Showing content for:', tab);
-            loadShopGrid(tab);
-        } else {
-            console.error('❌ No content section found for tab:', tab);
-        }
-        
-    } catch (error) {
-        console.error('❌ switchShopTab() error:', error);
-    }
-}
-
-function loadShopGrid(tab) {
-    try {
-        const category = tab.replace('shop-', '');
-        const container = document.getElementById(tab + '-grid');
-        if (!container) {
-            console.warn('  - No grid container found for:', tab);
-            return;
-        }
-        
-        console.log('  - Loading grid for:', category);
-        
-        if (container.children.length > 0 && !container.querySelector('.loading')) {
-            console.log('  - Grid already has content, skipping load');
-            return;
-        }
-        
-        fetch(`/shop/${category}.json`)
-            .then(res => {
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                return res.json();
-            })
-            .then(data => {
-                const items = data[category] || [];
-                console.log(`  - Found ${items.length} items for ${category}`);
-                if (items.length === 0) {
-                    container.innerHTML = '<p class="loading">No items yet.</p>';
-                    return;
-                }
-                renderShopGrid(container, items);
-            })
-            .catch(err => {
-                console.warn(`  - Error loading ${category}:`, err.message);
-                container.innerHTML = '<p class="loading">No items yet.</p>';
-            });
-    } catch (error) {
-        console.error('❌ loadShopGrid() error:', error);
-    }
-}
-
-function renderShopGrid(container, items) {
-    if (!items || items.length === 0) {
-        container.innerHTML = '<p class="loading">No items yet.</p>';
-        return;
-    }
-    container.innerHTML = items.map(item => {
-        const path = item.image || item;
-        const title = item.title || '';
-        const price = item.price || '';
-        return `
-            <div class="shop-item">
-                <img src="${path}" alt="${title}" class="shop-image" onclick="window.openShopFullscreen('${path}')">
-                <div class="shop-details">
-                    <div class="shop-title" style="font-size:1.2rem; font-weight:600; font-style:italic; color:#1a1a1a;">${title || 'Untitled'}</div>
-                    <div class="shop-price" style="font-size:1.1rem; font-weight:600; font-style:italic; color:#a64d79;">${price ? '$' + price : 'Price upon request'}</div>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-window.openShopFullscreen = function(src) {
-    try {
-        const overlay = document.getElementById('fullscreen-overlay');
-        const img = document.getElementById('fullscreen-image');
-        if (!overlay || !img) {
-            console.error('❌ Fullscreen elements not found');
-            return;
-        }
-        img.src = src;
-        overlay.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        console.log('🖼️ Shop fullscreen opened:', src);
-    } catch (error) {
-        console.error('❌ openShopFullscreen() error:', error);
-    }
-};
 
 // ============================================
 // SHARED FULLSCREEN CLOSE
