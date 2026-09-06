@@ -3,9 +3,7 @@ name: Generate JSON from Images
 on:
   push:
     paths:
-      - 'public/images/flash/**'
-      - 'public/images/catalog/**'
-      - 'public/images/portfolio/**'
+      - 'public/images/**'
   workflow_dispatch:
 
 jobs:
@@ -17,69 +15,54 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history so we can pull
+          fetch-depth: 0
 
       - name: Pull latest changes
         run: |
           git config pull.rebase false
           git pull origin main || true
 
-      - name: Generate flash.json
+      - name: Generate JSON files
         run: |
-          echo '{"flash": [' > public/flash.json
-          count=0
-          for file in public/images/flash/*.jpg public/images/flash/*.jpeg public/images/flash/*.png public/images/flash/*.webp public/images/flash/*.gif; do
-            if [ -f "$file" ]; then
-              if [ $count -gt 0 ]; then
-                echo ',' >> public/flash.json
+          # Function to generate JSON for a given section and category
+          generate_json() {
+            section=$1
+            category=$2
+            file="public/${section}/${category}.json"
+            dir="public/images/${section}/${category}"
+            
+            echo "{\"${category}\": [" > "$file"
+            count=0
+            for img in "$dir"/*.jpg "$dir"/*.jpeg "$dir"/*.png "$dir"/*.webp "$dir"/*.gif; do
+              if [ -f "$img" ]; then
+                if [ $count -gt 0 ]; then
+                  echo ',' >> "$file"
+                fi
+                filename=$(basename "$img")
+                echo "{\"image\": \"/images/${section}/${category}/${filename}\"}" >> "$file"
+                count=$((count + 1))
               fi
-              filename=$(basename "$file")
-              echo "{\"image\": \"/images/flash/$filename\"}" >> public/flash.json
-              count=$((count + 1))
-            fi
-          done
-          echo ']}' >> public/flash.json
-          echo "Generated flash.json with $count images"
+            done
+            echo ']}' >> "$file"
+            echo "Generated $file with $count images"
+          }
 
-      - name: Generate catalog.json
-        run: |
-          echo '{"catalog": [' > public/catalog.json
-          count=0
-          for file in public/images/catalog/*.jpg public/images/catalog/*.jpeg public/images/catalog/*.png public/images/catalog/*.webp public/images/catalog/*.gif; do
-            if [ -f "$file" ]; then
-              if [ $count -gt 0 ]; then
-                echo ',' >> public/catalog.json
-              fi
-              filename=$(basename "$file")
-              echo "{\"image\": \"/images/catalog/$filename\"}" >> public/catalog.json
-              count=$((count + 1))
-            fi
-          done
-          echo ']}' >> public/catalog.json
-          echo "Generated catalog.json with $count images"
+          # Tattoo sections
+          generate_json "tattoo" "flash"
+          generate_json "tattoo" "catalog"
+          generate_json "tattoo" "portfolio"
 
-      - name: Generate portfolio.json
-        run: |
-          echo '{"portfolio": [' > public/portfolio.json
-          count=0
-          for file in public/images/portfolio/*.jpg public/images/portfolio/*.jpeg public/images/portfolio/*.png public/images/portfolio/*.webp public/images/portfolio/*.gif; do
-            if [ -f "$file" ]; then
-              if [ $count -gt 0 ]; then
-                echo ',' >> public/portfolio.json
-              fi
-              filename=$(basename "$file")
-              echo "{\"image\": \"/images/portfolio/$filename\"}" >> public/portfolio.json
-              count=$((count + 1))
-            fi
-          done
-          echo ']}' >> public/portfolio.json
-          echo "Generated portfolio.json with $count images"
+          # Shop sections
+          generate_json "shop" "home"
+          generate_json "shop" "jewelry"
+          generate_json "shop" "paintings"
+          generate_json "shop" "sculptures"
 
       - name: Commit JSON files
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add public/flash.json public/catalog.json public/portfolio.json
+          git add public/tattoo/*.json public/shop/*.json
           git diff --staged --quiet || git commit -m "Auto-generate image JSON [skip ci]"
           git pull origin main --rebase || true
           git push
