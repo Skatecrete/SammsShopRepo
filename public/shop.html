@@ -27,6 +27,29 @@
             padding: 2rem 1rem 8rem 1rem;
             min-height: 80vh;
         }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+        .section-header h2 {
+            margin-bottom: 0;
+        }
+        .section-header .header-logo {
+            max-height: 50px;
+            width: auto;
+        }
+        .admin-logo-link {
+            display: inline-block;
+            cursor: default;
+            text-decoration: none;
+        }
+        .admin-logo-link:hover {
+            opacity: 1 !important;
+            transform: none !important;
+        }
     </style>
 </head>
 <body>
@@ -34,9 +57,6 @@
         <div class="nav-container">
             <div class="nav-header">
                 <span id="header-title">SkinPrints &amp; Piercings by Samm (@GutterMuttx)</span>
-                <a href="/admin.html" class="admin-logo-link">
-                    <img src="/images/landing/shop_logo.png" alt="Shop Logo" class="header-logo">
-                </a>
             </div>
             <div class="nav-tabs nav-tabs-shop">
                 <div class="nav-row">
@@ -54,15 +74,30 @@
     <main id="shop-content">
         <div class="content-wrapper">
             <section id="shop-paintings" class="tab-content active">
-                <h2>Paintings</h2>
+                <div class="section-header">
+                    <h2>Paintings</h2>
+                    <a href="/admin.html" class="admin-logo-link">
+                        <img src="/images/landing/shop_logo.png" alt="Shop Logo" class="header-logo">
+                    </a>
+                </div>
                 <div class="shop-grid" id="shop-paintings-grid"><p class="loading">Loading paintings...</p></div>
             </section>
             <section id="shop-jewelry" class="tab-content">
-                <h2>Jewelry</h2>
+                <div class="section-header">
+                    <h2>Jewelry</h2>
+                    <a href="/admin.html" class="admin-logo-link">
+                        <img src="/images/landing/shop_logo.png" alt="Shop Logo" class="header-logo">
+                    </a>
+                </div>
                 <div class="shop-grid" id="shop-jewelry-grid"><p class="loading">Loading jewelry...</p></div>
             </section>
             <section id="shop-sculptures" class="tab-content">
-                <h2>Sculptures</h2>
+                <div class="section-header">
+                    <h2>Sculptures</h2>
+                    <a href="/admin.html" class="admin-logo-link">
+                        <img src="/images/landing/shop_logo.png" alt="Shop Logo" class="header-logo">
+                    </a>
+                </div>
                 <div class="shop-grid" id="shop-sculptures-grid"><p class="loading">Loading sculptures...</p></div>
             </section>
         </div>
