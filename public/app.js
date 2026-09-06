@@ -1,6 +1,6 @@
 const CONFIG = {
     APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwEGoZ83eDemeVFFI1YHby4eNOQ4EJFFgOXtsz00x-ubNlsgqzAupVDoFeZRYqyIrEG/exec',
-    SHOP_SCRIPT_URL: '/.netlify/functions/shop-proxy',
+    SHOP_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzWh3AsmhzASofyW3c0CEIEMD_2meFvTmIxA-vgFau2S8gn57bbeg2-8nGlw8NP6HzX5A/exec',
     ADMIN_USER: 'Samm',
     ADMIN_PASS: '0510',
     GITHUB: {
