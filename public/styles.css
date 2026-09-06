@@ -80,8 +80,8 @@ body {
     align-items: center;
     justify-content: center;
     width: 100%;
-    max-width: 400px;
-    padding: 1rem 1.5rem;
+    max-width: 450px;
+    padding: 1.5rem 2rem;
     margin: 2rem auto;
     background: #fff;
     border: 2px solid #ddd;
@@ -91,7 +91,7 @@ body {
     transition: all 0.3s;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    gap: 1.2rem;
+    gap: 1.5rem;
 }
 
 .landing-btn:hover {
@@ -101,8 +101,8 @@ body {
 }
 
 .landing-btn-icon {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     object-fit: cover;
     border: none;
@@ -111,7 +111,7 @@ body {
 
 .landing-btn-text {
     font-family: 'Great Vibes', cursive;
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: #1a1a1a;
     text-align: center;
@@ -125,7 +125,7 @@ body {
 
 #main-nav {
     background: #1a1a1a;
-    padding: 1rem 0;
+    padding: 0.8rem 0;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -146,6 +146,7 @@ body {
 .nav-left {
     display: flex;
     align-items: center;
+    gap: 0.5rem;
 }
 
 #header-title {
@@ -153,6 +154,11 @@ body {
     font-size: 1.2rem;
     color: #fff;
     white-space: nowrap;
+}
+
+.nav-tabs-wrapper {
+    flex: 2;
+    min-width: 200px;
 }
 
 .nav-tabs {
@@ -191,6 +197,18 @@ body {
     background: #fff;
     color: #1a1a1a;
     border-color: #fff;
+}
+
+.nav-right-logo {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.nav-right-logo img {
+    max-height: 55px;
+    width: auto;
 }
 
 /* ============================================
@@ -615,6 +633,9 @@ footer {
         font-size: 0.85rem;
         border-radius: 25px;
     }
+    .nav-right-logo img {
+        max-height: 40px;
+    }
     .landing-main-title {
         font-size: 3rem;
     }
@@ -623,16 +644,16 @@ footer {
     }
     .landing-btn {
         max-width: 320px;
-        padding: 0.8rem 1.2rem;
+        padding: 1rem 1.5rem;
         gap: 1rem;
         margin: 1.5rem auto;
     }
     .landing-btn-icon {
-        width: 48px;
-        height: 48px;
+        width: 60px;
+        height: 60px;
     }
     .landing-btn-text {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
     }
     .landing-slideshow {
         margin: 1rem auto;
@@ -710,6 +731,9 @@ footer {
     #header-title {
         font-size: 0.9rem;
     }
+    .nav-right-logo img {
+        max-height: 30px;
+    }
     .landing-main-title {
         font-size: 2.2rem;
     }
@@ -718,16 +742,16 @@ footer {
     }
     .landing-btn {
         max-width: 280px;
-        padding: 0.6rem 1rem;
+        padding: 0.8rem 1rem;
         gap: 0.8rem;
         margin: 1.2rem auto;
     }
     .landing-btn-icon {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
     }
     .landing-btn-text {
-        font-size: 1.2rem;
+        font-size: 1.4rem;
     }
     .landing-slideshow {
         margin: 0.8rem auto;
