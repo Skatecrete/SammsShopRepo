@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tattoo - SkinPrints and Piercings</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- HEADER WITH TABS -->
+    <nav id="main-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <span id="header-title">SkinPrints &amp; Piercings by Samm (@GutterMuttx)</span>
+            </div>
+            <div class="nav-tabs nav-tabs-tattoo">
+                <div class="nav-row">
+                    <a href="/" class="tab-btn home-btn">Home</a>
+                    <button class="tab-btn active" data-tab="tattoo-flash">Flash</button>
+                    <button class="tab-btn" data-tab="tattoo-catalog">Catalog</button>
+                    <button class="tab-btn" data-tab="tattoo-portfolio">Portfolio</button>
+                    <button class="tab-btn" data-tab="tattoo-scheduler">Schedule</button>
+                    <button class="tab-btn" data-tab="tattoo-contact">Contact</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- TATTOO CONTENT -->
+    <main id="tattoo-content">
+        <!-- FLASH TAB -->
+        <section id="tattoo-flash" class="tab-content active">
+            <h2>Available Flash</h2>
+            <div class="image-grid" id="tattoo-flash-grid"><p class="loading">Loading designs...</p></div>
+        </section>
+
+        <!-- CATALOG TAB -->
+        <section id="tattoo-catalog" class="tab-content">
+            <h2>Catalog</h2>
+            <div class="image-grid" id="tattoo-catalog-grid"><p class="loading">Loading catalog...</p></div>
+        </section>
+
+        <!-- PORTFOLIO TAB -->
+        <section id="tattoo-portfolio" class="tab-content">
+            <h2>Portfolio</h2>
+            <div class="image-grid" id="tattoo-portfolio-grid"><p class="loading">Loading portfolio...</p></div>
+        </section>
+
+        <!-- SCHEDULER TAB -->
+        <section id="tattoo-scheduler" class="tab-content">
+            <h2>Availability Calendar</h2>
+            <div id="tattoo-calendar-container"><p class="loading">Loading calendar...</p></div>
+        </section>
+
+        <!-- CONTACT TAB -->
+        <section id="tattoo-contact" class="tab-content">
+            <h2>Contact Us</h2>
+            <div class="contact-info">
+                <p><strong>📞 Call the Shop for an Appointment!:</strong> (574) 294-5454</p>
+                <p><strong>📍 Address:</strong> 128 N Railroad St. W, Monticello, IN 47960</p>
+                <div class="social-links">
+                    <p><strong>Instagram:</strong> @GutterMuttx</p>
+                    <p><strong>Facebook:</strong> /GutterMuttx</p>
+                </div>
+                <div class="payment-section">
+                    <h3>Send Your Deposit</h3>
+                    <div class="payment-grid">
+                        <div class="payment-method"><h4>CashApp</h4><p>$GutterMuttx</p></div>
+                        <div class="payment-method"><h4>PayPal</h4><p>@GutterMuttx</p></div>
+                        <div class="payment-method"><h4>Venmo</h4><p>@GutterMuttx</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 SkinPrints and Piercings</p>
+        <a href="/admin.html" class="admin-link-btn">Admin</a>
+    </footer>
+
+    <!-- Fullscreen Overlay -->
+    <div id="fullscreen-overlay" style="display:none;">
+        <button id="fullscreen-close">✕</button>
+        <img id="fullscreen-image" src="" alt="Fullscreen view">
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
