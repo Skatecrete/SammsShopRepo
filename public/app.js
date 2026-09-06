@@ -45,10 +45,10 @@ async function loadLandingSlideshows() {
 
     // Load shop images for shop slideshow
     try {
-        const response = await fetch('/shop/home.json');
+        const response = await fetch('/shop/jewelry.json');
         if (response.ok) {
             const data = await response.json();
-            const images = data.home || [];
+            const images = data.jewelry || [];
             if (images.length > 0) {
                 const track = document.getElementById('landing-shop-slideshow-track');
                 const allImages = [...images, ...images, ...images];
@@ -63,11 +63,10 @@ async function loadLandingSlideshows() {
 }
 
 // ============================================
-// TATTOO PAGE (Existing functionality)
+// TATTOO PAGE
 // ============================================
 
 if (isTattooPage) {
-    // Use the existing tattoo logic with updated selectors
     const tabs = document.querySelectorAll('.nav-tabs-tattoo .tab-btn');
     const contentSections = {};
     const grids = {};
@@ -198,7 +197,6 @@ if (isTattooPage) {
         calendarContainer.innerHTML = html;
     }
 
-    // Fullscreen for tattoo page
     function openFullscreen(imageSrc) {
         fullscreenImage.src = imageSrc;
         fullscreenOverlay.style.display = 'flex';
@@ -339,6 +337,6 @@ if (isShopPage) {
 
     window.openShopFullscreen = openShopFullscreen;
 
-    // Activate default tab
-    switchShopTab('shop-home');
+    // Activate default tab - Jewelry
+    switchShopTab('shop-jewelry');
 }
