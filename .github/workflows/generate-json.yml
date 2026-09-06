@@ -22,6 +22,19 @@ jobs:
           git config pull.rebase false
           git pull origin main || true
 
+      - name: Create directories
+        run: |
+          mkdir -p public/tattoo
+          mkdir -p public/shop
+          mkdir -p public/images/tattoo/flash
+          mkdir -p public/images/tattoo/catalog
+          mkdir -p public/images/tattoo/portfolio
+          mkdir -p public/images/shop/home
+          mkdir -p public/images/shop/jewelry
+          mkdir -p public/images/shop/paintings
+          mkdir -p public/images/shop/sculptures
+          mkdir -p public/images/landing
+
       - name: Generate JSON files
         run: |
           # Function to generate JSON for a given section and category
