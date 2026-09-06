@@ -322,7 +322,8 @@
     <script>
         const REPO_OWNER = 'Skatecrete';
         const REPO_NAME = 'SammsShopRepo';
-        const SHOP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWh3AsmhzASofyW3c0CEIEMD_2meFvTmIxA-vgFau2S8gn57bbeg2-8nGlw8NP6HzX5A/exec';
+        // THIS IS THE FIX: Use the Netlify proxy instead of Google directly
+        const SHOP_SCRIPT_URL = '/.netlify/functions/shop-proxy';
 
         let currentTab = '';
         let currentCategory = '';
