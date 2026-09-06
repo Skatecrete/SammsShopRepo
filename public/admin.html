@@ -54,10 +54,6 @@
             text-align: left;
             line-height: 1.5;
         }
-        .login-container .fun-message .emoji {
-            font-style: normal;
-            margin-right: 0.5rem;
-        }
         .login-container label {
             display: block;
             text-align: left;
@@ -104,18 +100,18 @@
         .login-container .back-link {
             display: inline-block;
             margin-top: 1.5rem;
-            color: #999;
+            color: #fff;
             font-size: 0.85rem;
             text-decoration: none;
-            padding: 0.5rem 1.5rem;
-            border: 1px solid #ddd;
+            padding: 0.6rem 1.8rem;
+            border: none;
             border-radius: 30px;
-            transition: all 0.3s;
+            background: #dc3545;
+            transition: background 0.3s;
+            font-weight: 600;
         }
         .login-container .back-link:hover {
-            color: #666;
-            border-color: #aaa;
-            background: #f8f6f4;
+            background: #b02a37;
         }
         @media (max-width: 600px) {
             .login-container { padding: 2rem; }
@@ -132,18 +128,17 @@
         <p class="sub-title">Staff Only. No really.</p>
         <div class="divider"></div>
 
-        <!-- Goblin message -->
+        <!-- Goblin message - no emoji -->
         <div class="fun-message">
-            <span class="emoji">🧌</span>
             "Welp. Now you've done it... You've opened this page by mistake and released a goblin I've been interrogating for three days and he's probably in the walls now. Not the day I was planning... thanks a lot."
         </div>
 
         <form id="login-form">
             <label for="username">Username</label>
-            <input type="text" id="username" placeholder="Enter username" required autofocus>
+            <input type="text" id="username" placeholder="Enter username">
             
             <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Enter password" required>
+            <input type="password" id="password" placeholder="Enter password">
             
             <button type="submit">Login</button>
             
