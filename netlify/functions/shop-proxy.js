@@ -15,15 +15,24 @@ exports.handler = async (event) => {
         let url = SHOP_SCRIPT_URL;
         let options = {
             headers: { 'Content-Type': 'application/json' },
-            method: event.httpMethod
+            method: 'POST'
         };
         
-        if (event.httpMethod === 'POST') {
+        // For GET requests, forward as GET
+        if (event.httpMethod === 'GET') {
+            options.method = 'GET';
+            delete options.body;
+            if (event.queryStringParameters) {
+                const params = new URLSearchParams(event.queryStringParameters);
+                url += '?' + params.toString();
+            }
+        } else {
+            // For POST, forward the body
             options.body = event.body;
-        } else if (event.queryStringParameters) {
-            const params = new URLSearchParams(event.queryStringParameters);
-            url += '?' + params.toString();
         }
+        
+        console.log('Proxying to:', url);
+        console.log('Method:', options.method);
         
         const response = await fetch(url, options);
         const data = await response.json();
@@ -35,6 +44,7 @@ exports.handler = async (event) => {
         };
         
     } catch (error) {
+        console.error('Proxy error:', error);
         return {
             statusCode: 500,
             headers: headers,
