@@ -6,7 +6,6 @@
     <title>Admin Dashboard - SkinPrints and Piercings</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* ===== BASE ===== */
         .admin-container {
             max-width: 1000px;
             margin: 0 auto;
@@ -34,7 +33,6 @@
         }
         .admin-header .logout-btn:hover { background: #c82333; }
 
-        /* ===== TAB SELECTOR ===== */
         .tab-selector {
             background: #f8f8f8;
             padding: 1.5rem;
@@ -62,7 +60,6 @@
             border-color: #1a1a1a;
         }
 
-        /* ===== UPLOAD SECTION ===== */
         .upload-section {
             background: #f8f8f8;
             padding: 1.5rem;
@@ -71,9 +68,7 @@
             border: 2px dashed #ccc;
             display: none;
         }
-        .upload-section.visible {
-            display: block;
-        }
+        .upload-section.visible { display: block; }
         .upload-section h3 { margin-bottom: 1rem; color: #333; }
         .upload-section .upload-btn {
             padding: 0.8rem 2rem;
@@ -91,7 +86,6 @@
         .upload-section .upload-btn.upload-images:hover { background: #218838; }
         .upload-section .upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* ===== SHOP ITEM FORM ===== */
         .shop-item-form {
             display: flex;
             gap: 1rem;
@@ -111,7 +105,6 @@
             border-color: #1a1a1a;
         }
 
-        /* ===== IMAGE GRID ===== */
         .image-section { margin-bottom: 2rem; }
         .image-section h3 { margin-bottom: 0.5rem; }
         .image-section .count { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
@@ -179,8 +172,18 @@
             font-size: 0.75rem;
         }
         .image-item-admin .item-details .save-btn:hover { background: #0069d9; }
+        .image-item-admin .item-details .current-title {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 0.2rem;
+        }
+        .image-item-admin .item-details .current-price {
+            font-size: 0.75rem;
+            color: #a64d79;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
 
-        /* ===== STATUS ===== */
         .status-badge {
             display: inline-block;
             padding: 0.3rem 0.8rem;
@@ -213,18 +216,15 @@
 </head>
 <body>
     <div class="admin-container">
-        <!-- HEADER -->
         <div class="admin-header">
             <h1>🔐 Admin Panel</h1>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
 
-        <!-- STATUS -->
         <div id="status-container">
             <span id="status-badge" class="status-badge ready">✅ Ready</span>
         </div>
 
-        <!-- TAB SELECTOR -->
         <div class="tab-selector">
             <label for="tab-select">Select a tab to begin edit:</label>
             <select id="tab-select">
@@ -242,14 +242,12 @@
             </select>
         </div>
 
-        <!-- UPLOAD SECTION -->
         <div id="upload-section" class="upload-section">
             <h3 id="upload-title">Upload Images</h3>
             
-            <!-- Shop item form (ABOVE upload button) -->
             <div id="shop-item-form" class="shop-item-form" style="display:none;">
                 <input type="text" id="shop-item-title" placeholder="Item title...">
-                <input type="text" id="shop-item-price" placeholder="Price (e.g. $45.00)...">
+                <input type="text" id="shop-item-price" placeholder="Price (e.g. 45.00)...">
             </div>
             
             <div class="upload-buttons">
@@ -259,7 +257,6 @@
             <div id="upload-status" class="upload-status"></div>
         </div>
 
-        <!-- IMAGE GRID -->
         <div class="image-section">
             <h3 id="grid-title">Images</h3>
             <p class="count" id="image-count">0 images</p>
@@ -268,9 +265,6 @@
     </div>
 
     <script>
-        // ============================================
-        // CONFIGURATION
-        // ============================================
         const REPO_OWNER = 'Skatecrete';
         const REPO_NAME = 'SammsShopRepo';
 
@@ -279,18 +273,12 @@
         let currentSection = '';
         let isShop = false;
 
-        // ============================================
-        // AUTH CHECK
-        // ============================================
         (function checkAuth() {
             if (localStorage.getItem('admin') !== 'true') {
                 window.location.href = '/admin.html';
             }
         })();
 
-        // ============================================
-        // GET TOKEN
-        // ============================================
         async function getGitHubToken() {
             try {
                 const response = await fetch('/.netlify/functions/get-token');
@@ -304,9 +292,6 @@
             }
         }
 
-        // ============================================
-        // DOM REFS
-        // ============================================
         const tabSelect = document.getElementById('tab-select');
         const uploadSection = document.getElementById('upload-section');
         const uploadTitle = document.getElementById('upload-title');
@@ -321,9 +306,6 @@
         const shopItemTitle = document.getElementById('shop-item-title');
         const shopItemPrice = document.getElementById('shop-item-price');
 
-        // ============================================
-        // STATUS
-        // ============================================
         function setStatus(text, type) {
             statusBadge.textContent = text;
             statusBadge.className = 'status-badge ' + type;
@@ -335,9 +317,6 @@
             uploadStatus.style.display = message ? 'block' : 'none';
         }
 
-        // ============================================
-        // TAB SELECTION
-        // ============================================
         tabSelect.addEventListener('change', function() {
             const value = this.value;
             if (!value) {
@@ -366,9 +345,6 @@
             return str.charAt(0).toUpperCase() + str.slice(1);
         }
 
-        // ============================================
-        // LOAD IMAGES
-        // ============================================
         async function loadImages() {
             if (!currentTab) return;
             imageGrid.innerHTML = '<p>Loading...</p>';
@@ -407,8 +383,10 @@
                             </div>
                             <div class="item-details">
                                 ${isShop ? `
+                                    <div class="current-title">Title: ${title || '(none)'}</div>
+                                    <div class="current-price">Price: ${price ? '$' + price : '(none)'}</div>
                                     <input type="text" class="shop-title-input" value="${title}" placeholder="Item title..." data-filename="${filename}">
-                                    <input type="text" class="shop-price-input" value="${price}" placeholder="Price..." data-filename="${filename}">
+                                    <input type="text" class="shop-price-input" value="${price}" placeholder="Price (e.g. 45.00)..." data-filename="${filename}">
                                     <button class="save-btn" onclick="saveShopItem('${filename}', this)">Save</button>
                                 ` : `
                                     <div style="font-size:0.75rem; color:#666; padding:0.3rem;">${filename}</div>
@@ -427,9 +405,6 @@
             }
         }
 
-        // ============================================
-        // UPLOAD
-        // ============================================
         function triggerUpload() {
             if (!currentTab) {
                 alert('Please select a tab first.');
@@ -442,7 +417,6 @@
             const files = e.target.files;
             if (!files.length) return;
 
-            // Get title and price from form (for shop items)
             const title = document.getElementById('shop-item-title')?.value?.trim() || '';
             const price = document.getElementById('shop-item-price')?.value?.trim() || '';
 
@@ -470,13 +444,12 @@
             }
 
             if (successCount > 0) {
-                // If shop items, save title and price to JSON
                 if (isShop && (title || price)) {
                     await saveAllShopItems(files, title, price);
                 }
                 showStatus(`✅ ${successCount} image(s) uploaded!`, 'success');
                 setStatus('✅ Upload complete', 'ready');
-                loadImages();
+                await loadImages();
                 await triggerWorkflow();
             } else {
                 showStatus('❌ Upload failed. Please try again.', 'error');
@@ -485,7 +458,6 @@
 
             uploadBtn.disabled = false;
             fileInput.value = '';
-            // Clear title and price fields
             if (document.getElementById('shop-item-title')) {
                 document.getElementById('shop-item-title').value = '';
                 document.getElementById('shop-item-price').value = '';
@@ -583,9 +555,6 @@
             }
         }
 
-        // ============================================
-        // DELETE IMAGE
-        // ============================================
         async function deleteImage(tab, filename) {
             if (!confirm(`Delete "${filename}"?`)) return;
 
@@ -618,23 +587,22 @@
 
                 if (!response.ok) throw new Error('Delete failed');
 
-                loadImages();
+                await loadImages();
                 await triggerWorkflow();
             } catch (error) {
                 alert(`Failed to delete: ${error.message}`);
             }
         }
 
-        // ============================================
-        // SHOP ITEM SAVE (Title & Price)
-        // ============================================
         async function saveShopItem(filename, btnElement) {
             const container = btnElement.closest('.item-details');
             const titleInput = container.querySelector('.shop-title-input');
             const priceInput = container.querySelector('.shop-price-input');
 
             const title = titleInput.value.trim();
-            const price = priceInput.value.trim();
+            let price = priceInput.value.trim();
+            // Remove any $ if user typed it
+            price = price.replace(/^\$/, '');
 
             if (!title && !price) {
                 alert('Please enter a title or price.');
@@ -671,6 +639,7 @@
                     return item;
                 });
 
+                // If not found, add it
                 if (!items.some(item => {
                     const itemFilename = item.image ? item.image.split('/').pop() : item;
                     return itemFilename === filename;
@@ -703,7 +672,7 @@
                 btnElement.textContent = '✅ Saved!';
                 setTimeout(() => { btnElement.textContent = 'Save'; }, 2000);
 
-                loadImages();
+                await loadImages();
                 await triggerWorkflow();
 
             } catch (error) {
@@ -712,9 +681,6 @@
             }
         }
 
-        // ============================================
-        // TRIGGER WORKFLOW
-        // ============================================
         async function triggerWorkflow() {
             const token = await getGitHubToken();
             if (!token) return;
@@ -751,17 +717,11 @@
             }
         }
 
-        // ============================================
-        // LOGOUT
-        // ============================================
         function logout() {
             localStorage.removeItem('admin');
             window.location.href = '/';
         }
 
-        // ============================================
-        // INIT
-        // ============================================
         setStatus('✅ Ready', 'ready');
         imageGrid.innerHTML = '<p>Select a tab to begin.</p>';
 
