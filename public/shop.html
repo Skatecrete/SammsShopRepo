@@ -27,62 +27,24 @@
             padding: 2rem 1rem 8rem 1rem;
             min-height: 80vh;
         }
-        .header-logo {
-            max-height: 55px;
-            width: auto;
-        }
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .nav-tabs-wrapper {
-            flex: 2;
-            min-width: 200px;
-        }
-        .nav-right-logo {
-            flex: 2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0 1rem;
-        }
-        .admin-logo-link {
-            display: inline-block;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .admin-logo-link:hover {
-            opacity: 0.8;
-            transition: opacity 0.3s;
-        }
     </style>
 </head>
 <body>
     <nav id="main-nav">
         <div class="nav-container">
-            <div class="nav-left">
+            <div class="nav-header">
                 <span id="header-title">SkinPrints &amp; Piercings by Samm (@GutterMuttx)</span>
+                <a href="/admin.html" class="admin-logo-link">
+                    <img src="/images/landing/shop_logo.png" alt="Shop Logo" class="header-logo">
+                </a>
             </div>
-            <div class="nav-tabs nav-tabs-shop nav-tabs-wrapper">
+            <div class="nav-tabs nav-tabs-shop">
                 <div class="nav-row">
                     <a href="/" class="tab-btn home-btn">Home</a>
                     <button class="tab-btn active" data-tab="shop-paintings">Paintings</button>
                     <button class="tab-btn" data-tab="shop-jewelry">Jewelry</button>
                     <button class="tab-btn" data-tab="shop-sculptures">Sculptures</button>
                 </div>
-            </div>
-            <div class="nav-right-logo">
-                <a href="/admin.html" class="admin-logo-link">
-                    <img src="/images/landing/shop_logo.png" alt="Shop Logo" class="header-logo">
-                </a>
             </div>
         </div>
     </nav>
