@@ -593,10 +593,8 @@
 
             if (successCount > 0) {
                 if (isShop) {
-                    // Get existing items from cache
                     const existingItems = shopDataCache?.[currentCategory] || [];
                     
-                    // Add new items with image paths
                     for (const filename of uploadedFiles) {
                         const imagePath = `/images/${currentSection}/${currentCategory}/${filename}`;
                         const exists = existingItems.some(item => item.image === imagePath);
@@ -609,9 +607,13 @@
                         }
                     }
                     
-                    // Update Google Sheet with full data (including image paths)
-                    await updateShopSheet(currentCategory, existingItems);
-                    shopDataCache[currentCategory] = existingItems;
+                    const success = await updateShopSheet(currentCategory, existingItems);
+                    if (success) {
+                        shopDataCache[currentCategory] = existingItems;
+                        console.log('✅ Google Sheet updated with image paths');
+                    } else {
+                        console.error('❌ Failed to update Google Sheet');
+                    }
                 }
                 showStatus(`✅ ${successCount} image(s) uploaded!`, 'success');
                 setStatus('✅ Upload complete', 'ready');
@@ -670,7 +672,6 @@
             const path = `public/images/${section}/${category}/${filename}`;
 
             try {
-                // Delete from GitHub
                 const shaResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -693,7 +694,6 @@
 
                 if (!response.ok) throw new Error('Delete failed');
 
-                // If shop item, remove from Google Sheet
                 if (isShop) {
                     const imagePath = `/images/${section}/${category}/${filename}`;
                     const existingItems = shopDataCache?.[currentCategory] || [];
