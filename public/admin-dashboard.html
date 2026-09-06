@@ -322,7 +322,7 @@
     <script>
         const REPO_OWNER = 'Skatecrete';
         const REPO_NAME = 'SammsShopRepo';
-        const SHOP_SCRIPT_URL = '/.netlify/functions/shop-proxy';
+        const SHOP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWh3AsmhzASofyW3c0CEIEMD_2meFvTmIxA-vgFau2S8gn57bbeg2-8nGlw8NP6HzX5A/exec';
 
         let currentTab = '';
         let currentCategory = '';
@@ -403,11 +403,8 @@
 
         async function updateShopSheet(category, items) {
             try {
-                const response = await fetch(SHOP_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ category: category, items: items })
-                });
+                const url = SHOP_SCRIPT_URL + '?_method=POST&category=' + encodeURIComponent(category) + '&data=' + encodeURIComponent(JSON.stringify(items));
+                const response = await fetch(url);
                 const data = await response.json();
                 return data.success;
             } catch (error) {
@@ -481,7 +478,6 @@
             
             const imageFiles = await getShopImagesFromGitHub();
             
-            // If no images in GitHub, show empty state
             if (imageFiles.length === 0) {
                 renderImageGrid([]);
                 return;
@@ -628,7 +624,7 @@
                     const success = await updateShopSheet(currentCategory, existingItems);
                     if (success) {
                         shopDataCache[currentCategory] = existingItems;
-                        console.log('✅ Google Sheet updated with image paths');
+                        console.log('✅ Google Sheet updated');
                     } else {
                         console.error('❌ Failed to update Google Sheet');
                     }
@@ -735,7 +731,7 @@
 
             saveBtn.disabled = true;
             saveBtn.textContent = '⏳ Saving...';
-            showSaveStatus('Saving changes to Google Sheet...', false);
+            showSaveStatus('Saving...', false);
 
             try {
                 const items = [];
@@ -767,14 +763,14 @@
                 const success = await updateShopSheet(currentCategory, items);
                 if (success) {
                     shopDataCache[currentCategory] = items;
-                    showSaveStatus('✅ All changes saved to Google Sheet!', true);
+                    showSaveStatus('✅ Saved successfully!', true);
                     saveBtn.disabled = true;
                     saveBtn.textContent = '✅ Saved!';
                     setTimeout(() => {
                         saveBtn.textContent = '💾 Save All Changes';
                     }, 2000);
                 } else {
-                    throw new Error('Failed to save to Google Sheet');
+                    throw new Error('Failed to save');
                 }
 
             } catch (error) {
