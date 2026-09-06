@@ -29,9 +29,8 @@ jobs:
           mkdir -p public/images/tattoo/flash
           mkdir -p public/images/tattoo/catalog
           mkdir -p public/images/tattoo/portfolio
-          mkdir -p public/images/shop/home
-          mkdir -p public/images/shop/jewelry
           mkdir -p public/images/shop/paintings
+          mkdir -p public/images/shop/jewelry
           mkdir -p public/images/shop/sculptures
           mkdir -p public/images/landing
 
@@ -65,10 +64,9 @@ jobs:
           generate_json "tattoo" "catalog"
           generate_json "tattoo" "portfolio"
 
-          # Shop sections
-          generate_json "shop" "home"
-          generate_json "shop" "jewelry"
+          # Shop sections (NO HOME)
           generate_json "shop" "paintings"
+          generate_json "shop" "jewelry"
           generate_json "shop" "sculptures"
 
       - name: Commit JSON files
