@@ -1,29 +1,13 @@
-{
-  "paintings": [
-    {
-      "image": "/images/shop/paintings/Controller.png",
-      "title": "sdfsdf",
-      "price": "65"
-    },
-    {
-      "image": "/images/shop/paintings/clipart692586.png",
-      "title": "fsdfsdfs",
-      "price": "45"
-    },
-    {
-      "image": "/images/shop/paintings/falinks-mega-shiny.png",
-      "title": "sdfsdf",
-      "price": "52"
-    },
-    {
-      "image": "/images/shop/paintings/mewtwo-mega-y-shiny.png",
-      "title": "sdfsdf sdfs fds sd",
-      "price": "545"
-    },
-    {
-      "image": "/images/shop/paintings/skarmory-mega-shiny.png",
-      "title": "sdfs dfsdfsd fsd",
-      "price": "545"
-    }
-  ]
-}
+{"paintings": [
+{"image": "/images/shop/paintings/Controller.png"}
+,
+{"image": "/images/shop/paintings/clipart692586.png"}
+,
+{"image": "/images/shop/paintings/falinks-mega-shiny.png"}
+,
+{"image": "/images/shop/paintings/mewtwo-mega-x-shiny.png"}
+,
+{"image": "/images/shop/paintings/mewtwo-mega-y-shiny.png"}
+,
+{"image": "/images/shop/paintings/skarmory-mega-shiny.png"}
+]}
