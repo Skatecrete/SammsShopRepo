@@ -5,6 +5,21 @@
   directory = "netlify/functions"
 
 [[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tattoo"
+  to = "/tattoo.html"
+  status = 200
+
+[[redirects]]
+  from = "/shop"
+  to = "/shop.html"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
