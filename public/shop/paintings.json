@@ -1,39 +1,15 @@
-{
-  "paintings": [
-    {
-      "image": "/images/shop/paintings/Controller.png",
-      "title": "FGHF",
-      "price": "54"
-    },
-    {
-      "image": "/images/shop/paintings/clipart692586.png",
-      "title": "FGH",
-      "price": "45"
-    },
-    {
-      "image": "/images/shop/paintings/falinks-mega-shiny.png",
-      "title": "dfghdfgh",
-      "price": "54"
-    },
-    {
-      "image": "/images/shop/paintings/mewtwo-mega-x-shiny.png",
-      "title": "dfghdfgh",
-      "price": "45"
-    },
-    {
-      "image": "/images/shop/paintings/mewtwo-mega-y-shiny.png",
-      "title": "fd hdgh dfgh",
-      "price": "45"
-    },
-    {
-      "image": "/images/shop/paintings/skarmory-mega-shiny.png",
-      "title": "df ghdfghdf",
-      "price": "45"
-    },
-    {
-      "image": "/images/shop/paintings/starmie-mega.png",
-      "title": "dfgh ghghg",
-      "price": "45"
-    }
-  ]
-}
+{"paintings": [
+{"image": "/images/shop/paintings/Controller.png"}
+,
+{"image": "/images/shop/paintings/clipart692586.png"}
+,
+{"image": "/images/shop/paintings/falinks-mega-shiny.png"}
+,
+{"image": "/images/shop/paintings/mewtwo-mega-x-shiny.png"}
+,
+{"image": "/images/shop/paintings/mewtwo-mega-y-shiny.png"}
+,
+{"image": "/images/shop/paintings/skarmory-mega-shiny.png"}
+,
+{"image": "/images/shop/paintings/starmie-mega.png"}
+]}
