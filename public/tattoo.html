@@ -27,15 +27,8 @@
             padding: 2rem 1rem 8rem 1rem;
             min-height: 80vh;
         }
-        .header-logo-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0 1rem;
-        }
         .header-logo {
-            max-height: 50px;
+            max-height: 55px;
             width: auto;
         }
         .nav-container {
@@ -55,14 +48,20 @@
             min-width: 200px;
         }
         .nav-right-logo {
-            flex: 1;
+            flex: 2;
             display: flex;
-            justify-content: flex-end;
+            justify-content: center;
             align-items: center;
+            padding: 0 1rem;
         }
-        .nav-right-logo img {
-            max-height: 55px;
-            width: auto;
+        .admin-logo-link {
+            display: inline-block;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .admin-logo-link:hover {
+            opacity: 0.8;
+            transition: opacity 0.3s;
         }
     </style>
 </head>
@@ -85,7 +84,9 @@
                 </div>
             </div>
             <div class="nav-right-logo">
-                <img src="/images/landing/tattoo_logo.png" alt="Tattoo Logo" class="header-logo">
+                <a href="/admin.html" class="admin-logo-link">
+                    <img src="/images/landing/tattoo_logo.png" alt="Tattoo Logo" class="header-logo">
+                </a>
             </div>
         </div>
     </nav>
@@ -134,7 +135,6 @@
 
     <footer>
         <p>© 2026 SkinPrints and Piercings</p>
-        <a href="/admin.html" class="admin-link-btn">Admin</a>
     </footer>
 
     <div id="fullscreen-overlay" style="display:none;">
