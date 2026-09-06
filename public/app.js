@@ -448,10 +448,10 @@ if (isShopPage) {
             const imagePath = item.image || `/images/shop/${category}/placeholder.jpg`;
             return `
                 <div class="shop-item">
-                    <img src="${imagePath}" alt="${title}" class="shop-image" onerror="this.style.display='none'">
-                    <div class="shop-details">
-                        <div class="shop-title" style="font-size:1.2rem; font-weight:600; font-style:italic; color:#1a1a1a;">${title}</div>
-                        <div class="shop-price" style="font-size:1.1rem; font-weight:600; font-style:italic; color:#a64d79;">${displayCost}</div>
+                    <img src="${imagePath}" alt="${title}" class="shop-image" onclick="window.openShopFullscreen('${imagePath}')">
+                    <div class="shop-details" style="text-align:center;">
+                        <div class="shop-title" style="font-size:1.2rem; font-weight:600; font-style:italic; color:#1a1a1a; text-align:center;">${title}</div>
+                        <div class="shop-price" style="font-size:1.1rem; font-weight:600; font-style:italic; color:#a64d79; text-align:center;">${displayCost}</div>
                     </div>
                 </div>
             `;
