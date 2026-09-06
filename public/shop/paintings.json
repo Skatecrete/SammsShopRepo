@@ -1,5 +1,12 @@
-{"paintings": [
-{"image": "/images/shop/paintings/Controller.png"}
-,
-{"image": "/images/shop/paintings/skarmory-mega-shiny.png"}
-]}
+{
+  "paintings": [
+    {
+      "image": "/images/shop/paintings/Controller.png",
+      "title": "trtyryt",
+      "price": "58"
+    },
+    {
+      "image": "/images/shop/paintings/skarmory-mega-shiny.png"
+    }
+  ]
+}
