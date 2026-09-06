@@ -100,13 +100,14 @@ body {
     border-color: #888;
 }
 
-.landing-btn-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #eee;
-    flex-shrink: 0;
+.landing-btn-text {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    text-align: center;
+    flex: 1;
+    letter-spacing: 1px;
 }
 
 .landing-btn-text {
