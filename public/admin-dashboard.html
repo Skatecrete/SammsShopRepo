@@ -322,7 +322,6 @@
     <script>
         const REPO_OWNER = 'Skatecrete';
         const REPO_NAME = 'SammsShopRepo';
-        // THIS IS THE FIX: Use the Netlify proxy instead of Google directly
         const SHOP_SCRIPT_URL = '/.netlify/functions/shop-proxy';
 
         let currentTab = '';
@@ -381,6 +380,12 @@
         function showSaveStatus(message, isSuccess) {
             saveStatus.textContent = message;
             saveStatus.style.color = isSuccess ? '#28a745' : '#dc3545';
+        }
+
+        function markChange() {
+            saveBtn.disabled = false;
+            saveBtn.textContent = '💾 Save All Changes';
+            showSaveStatus('Changes pending...', false);
         }
 
         async function fetchShopData() {
@@ -476,10 +481,17 @@
             
             const imageFiles = await getShopImagesFromGitHub();
             
+            // If no images in GitHub, show empty state
+            if (imageFiles.length === 0) {
+                renderImageGrid([]);
+                return;
+            }
+            
             const mergedItems = imageFiles.map(img => {
                 const existing = items.find(item => item.image === img.image);
                 return {
                     image: img.image,
+                    filename: img.filename,
                     title: existing?.title || '',
                     cost: existing?.cost || ''
                 };
@@ -512,6 +524,9 @@
             if (items.length === 0) {
                 imageGrid.innerHTML = '<p>No images yet. Upload some!</p>';
                 imageCount.textContent = '0 images';
+                saveBtn.disabled = true;
+                saveBtn.textContent = '💾 Save All Changes';
+                showSaveStatus('No changes to save', false);
                 return;
             }
 
@@ -532,10 +547,10 @@
                             ${isShop ? `
                                 <div class="current-title">${title || '(no title)'}</div>
                                 <div class="current-price">${cost ? '$' + cost : '(no price)'}</div>
-                                <input type="text" class="shop-title-input" value="${title}" placeholder="Item title..." data-filename="${filename}">
+                                <input type="text" class="shop-title-input" value="${title}" placeholder="Item title..." data-filename="${filename}" oninput="markChange()">
                                 <div class="price-input-wrapper">
                                     <span class="price-currency">$</span>
-                                    <input type="text" class="shop-cost-input" value="${cost}" placeholder="0.00" data-filename="${filename}">
+                                    <input type="text" class="shop-cost-input" value="${cost}" placeholder="0.00" data-filename="${filename}" oninput="markChange()">
                                 </div>
                             ` : `
                                 <div style="font-size:0.75rem; color:#666; padding:0.3rem;">${filename}</div>
@@ -547,7 +562,9 @@
 
             imageGrid.innerHTML = html;
             imageCount.textContent = `${items.length} images`;
+            
             saveBtn.disabled = true;
+            saveBtn.textContent = '💾 Save All Changes';
             showSaveStatus('No changes to save', false);
         }
 
@@ -779,6 +796,7 @@
         window.triggerUpload = triggerUpload;
         window.deleteImage = deleteImage;
         window.saveAllChanges = saveAllChanges;
+        window.markChange = markChange;
         window.logout = logout;
     </script>
 </body>
