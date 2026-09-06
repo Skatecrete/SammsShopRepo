@@ -7,31 +7,20 @@ exports.handler = async (event) => {
         'Access-Control-Allow-Headers': 'Content-Type'
     };
     
-    // Handle preflight OPTIONS request
     if (event.httpMethod === 'OPTIONS') {
-        return {
-            statusCode: 200,
-            headers: headers,
-            body: ''
-        };
+        return { statusCode: 200, headers, body: '' };
     }
     
     try {
         let url = SHOP_SCRIPT_URL;
         let options = {
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             method: event.httpMethod
         };
         
         if (event.httpMethod === 'POST') {
-            // Forward POST body
             options.body = event.body;
-            // Also add _method=POST to query params for Apps Script
-            url += '?_method=POST';
         } else if (event.queryStringParameters) {
-            // Forward GET parameters
             const params = new URLSearchParams(event.queryStringParameters);
             url += '?' + params.toString();
         }
@@ -49,11 +38,7 @@ exports.handler = async (event) => {
         return {
             statusCode: 500,
             headers: headers,
-            body: JSON.stringify({ 
-                success: false, 
-                error: error.message,
-                details: error.toString()
-            })
+            body: JSON.stringify({ success: false, error: error.message })
         };
     }
 };
