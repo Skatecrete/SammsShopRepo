@@ -12,9 +12,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 60%;
-            max-width: 500px;
-            opacity: 0.80;
+            width: 50%;
+            max-width: 400px;
             pointer-events: none;
             z-index: 0;
         }
@@ -28,6 +27,22 @@
             padding: 2rem 1rem 8rem 1rem;
             min-height: 80vh;
         }
+        .header-logo {
+            max-height: 40px;
+            margin-left: 1rem;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -35,6 +50,7 @@
         <div class="nav-container">
             <div class="nav-left">
                 <span id="header-title">SkinPrints &amp; Piercings by Samm (@GutterMuttx)</span>
+                <img src="/images/landing/tattoo_logo.png" alt="Tattoo Logo" class="header-logo">
             </div>
             <div class="nav-tabs nav-tabs-tattoo">
                 <div class="nav-row">
