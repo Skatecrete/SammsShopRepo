@@ -445,18 +445,7 @@ function loadShopGrid(tab) {
                     container.innerHTML = '<p class="loading">No items yet.</p>';
                     return;
                 }
-                container.innerHTML = items.map(item => {
-                    const path = item.image || item;
-                    const title = item.title || '';
-                    const price = item.price || '';
-                    return `<div class="shop-item">
-                                <img src="${path}" alt="${title}" class="shop-image" onclick="window.openShopFullscreen('${path}')">
-                                <div class="shop-details">
-                                    <div class="shop-title">${title}</div>
-                                    <div class="shop-price">${price}</div>
-                                </div>
-                            </div>`;
-                }).join('');
+                renderShopGrid(container, items);
             })
             .catch(err => {
                 console.warn(`  - Error loading ${category}:`, err.message);
@@ -465,6 +454,27 @@ function loadShopGrid(tab) {
     } catch (error) {
         console.error('❌ loadShopGrid() error:', error);
     }
+}
+
+function renderShopGrid(container, items) {
+    if (!items || items.length === 0) {
+        container.innerHTML = '<p class="loading">No items yet.</p>';
+        return;
+    }
+    container.innerHTML = items.map(item => {
+        const path = item.image || item;
+        const title = item.title || '';
+        const price = item.price || '';
+        return `
+            <div class="shop-item">
+                <img src="${path}" alt="${title}" class="shop-image" onclick="window.openShopFullscreen('${path}')">
+                <div class="shop-details">
+                    <div class="shop-title" style="font-size:1.2rem; font-weight:600; font-style:italic; color:#1a1a1a;">${title || 'Untitled'}</div>
+                    <div class="shop-price" style="font-size:1.1rem; font-weight:600; font-style:italic; color:#a64d79;">${price ? '$' + price : 'Price upon request'}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 window.openShopFullscreen = function(src) {
