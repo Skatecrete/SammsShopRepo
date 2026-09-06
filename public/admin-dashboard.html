@@ -592,15 +592,24 @@
             }
 
             if (successCount > 0) {
-                if (isShop && (title || cost)) {
+                if (isShop) {
+                    // Get existing items from cache
                     const existingItems = shopDataCache?.[currentCategory] || [];
+                    
+                    // Add new items with image paths
                     for (const filename of uploadedFiles) {
                         const imagePath = `/images/${currentSection}/${currentCategory}/${filename}`;
                         const exists = existingItems.some(item => item.image === imagePath);
                         if (!exists) {
-                            existingItems.push({ image: imagePath, title: title, cost: cost });
+                            existingItems.push({
+                                image: imagePath,
+                                title: title || '',
+                                cost: cost || ''
+                            });
                         }
                     }
+                    
+                    // Update Google Sheet with full data (including image paths)
                     await updateShopSheet(currentCategory, existingItems);
                     shopDataCache[currentCategory] = existingItems;
                 }
