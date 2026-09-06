@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - SkinPrints and Piercings</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -21,20 +21,50 @@
             padding: 3rem;
             border-radius: 16px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            max-width: 400px;
+            max-width: 420px;
             width: 90%;
             text-align: center;
         }
-        .login-container h1 {
+        .login-container .shop-name {
             font-family: 'Great Vibes', cursive;
             font-size: 2rem;
             color: #1a1a1a;
+            margin-bottom: 0.2rem;
+        }
+        .login-container .sub-title {
+            font-size: 0.9rem;
+            color: #999;
             margin-bottom: 0.5rem;
         }
-        .login-container p {
+        .login-container .divider {
+            width: 60px;
+            height: 2px;
+            background: #a64d79;
+            margin: 1rem auto 1.5rem;
+        }
+        .login-container .fun-message {
+            background: #f8f6f4;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
             color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
+            font-style: italic;
+            border-left: 3px solid #a64d79;
+            text-align: left;
+            line-height: 1.5;
+        }
+        .login-container .fun-message .emoji {
+            font-style: normal;
+            margin-right: 0.5rem;
+        }
+        .login-container label {
+            display: block;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #333;
+            margin-bottom: 0.3rem;
         }
         .login-container input {
             width: 100%;
@@ -64,19 +94,29 @@
         .login-container button:hover { background: #333; }
         .login-container .error {
             color: #dc3545;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             margin-top: 1rem;
             display: none;
+            font-weight: 500;
+            line-height: 1.4;
         }
         .login-container .error.show { display: block; }
         .login-container .back-link {
-            display: block;
+            display: inline-block;
             margin-top: 1.5rem;
             color: #999;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             text-decoration: none;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            transition: all 0.3s;
         }
-        .login-container .back-link:hover { color: #666; }
+        .login-container .back-link:hover {
+            color: #666;
+            border-color: #aaa;
+            background: #f8f6f4;
+        }
         @media (max-width: 600px) {
             .login-container { padding: 2rem; }
             body { padding-bottom: 7rem; }
@@ -88,15 +128,29 @@
 </head>
 <body>
     <div class="login-container">
-        <h1>🔐 Admin</h1>
-        <p>Enter your credentials to access the admin panel</p>
+        <h1 class="shop-name">🔐 SkinPrints and Piercings</h1>
+        <p class="sub-title">Staff Only. No really.</p>
+        <div class="divider"></div>
+
+        <!-- Goblin message -->
+        <div class="fun-message">
+            <span class="emoji">🧌</span>
+            "Welp. Now you've done it... You've opened this page by mistake and released a goblin I've been interrogating for three days and he's probably in the walls now. Not the day I was planning... thanks a lot."
+        </div>
+
         <form id="login-form">
-            <input type="text" id="username" placeholder="Username" required autofocus>
-            <input type="password" id="password" placeholder="Password" required>
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter username" required autofocus>
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter password" required>
+            
             <button type="submit">Login</button>
-            <div class="error" id="error-msg">Invalid username or password.</div>
+            
+            <div class="error" id="error-msg">Haven't you caused enough chaos today? I need to find this goblin before he gets to my socks again. Be gone!</div>
         </form>
-        <a href="/" class="back-link">← Back to site</a>
+        
+        <a href="/" class="back-link">Yeeeeeeah... I'mma head out now.</a>
     </div>
 
     <script>
@@ -115,7 +169,10 @@
                 window.location.href = '/admin-dashboard.html';
             } else {
                 errorMsg.classList.add('show');
-                setTimeout(function() { errorMsg.classList.remove('show'); }, 3000);
+                document.getElementById('password').value = '';
+                setTimeout(function() {
+                    errorMsg.classList.remove('show');
+                }, 4000);
             }
         });
     </script>
