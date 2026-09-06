@@ -183,6 +183,30 @@
             margin-bottom: 0.3rem;
             font-weight: 600;
         }
+        .price-input-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 0.3rem;
+        }
+        .price-input-wrapper .price-currency {
+            padding: 0.3rem 0 0.3rem 0.5rem;
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+        }
+        .price-input-wrapper input {
+            border: none !important;
+            padding: 0.3rem 0.5rem !important;
+            margin: 0 !important;
+            flex: 1;
+            min-width: 0;
+        }
+        .price-input-wrapper input:focus {
+            outline: none;
+        }
 
         .status-badge {
             display: inline-block;
@@ -386,7 +410,10 @@
                                     <div class="current-title">Title: ${title || '(none)'}</div>
                                     <div class="current-price">Price: ${price ? '$' + price : '(none)'}</div>
                                     <input type="text" class="shop-title-input" value="${title}" placeholder="Item title..." data-filename="${filename}">
-                                    <input type="text" class="shop-price-input" value="${price}" placeholder="Price (e.g. 45.00)..." data-filename="${filename}">
+                                    <div class="price-input-wrapper">
+                                        <span class="price-currency">$</span>
+                                        <input type="text" class="shop-price-input" value="${price}" placeholder="45.00" data-filename="${filename}">
+                                    </div>
                                     <button class="save-btn" onclick="saveShopItem('${filename}', this)">Save</button>
                                 ` : `
                                     <div style="font-size:0.75rem; color:#666; padding:0.3rem;">${filename}</div>
