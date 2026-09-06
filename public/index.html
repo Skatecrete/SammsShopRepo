@@ -5,95 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkinPrints and Piercings</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav id="main-nav">
-        <div class="nav-container">
-            <div class="nav-left">
-                <span id="header-title" style="display:none;">SkinPrints &amp; Piercings by Samm (@GutterMuttx)</span>
-            </div>
-            <div class="nav-tabs">
-                <div class="nav-row">
-                    <button class="tab-btn active" data-tab="landing">Home</button>
-                    <button class="tab-btn" data-tab="scheduler">Schedule</button>
-                    <button class="tab-btn" data-tab="contact">Contact Me</button>
-                </div>
-                <div class="nav-row">
-                    <button class="tab-btn" data-tab="catalog">Catalog</button>
-                    <button class="tab-btn" data-tab="flash">Flash</button>
-                    <button class="tab-btn" data-tab="portfolio">Portfolio</button>
-                </div>
+    <!-- LANDING PAGE (NO HEADER) -->
+    <div id="landing-page">
+        <!-- Title -->
+        <div class="landing-title-section">
+            <h1 class="landing-main-title">SkinPrints and Piercings</h1>
+            <p class="landing-sub-title">by Samm (@GutterMuttx)</p>
+        </div>
+
+        <!-- Tattoo Slideshow -->
+        <div class="landing-slideshow">
+            <div class="slideshow-container" id="landing-slideshow">
+                <div class="slideshow-track" id="landing-slideshow-track"></div>
             </div>
         </div>
-    </nav>
 
-    <!-- LANDING PAGE -->
-    <div id="landing" class="tab-content active">
-        <div class="landing-content">
-            <h1 class="landing-title">SkinPrints and Piercings</h1>
-            <p class="landing-by">by</p>
-            <p class="landing-name">Samm (@GutterMuttx)</p>
-        </div>
-        <div class="slideshow-container">
-            <div class="slideshow-track" id="slideshow-track"></div>
-        </div>
-    </div>
+        <!-- Tattoo Button -->
+        <a href="/tattoo.html" class="landing-btn">
+            <img src="/images/landing/tattoo_logo.png" alt="Tattoo" class="landing-btn-icon">
+            <span class="landing-btn-text">Tattoo</span>
+        </a>
 
-    <!-- FLASH TAB -->
-    <section id="flash" class="tab-content">
-        <h2>Available Flash</h2>
-        <div class="image-grid" id="flash-grid"><p class="loading">Loading designs...</p></div>
-    </section>
-
-    <!-- CATALOG TAB -->
-    <section id="catalog" class="tab-content">
-        <h2>Catalog</h2>
-        <div class="image-grid" id="catalog-grid"><p class="loading">Loading catalog...</p></div>
-    </section>
-
-    <!-- PORTFOLIO TAB -->
-    <section id="portfolio" class="tab-content">
-        <h2>Portfolio</h2>
-        <div class="image-grid" id="portfolio-grid"><p class="loading">Loading portfolio...</p></div>
-    </section>
-
-    <!-- SCHEDULER TAB -->
-    <section id="scheduler" class="tab-content">
-        <h2>Availability Calendar</h2>
-        <div id="calendar-container"><p class="loading">Loading calendar...</p></div>
-    </section>
-
-    <!-- CONTACT TAB -->
-    <section id="contact" class="tab-content">
-        <h2>Contact Us</h2>
-        <div class="contact-info">
-            <p><strong>📞 Call the Shop for an Appointment!:</strong> (574) 294-5454</p>
-            <p><strong>📍 Address:</strong> 128 N Railroad St. W, Monticello, IN 47960</p>
-            <div class="social-links">
-                <p><strong>Instagram:</strong> @GutterMuttx</p>
-                <p><strong>Facebook:</strong> /GutterMuttx</p>
-            </div>
-            <div class="payment-section">
-                <h3>Send Your Deposit</h3>
-                <div class="payment-grid">
-                    <div class="payment-method"><h4>CashApp</h4><p>$GutterMuttx</p></div>
-                    <div class="payment-method"><h4>PayPal</h4><p>@GutterMuttx</p></div>
-                    <div class="payment-method"><h4>Venmo</h4><p>@GutterMuttx</p></div>
-                </div>
+        <!-- Shop Slideshow -->
+        <div class="landing-slideshow">
+            <div class="slideshow-container" id="landing-shop-slideshow">
+                <div class="slideshow-track" id="landing-shop-slideshow-track"></div>
             </div>
         </div>
-    </section>
 
-    <footer>
-        <p>© 2026 SkinPrints and Piercings</p>
-        <a href="/admin.html" class="admin-link-btn">Admin</a>
-    </footer>
-
-    <!-- Fullscreen Overlay -->
-    <div id="fullscreen-overlay" style="display:none;">
-        <button id="fullscreen-close">✕</button>
-        <img id="fullscreen-image" src="" alt="Fullscreen view">
+        <!-- Shop Button -->
+        <a href="/shop.html" class="landing-btn">
+            <img src="/images/landing/shop_logo.png" alt="Shop" class="landing-btn-icon">
+            <span class="landing-btn-text">Shop</span>
+        </a>
     </div>
 
     <script src="app.js"></script>
