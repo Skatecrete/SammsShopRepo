@@ -9,7 +9,7 @@ const CONFIG = {
 };
 
 // ============================================
-// DETECT PAGE - FIXED
+// DETECT PAGE
 // ============================================
 
 const path = window.location.pathname;
@@ -47,8 +47,6 @@ async function loadLandingSlideshows() {
                     }).join('');
                     track.style.animation = 'scrollSlideshow 30s linear infinite';
                     console.log('✅ Tattoo slideshow loaded with', images.length, 'images');
-                } else {
-                    console.warn('⚠️ landing-slideshow-track not found');
                 }
             }
         }
@@ -71,8 +69,6 @@ async function loadLandingSlideshows() {
                     }).join('');
                     track.style.animation = 'scrollSlideshow 30s linear infinite';
                     console.log('✅ Shop slideshow loaded with', images.length, 'images');
-                } else {
-                    console.warn('⚠️ landing-shop-slideshow-track not found');
                 }
             }
         }
@@ -92,6 +88,7 @@ if (isTattooPage) {
         try {
             console.log('🔄 initTattoo() called');
             
+            // Get ALL tabs including Home
             const tabs = document.querySelectorAll('.nav-tabs-tattoo .tab-btn');
             console.log('  - Found', tabs.length, 'tattoo tabs');
             
@@ -104,27 +101,29 @@ if (isTattooPage) {
                 console.log(`  - Tab ${i}:`, btn.dataset.tab, btn.className);
             });
             
+            // Add click listeners to ALL tabs
             tabs.forEach(btn => {
                 btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
                     const tab = this.dataset.tab;
                     console.log('🖱️ Tattoo tab clicked:', tab);
-                    if (tab) {
-                        switchTattooTab(tab);
-                    } else {
-                        console.error('❌ Clicked tab has no data-tab attribute');
+                    
+                    // If it's the Home button (no data-tab), let it navigate
+                    if (!tab) {
+                        console.log('  - Home button clicked, navigating to /');
+                        window.location.href = '/';
+                        return;
                     }
+                    
+                    e.preventDefault();
+                    e.stopPropagation();
+                    switchTattooTab(tab);
                 });
             });
             
             const contentSections = document.querySelectorAll('#tattoo-content .tab-content');
             console.log('  - Found', contentSections.length, 'content sections');
             
-            if (contentSections.length === 0) {
-                console.error('❌ No content sections found! Check #tattoo-content in HTML.');
-            }
-            
+            // Set default tab
             console.log('🔄 Setting default tab: tattoo-flash');
             switchTattooTab('tattoo-flash');
             
@@ -149,9 +148,13 @@ function switchTattooTab(tab) {
     try {
         console.log('🔄 switchTattooTab() called with:', tab);
         
+        // Get ALL tabs including Home
         const allTabs = document.querySelectorAll('.nav-tabs-tattoo .tab-btn');
+        
+        // Remove active from all tabs
         allTabs.forEach(b => b.classList.remove('active'));
         
+        // Activate the clicked tab
         const activeBtn = document.querySelector(`.nav-tabs-tattoo .tab-btn[data-tab="${tab}"]`);
         if (activeBtn) {
             activeBtn.classList.add('active');
@@ -160,6 +163,7 @@ function switchTattooTab(tab) {
             console.warn('  - No button found for tab:', tab);
         }
         
+        // Hide all content
         const contentSections = document.querySelectorAll('#tattoo-content .tab-content');
         console.log('  - Hiding', contentSections.length, 'content sections');
         contentSections.forEach(section => {
@@ -167,6 +171,7 @@ function switchTattooTab(tab) {
             section.classList.remove('active');
         });
         
+        // Show selected
         const targetSection = document.getElementById(tab);
         if (targetSection) {
             targetSection.style.display = 'block';
@@ -348,24 +353,23 @@ if (isShopPage) {
             
             tabs.forEach(btn => {
                 btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
                     const tab = this.dataset.tab;
                     console.log('🖱️ Shop tab clicked:', tab);
-                    if (tab) {
-                        switchShopTab(tab);
-                    } else {
-                        console.error('❌ Clicked tab has no data-tab attribute');
+                    
+                    if (!tab) {
+                        console.log('  - Home button clicked, navigating to /');
+                        window.location.href = '/';
+                        return;
                     }
+                    
+                    e.preventDefault();
+                    e.stopPropagation();
+                    switchShopTab(tab);
                 });
             });
             
             const contentSections = document.querySelectorAll('#shop-content .tab-content');
             console.log('  - Found', contentSections.length, 'content sections');
-            
-            if (contentSections.length === 0) {
-                console.error('❌ No content sections found! Check #shop-content in HTML.');
-            }
             
             console.log('🔄 Setting default tab: shop-paintings');
             switchShopTab('shop-paintings');
