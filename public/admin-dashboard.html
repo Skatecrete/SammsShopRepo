@@ -96,9 +96,7 @@
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 2px solid #ddd;
+            margin-bottom: 1rem;
         }
         .shop-item-form input {
             padding: 0.6rem 1rem;
@@ -237,28 +235,28 @@
                     <option value="tattoo-portfolio">Tattoo → Portfolio</option>
                 </optgroup>
                 <optgroup label="Shop">
-                    <option value="shop-home">Shop → Home</option>
-                    <option value="shop-jewelry">Shop → Jewelry</option>
                     <option value="shop-paintings">Shop → Paintings</option>
+                    <option value="shop-jewelry">Shop → Jewelry</option>
                     <option value="shop-sculptures">Shop → Sculptures</option>
                 </optgroup>
             </select>
         </div>
 
-        <!-- UPLOAD SECTION (dynamic) -->
+        <!-- UPLOAD SECTION -->
         <div id="upload-section" class="upload-section">
             <h3 id="upload-title">Upload Images</h3>
+            
+            <!-- Shop item form (ABOVE upload button) -->
+            <div id="shop-item-form" class="shop-item-form" style="display:none;">
+                <input type="text" id="shop-item-title" placeholder="Item title...">
+                <input type="text" id="shop-item-price" placeholder="Price (e.g. $45.00)...">
+            </div>
+            
             <div class="upload-buttons">
                 <button class="upload-btn upload-images" id="upload-btn" onclick="triggerUpload()">+ Upload Images</button>
             </div>
             <input type="file" id="file-input" class="file-input-hidden" multiple accept="image/*">
             <div id="upload-status" class="upload-status"></div>
-            <!-- Shop item form (hidden by default) -->
-            <div id="shop-item-form" class="shop-item-form" style="display:none;">
-                <input type="text" id="shop-item-title" placeholder="Item title...">
-                <input type="text" id="shop-item-price" placeholder="Price (e.g. $45.00)...">
-                <button class="upload-btn upload-images" onclick="saveShopItemDetails()">Save Details</button>
-            </div>
         </div>
 
         <!-- IMAGE GRID -->
@@ -322,7 +320,6 @@
         const shopItemForm = document.getElementById('shop-item-form');
         const shopItemTitle = document.getElementById('shop-item-title');
         const shopItemPrice = document.getElementById('shop-item-price');
-        let currentFiles = [];
 
         // ============================================
         // STATUS
@@ -351,16 +348,14 @@
             }
 
             const parts = value.split('-');
-            currentSection = parts[0]; // 'tattoo' or 'shop'
-            currentCategory = parts[1]; // 'flash', 'catalog', etc.
+            currentSection = parts[0];
+            currentCategory = parts[1];
             isShop = currentSection === 'shop';
 
-            // Show upload section
             uploadSection.classList.add('visible');
             uploadTitle.textContent = isShop ? `Upload to Shop → ${capitalize(currentCategory)}` : `Upload to Tattoo → ${capitalize(currentCategory)}`;
             gridTitle.textContent = isShop ? `Shop → ${capitalize(currentCategory)}` : `Tattoo → ${capitalize(currentCategory)}`;
 
-            // Show/hide shop item form
             shopItemForm.style.display = isShop ? 'flex' : 'none';
 
             currentTab = value;
@@ -447,6 +442,10 @@
             const files = e.target.files;
             if (!files.length) return;
 
+            // Get title and price from form (for shop items)
+            const title = document.getElementById('shop-item-title')?.value?.trim() || '';
+            const price = document.getElementById('shop-item-price')?.value?.trim() || '';
+
             uploadBtn.disabled = true;
             showStatus('Uploading...', '');
             setStatus('⏳ Uploading...', 'loading');
@@ -471,6 +470,10 @@
             }
 
             if (successCount > 0) {
+                // If shop items, save title and price to JSON
+                if (isShop && (title || price)) {
+                    await saveAllShopItems(files, title, price);
+                }
                 showStatus(`✅ ${successCount} image(s) uploaded!`, 'success');
                 setStatus('✅ Upload complete', 'ready');
                 loadImages();
@@ -482,7 +485,11 @@
 
             uploadBtn.disabled = false;
             fileInput.value = '';
-            currentFiles = [];
+            // Clear title and price fields
+            if (document.getElementById('shop-item-title')) {
+                document.getElementById('shop-item-title').value = '';
+                document.getElementById('shop-item-price').value = '';
+            }
         });
 
         async function uploadFile(tab, file, token) {
@@ -514,6 +521,66 @@
             }
 
             return await response.json();
+        }
+
+        async function saveAllShopItems(files, title, price) {
+            const [section, category] = currentTab.split('-');
+            const jsonPath = `public/${section}/${category}.json`;
+            const token = await getGitHubToken();
+            if (!token) return;
+
+            try {
+                const jsonResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${jsonPath}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                let items = [];
+                let sha = null;
+
+                if (jsonResponse.ok) {
+                    const jsonData = await jsonResponse.json();
+                    sha = jsonData.sha;
+                    const content = atob(jsonData.content);
+                    const parsed = JSON.parse(content);
+                    items = parsed[category] || [];
+                }
+
+                for (const file of files) {
+                    const filename = file.name;
+                    const exists = items.some(item => {
+                        const itemFilename = item.image ? item.image.split('/').pop() : item;
+                        return itemFilename === filename;
+                    });
+                    if (!exists) {
+                        items.push({
+                            image: `/images/${section}/${category}/${filename}`,
+                            title: title,
+                            price: price
+                        });
+                    }
+                }
+
+                const newContent = JSON.stringify({ [category]: items }, null, 2);
+
+                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${jsonPath}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Add shop items to ${category}`,
+                        content: btoa(newContent),
+                        sha: sha,
+                        branch: 'main'
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to save shop items');
+
+            } catch (error) {
+                console.error('Save shop items error:', error);
+            }
         }
 
         // ============================================
@@ -581,7 +648,6 @@
             const jsonPath = `public/${section}/${category}.json`;
 
             try {
-                // Get current JSON
                 const jsonResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${jsonPath}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -592,13 +658,12 @@
                 if (jsonResponse.ok) {
                     const jsonData = await jsonResponse.json();
                     sha = jsonData.sha;
-                    const content = Buffer.from(jsonData.content, 'base64').toString('utf-8');
+                    const content = atob(jsonData.content);
                     const parsed = JSON.parse(content);
                     items = parsed[category] || [];
                 }
 
-                // Find and update the item
-                const updatedItems = items.map(item => {
+                let updatedItems = items.map(item => {
                     const itemFilename = item.image ? item.image.split('/').pop() : item;
                     if (itemFilename === filename) {
                         return { ...item, title: title, price: price };
@@ -606,7 +671,6 @@
                     return item;
                 });
 
-                // If not found, add it
                 if (!items.some(item => {
                     const itemFilename = item.image ? item.image.split('/').pop() : item;
                     return itemFilename === filename;
@@ -620,7 +684,6 @@
 
                 const newContent = JSON.stringify({ [category]: updatedItems }, null, 2);
 
-                // Update the JSON file
                 const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${jsonPath}`, {
                     method: 'PUT',
                     headers: {
@@ -647,12 +710,6 @@
                 console.error('Save error:', error);
                 alert('Failed to save: ' + error.message);
             }
-        }
-
-        async function saveShopItemDetails() {
-            // This is called from the "Save Details" button in the form
-            // We'll use the first uploaded image or prompt for filename
-            alert('Please upload images first, then click Save on each item to add title and price.');
         }
 
         // ============================================
@@ -711,7 +768,6 @@
         window.triggerUpload = triggerUpload;
         window.deleteImage = deleteImage;
         window.saveShopItem = saveShopItem;
-        window.saveShopItemDetails = saveShopItemDetails;
         window.logout = logout;
     </script>
 </body>
