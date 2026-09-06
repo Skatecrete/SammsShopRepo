@@ -83,26 +83,29 @@ body {
     max-width: 450px;
     padding: 1.5rem 2rem;
     margin: 2rem auto;
-    background: transparent;
-    border: none;
+    background: #fff;
+    border: 2px solid #ddd;
     border-radius: 60px;
     text-decoration: none;
     color: #1a1a1a;
     transition: all 0.3s;
     cursor: pointer;
-    box-shadow: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     gap: 1.5rem;
 }
 
 .landing-btn:hover {
-    transform: scale(1.02);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    border-color: #888;
 }
 
 .landing-btn-icon {
     width: 80px;
     height: 80px;
-    object-fit: contain;
-    border: none;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #eee;
     flex-shrink: 0;
 }
 
