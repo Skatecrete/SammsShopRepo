@@ -473,10 +473,8 @@
             await fetchShopData();
             const items = shopDataCache?.[currentCategory] || [];
             
-            // Also get images from GitHub
             const imageFiles = await getShopImagesFromGitHub();
             
-            // Merge: show all images with their titles/prices from sheet
             const mergedItems = imageFiles.map(img => {
                 const existing = items.find(item => item.image === img.image);
                 return {
@@ -595,7 +593,6 @@
 
             if (successCount > 0) {
                 if (isShop && (title || cost)) {
-                    // Add to Google Sheet
                     const existingItems = shopDataCache?.[currentCategory] || [];
                     for (const filename of uploadedFiles) {
                         const imagePath = `/images/${currentSection}/${currentCategory}/${filename}`;
@@ -664,6 +661,7 @@
             const path = `public/images/${section}/${category}/${filename}`;
 
             try {
+                // Delete from GitHub
                 const shaResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -686,16 +684,17 @@
 
                 if (!response.ok) throw new Error('Delete failed');
 
+                // If shop item, remove from Google Sheet
                 if (isShop) {
-                    // Remove from Google Sheet
-                    const existingItems = shopDataCache?.[currentCategory] || [];
                     const imagePath = `/images/${section}/${category}/${filename}`;
+                    const existingItems = shopDataCache?.[currentCategory] || [];
                     const updatedItems = existingItems.filter(item => item.image !== imagePath);
                     await updateShopSheet(currentCategory, updatedItems);
                     shopDataCache[currentCategory] = updatedItems;
                 }
 
                 await loadImages();
+
             } catch (error) {
                 alert(`Failed to delete: ${error.message}`);
             }
