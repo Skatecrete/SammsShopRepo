@@ -103,8 +103,8 @@ body {
 .landing-btn-icon {
     width: 80px;
     height: 80px;
-    border-radius: 50%;
     object-fit: contain;
+    border: none;
     flex-shrink: 0;
 }
 
@@ -136,16 +136,15 @@ body {
     margin: 0 auto;
     padding: 0 1rem;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 0.5rem;
 }
 
-.nav-left {
+.nav-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
+    width: 100%;
 }
 
 #header-title {
@@ -155,9 +154,20 @@ body {
     white-space: nowrap;
 }
 
-.nav-tabs-wrapper {
-    flex: 2;
-    min-width: 200px;
+.header-logo {
+    max-height: 40px;
+    width: auto;
+}
+
+.admin-logo-link {
+    display: inline-block;
+    cursor: default;
+    text-decoration: none;
+}
+
+.admin-logo-link:hover {
+    opacity: 1 !important;
+    transform: none !important;
 }
 
 .nav-tabs {
@@ -196,56 +206,6 @@ body {
     background: #fff;
     color: #1a1a1a;
     border-color: #fff;
-}
-
-.nav-right-logo {
-    flex: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 1rem;
-}
-
-.nav-right-logo img {
-    max-height: 55px;
-    width: auto;
-}
-
-.admin-logo-link {
-    display: inline-block;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-/* ============================================
-   ADMIN LOGO LINK (Hidden admin button - NO HOVER)
-   ============================================ */
-
-.admin-logo-link {
-    display: inline-block;
-    cursor: default;
-    text-decoration: none;
-    opacity: 1 !important;
-    pointer-events: auto;
-}
-
-.admin-logo-link:hover {
-    opacity: 1 !important;
-    transform: none !important;
-}
-
-.nav-right-logo {
-    flex: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 1rem;
-}
-
-.nav-right-logo img {
-    max-height: 55px;
-    width: auto;
-    pointer-events: none;
 }
 
 /* ============================================
@@ -633,13 +593,18 @@ footer {
         align-items: stretch;
         gap: 0.5rem;
     }
-    .nav-left {
+    .nav-header {
+        flex-wrap: wrap;
         justify-content: center;
+        gap: 0.5rem;
     }
     #header-title {
         font-size: 1rem;
         text-align: center;
         white-space: normal;
+    }
+    .header-logo {
+        max-height: 30px;
     }
     .nav-tabs {
         flex-direction: column;
@@ -658,9 +623,6 @@ footer {
         padding: 0.5rem 1rem;
         font-size: 0.85rem;
         border-radius: 25px;
-    }
-    .nav-right-logo img {
-        max-height: 40px;
     }
     .landing-main-title {
         font-size: 3rem;
@@ -730,6 +692,16 @@ footer {
 }
 
 @media (max-width: 480px) {
+    .nav-header {
+        flex-direction: column;
+        align-items: center;
+    }
+    #header-title {
+        font-size: 0.9rem;
+    }
+    .header-logo {
+        max-height: 25px;
+    }
     .image-grid {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 0.5rem;
@@ -753,12 +725,6 @@ footer {
         font-size: 0.75rem;
         padding: 0.4rem 0.7rem;
         border-radius: 20px;
-    }
-    #header-title {
-        font-size: 0.9rem;
-    }
-    .nav-right-logo img {
-        max-height: 30px;
     }
     .landing-main-title {
         font-size: 2.2rem;
