@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- HEADER WITH SHOP TABS -->
+    <!-- HEADER WITH SHOP TABS - 1 ROW -->
     <nav id="main-nav">
         <div class="nav-container">
             <div class="nav-left">
@@ -17,8 +17,7 @@
             <div class="nav-tabs nav-tabs-shop">
                 <div class="nav-row">
                     <a href="/" class="tab-btn home-btn">Home</a>
-                    <button class="tab-btn active" data-tab="shop-home">Shop Home</button>
-                    <button class="tab-btn" data-tab="shop-jewelry">Jewelry</button>
+                    <button class="tab-btn active" data-tab="shop-jewelry">Jewelry</button>
                     <button class="tab-btn" data-tab="shop-paintings">Paintings</button>
                     <button class="tab-btn" data-tab="shop-sculptures">Sculptures</button>
                 </div>
@@ -28,14 +27,8 @@
 
     <!-- SHOP CONTENT -->
     <main id="shop-content">
-        <!-- HOME TAB -->
-        <section id="shop-home" class="tab-content active">
-            <h2>Shop Home</h2>
-            <div class="shop-grid" id="shop-home-grid"><p class="loading">Loading shop items...</p></div>
-        </section>
-
         <!-- JEWELRY TAB -->
-        <section id="shop-jewelry" class="tab-content">
+        <section id="shop-jewelry" class="tab-content active">
             <h2>Jewelry</h2>
             <div class="shop-grid" id="shop-jewelry-grid"><p class="loading">Loading jewelry...</p></div>
         </section>
